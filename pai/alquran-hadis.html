@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Al-Quran dan Hadis - Pendidikan Agama Islam">
+    <title>Al-Quran dan Hadis - Media Belajar Daffa</title>
+    <link rel="stylesheet" href="../matematika-wajib/style.css">
+    <style>
+        /* Verse Box Styling - Fixed Dark Theme */
+        .verse-box {
+            background: linear-gradient(135deg, #141E30 0%, #243B55 100%); /* Background gelap permanen */
+            border-left: 5px solid #f1c40f; /* Garis kuning emas untuk kontras */
+            padding: 25px;
+            margin: 20px 0;
+            border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            color: #ffffff; /* Default teks putih */
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Ornamen sederhana (opsional, menyamping kanan bawah) */
+        .verse-box::after {
+            content: "﷽";
+            position: absolute;
+            right: -10px;
+            bottom: -20px;
+            font-size: 6rem;
+            opacity: 0.05;
+            font-family: 'Amiri', serif;
+            color: #fff;
+        }
+
+        .verse-arabic {
+            font-size: 1.8rem; text-align: right; line-height: 2.2;
+            margin-bottom: 15px; font-family: 'Amiri', 'Traditional Arabic', serif;
+            color: #ffffff; /* Putih */
+            font-weight: bold;
+        }
+        .verse-translation { 
+            font-style: italic; margin-bottom: 5px; 
+            color: #ecf0f1; /* Putih sedikit pudar */
+            line-height: 1.6;
+        }
+        .verse-source { 
+            font-weight: bold; text-align: right; font-size: 0.9rem; 
+            color: #f1c40f; /* Kuning emas untuk sumber */
+            margin-top: 10px;
+        }
+
+        /* Game Area */
+        .game-container {
+            background: var(--bg-secondary); border-radius: var(--radius-lg);
+            padding: 20px; border: 1px solid var(--border-color); margin-top: 20px;
+        }
+        .game-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 15px; margin-top: 15px;
+        }
+        .game-card {
+            background: var(--bg-card); border: 2px solid var(--border-color);
+            border-radius: var(--radius-md); padding: 15px; text-align: center;
+            cursor: pointer; transition: all 0.3s ease; font-weight: bold;
+            min-height: 80px; display: flex; align-items: center; justify-content: center;
+        }
+        .game-card:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        
+        /* Game States */
+        .game-card.selected { border-color: var(--accent-primary); background: rgba(52, 152, 219, 0.1); }
+        .game-card.matched { border-color: var(--success); background: rgba(39, 174, 96, 0.1); cursor: default; opacity: 0.7; }
+        .game-card.wrong { border-color: var(--error); background: rgba(231, 76, 60, 0.1); animation: shake 0.5s; }
+        
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+            100% { transform: translateX(0); }
+        }
+
+        .game-status { text-align: center; font-size: 1.2rem; margin-bottom: 15px; color: var(--accent-primary); }
+        
+        /* Responsive text */
+        @media (max-width: 600px) {
+            .verse-arabic { font-size: 1.5rem; }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="page-wrapper">
+        <header class="header">
+            <div class="header-inner">
+                <div class="logo">
+                    <svg class="logo-icon" viewBox="0 0 40 40" fill="none">
+                        <rect x="4" y="8" width="32" height="24" rx="2" stroke="currentColor" stroke-width="2"/>
+                        <path d="M4 14h32" stroke="currentColor" stroke-width="2"/>
+                        <circle cx="10" cy="11" r="2" fill="currentColor"/>
+                        <circle cx="16" cy="11" r="2" fill="currentColor"/>
+                        <rect x="8" y="18" width="24" height="2" rx="1" fill="currentColor" opacity="0.5"/>
+                    </svg>
+                    <span class="logo-text">Media Belajar Daffa</span>
+                </div>
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle tema">
+                    <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+                    <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                </button>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="container">
+                <div class="page-header">
+                    <nav class="breadcrumb">
+                        <a href="../index.html">Beranda</a><span>/</span>
+                        <a href="index.html">PAI</a><span>/</span>
+                        <span class="current">Al-Quran dan Hadis</span>
+                    </nav>
+                    <div class="accent-line"></div>
+                    <h1 class="page-title">Al-Quran dan Hadis</h1>
+                    <p class="page-subtitle">Mempelajari sumber utama ajaran Islam, kandungan nilainya, serta cara mengamalkannya.</p>
+                </div>
+
+                <div class="nav-btn-group">
+                    <a href="index.html" class="nav-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg> Kembali ke Daftar Materi</a>
+                    <a href="../index.html" class="nav-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Beranda</a>
+                </div>
+
+                <nav class="quick-nav" id="quickNav">
+                    <a href="#alquran" class="quick-nav-btn">Al-Quran</a>
+                    <a href="#hadis" class="quick-nav-btn">Hadis</a>
+                    <a href="#kandungan" class="quick-nav-btn">Kandungan Ayat</a>
+                    <a href="#mengamalkan" class="quick-nav-btn">Pengamalan</a>
+                    <a href="#interaktif" class="quick-nav-btn">Game</a>
+                    <a href="#kuis" class="quick-nav-btn">Kuis</a>
+                </nav>
+
+                <!-- 1. Al-Quran -->
+                <section class="content-section" id="alquran">
+                    <div class="section-header"><h2 class="section-title">1. Al-Quran</h2></div>
+                    <div class="material-content">
+                        <h3>Pengertian</h3>
+                        <p>Al-Quran adalah kalam Allah SWT yang merupakan mukjizat terbesar yang diturunkan kepada Nabi Muhammad SAW melalui perantara Malaikat Jibril.</p>
+                        <div class="formula-box">
+                            <div class="formula-label">Fungsi Al-Quran</div>
+                            <ul style="text-align:left; margin-top:10px;">
+                                <li><strong>Petunjuk (Huda)</strong>: Pemberi petunjuk jalan yang lurus.</li>
+                                <li><strong>Obat (Syifa)</strong>: Penyembuh penyakit hati dan jasmani.</li>
+                                <li><strong>Pembeda (Furqan)</strong>: Pembeda antara hak dan batil.</li>
+                                <li><strong>Rahmat</strong>: Rahmat bagi alam semesta.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 2. Hadis -->
+                <section class="content-section" id="hadis">
+                    <div class="section-header"><h2 class="section-title">2. Hadis</h2></div>
+                    <div class="material-content">
+                        <h3>Pengertian</h3>
+                        <p>Hadis adalah segala perkataan (qauli), perbuatan (fi'li), dan ketetapan (taqrir) Nabi Muhammad SAW yang dijadikan pedoman hidup.</p>
+                        
+                        <h3>Kedudukan Hadis</h3>
+                        <p>Hadis merupakan sumber hukum Islam kedua setelah Al-Quran. Fungsinya antara lain:</p>
+                        <ol>
+                            <li>Menjelaskan ayat Al-Quran yang masih umum (Bayan).</li>
+                            <li>Mengkhususkan ayat yang bersifat umum (Takhshish).</li>
+                            <li>Menetapkan hukum yang tidak disebutkan dalam Al-Quran.</li>
+                        </ol>
+                    </div>
+                </section>
+
+                <!-- 3. Kandungan Ayat Pilihan -->
+                <section class="content-section" id="kandungan">
+                    <div class="section-header"><h2 class="section-title">3. Kandungan Ayat Pilihan</h2></div>
+                    
+                    <h4 style="color:var(--accent-primary)">a. Akhlak (QS. Al-Hujurat: 12)</h4>
+                    <div class="verse-box">
+                        <div class="verse-arabic">يَا أَيُّهَا الَّذِينَ آمَنُوا اجْتَنِبُوا كَثِيرًا مِّنَ الظَّنِّ إِنَّ بَعْضَ الظَّنِّ إِثْمٌ وَلَا تَجَسَّسُو</div>
+                        <div class="verse-translation">“Hai orang-orang yang beriman, jauhilah kebanyakan dari purba-sangka (zhan), sesungguhnya sebagian purba-sangka itu adalah dosa...”</div>
+                        <div class="verse-source">QS. Al-Hujurat: 12</div>
+                    </div>
+                    <p style="margin-top:10px;">Ayat ini mengajarkan etika sosial: menghindari prasangka buruk, mencari-cari kesalahan orang lain, dan menggunjing (ghibah).</p>
+
+                    <h4 style="color:var(--accent-primary)">b. Semangat Menuntut Ilmu (QS. Al-Mujadalah: 11)</h4>
+                    <div class="verse-box">
+                        <div class="verse-arabic">...يَرْفَعِ اللَّهُ الَّذِينَ آمَنُوا مِنكُمْ وَالَّذِينَ أُوتُوا الْعِلْمَ دَرَجَاتٍ...</div>
+                        <div class="verse-translation">“...Allah akan meninggikan orang-orang yang beriman di antaramu dan orang-orang yang diberi ilmu pengetahuan beberapa derajat...”</div>
+                        <div class="verse-source">QS. Al-Mujadalah: 11</div>
+                    </div>
+                    <p style="margin-top:10px;">Ayat ini menunjukkan kemuliaan orang berilmu dan mendorong umat Islam untuk terus belajar.</p>
+
+                    <h4 style="color:var(--accent-primary)">c. Toleransi (QS. Al-Kafirun: 6)</h4>
+                    <div class="verse-box">
+                        <div class="verse-arabic">لَكُمْ دِينُكُمْ وَلِيَ دِينِ</div>
+                        <div class="verse-translation">“Untukmulah agamamu, dan untukkulah agamaku.”</div>
+                        <div class="verse-source">QS. Al-Kafirun: 6</div>
+                    </div>
+                    <p style="margin-top:10px;">Ayat ini menjadi dasar toleransi beragama: menghormati keyakinan orang lain tanpa mencampuri, namun tetap teguh pada keyakinan sendiri.</p>
+                    
+                    <h4 style="color:var(--accent-primary)">d. Kerja Keras (QS. An-Najm: 39)</h4>
+                    <div class="verse-box">
+                        <div class="verse-arabic">وَأَن لَّيْسَ لِلْإِنسَٰنِ إِلَّا مَا سَعَىٰ</div>
+                        <div class="verse-translation">“Dan bahwa seorang manusia tiada memperoleh selain apa yang telah diusahakannya.”</div>
+                        <div class="verse-source">QS. An-Najm: 39</div>
+                    </div>
+                    <p style="margin-top:10px;">Ayat ini mengajarkan pentingnya kerja keras dan usaha. Tidak ada hasil tanpa usaha.</p>
+                </section>
+
+                <!-- 4. Cara Mengamalkan -->
+                <section class="content-section" id="mengamalkan">
+                    <div class="section-header"><h2 class="section-title">4. Cara Memahami & Mengamalkan</h2></div>
+                    <div class="material-content">
+                        <p>Langkah-langkah untuk bisa mengamalkan Al-Quran dan Hadis:</p>
+                        <ol>
+                            <li><strong>Iman</strong>: Meyakini kebenarannya.</li>
+                            <li><strong>Membaca (Tilawah)</strong>: Membaca dengan tartil dan benar.</li>
+                            <li><strong>Memahami (Tadabbur)</strong>: Mempelajari arti dan maksudnya.</li>
+                            <li><strong>Mengamalkan</strong>: Melaksanakan perintah dan menjauhi larangannya.</li>
+                            <li><strong>Menyampaikan (Tabligh)</strong>: Meneruskan ajaran tersebut kepada orang lain.</li>
+                        </ol>
+                    </div>
+                </section>
+
+                <!-- INTERAKTIF: PASANGAN KATA -->
+                <section class="content-section" id="interaktif">
+                    <div class="section-header"><h2 class="section-title">Game Pasangan Kata</h2></div>
+                    <div class="sim-container">
+                        <p style="text-align:center;">Cocokkan istilah/ayat di kolom kiri dengan makna/fungsi di kolom kanan. Klik dua kartu untuk mencocokkan.</p>
+                        
+                        <div class="game-status">Skor: <span id="score">0</span> / 6</div>
+                        
+                        <div class="game-grid" id="gameGrid">
+                            <!-- Generated by JS -->
+                        </div>
+                        <button class="action-btn start" onclick="initGame()" style="display:block; margin-top:20px; margin-left:auto; margin-right:auto;">Mulai Ulang Game</button>
+                    </div>
+                </section>
+
+                <section class="content-section" id="kuis">
+                    <div class="section-header"><h2 class="section-title">Kuis</h2></div>
+                    <div id="quizContainer"></div>
+                </section>
+            </div>
+        </main>
+        <footer class="footer">
+            <div class="footer-inner">
+                <div class="footer-brand">
+                    <span class="footer-name">Media Belajar Daffa</span>
+                    <span class="footer-class">Muhammad Daffa Athallah - XII-M4-1</span>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script src="../matematika-wajib/script.js"></script>
+    <script src="../matematika-wajib/quiz-engine.js"></script>
+    <script>
+        const quizQuestions = [
+            { question: "Al-Quran diturunkan kepada Nabi Muhammad SAW melalui perantara...", options: ["Malaikat Mikail", "Malaikat Jibril", "Malaikat Israil", "Malaikat Izrail"], correct: 1, explanation: "Al-Quran diturunkan melalui Malaikat Jibril." },
+            { question: "Fungsi Al-Quran sebagai pembeda antara hak dan batil disebut...", options: ["Huda", "Syifa", "Furqan", "Rahmat"], correct: 2, explanation: "Furqan artinya pembeda." },
+            { question: "Hadis yang menjelaskan ayat Al-Quran yang masih umum berfungsi sebagai...", options: ["Bayan", "Takhshish", "Ta'kid", "Nasakh"], correct: 0, explanation: "Bayan adalah penjelas." },
+            { question: "QS. Al-Kafirun: 6 ('Lakum dinukum waliya din') mengajarkan tentang...", options: ["Menuntut ilmu", "Toleransi beragama", "Akhlak mulia", "Taat pemimpin"], correct: 1, explanation: "Ayat ini mengajarkan toleransi." }
+        ];
+
+        // ==========================================
+        // MATCHING GAME LOGIC
+        // ==========================================
+        const gameData = [
+            { term: "Huda", match: "Petunjuk" },
+            { term: "Furqan", match: "Pembeda" },
+            { term: "Syifa", match: "Obat/Penyembuh" },
+            { term: "Hadis Qauli", match: "Perkataan Nabi" },
+            { term: "Tadabbur", match: "Memahami makna" },
+            { term: "Tilawah", match: "Membaca Al-Quran" }
+        ];
+
+        let cards = [];
+        let firstCard = null;
+        let secondCard = null;
+        let lockBoard = false;
+        let matches = 0;
+
+        function initGame() {
+            const grid = document.getElementById('gameGrid');
+            grid.innerHTML = '';
+            matches = 0;
+            document.getElementById('score').textContent = matches;
+            firstCard = null;
+            secondCard = null;
+            lockBoard = false;
+
+            // Create card array
+            cards = [];
+            gameData.forEach((item, index) => {
+                cards.push({ id: index, type: 'term', text: item.term, matchId: index });
+                cards.push({ id: index + 100, type: 'match', text: item.match, matchId: index });
+            });
+
+            // Shuffle
+            cards.sort(() => Math.random() - 0.5);
+
+            // Render
+            cards.forEach(card => {
+                const cardEl = document.createElement('div');
+                cardEl.classList.add('game-card');
+                cardEl.dataset.id = card.id;
+                cardEl.dataset.matchId = card.matchId;
+                cardEl.textContent = card.text;
+                cardEl.addEventListener('click', flipCard);
+                grid.appendChild(cardEl);
+            });
+        }
+
+        function flipCard() {
+            if (lockBoard) return;
+            if (this === firstCard) return;
+            if (this.classList.contains('matched')) return;
+
+            this.classList.add('selected');
+
+            if (!firstCard) {
+                firstCard = this;
+                return;
+            }
+
+            secondCard = this;
+            checkForMatch();
+        }
+
+        function checkForMatch() {
+            let isMatch = firstCard.dataset.matchId === secondCard.dataset.matchId;
+
+            if (isMatch) {
+                disableCards();
+                matches++;
+                document.getElementById('score').textContent = matches;
+                if (matches === gameData.length) {
+                    setTimeout(() => alert("Alhamdulillah! Kamu berhasil mencocokkan semua!"), 300);
+                }
+            } else {
+                unflipCards();
+            }
+        }
+
+        function disableCards() {
+            firstCard.classList.remove('selected');
+            secondCard.classList.remove('selected');
+            firstCard.classList.add('matched');
+            secondCard.classList.add('matched');
+            resetBoard();
+        }
+
+        function unflipCards() {
+            lockBoard = true;
+            firstCard.classList.add('wrong');
+            secondCard.classList.add('wrong');
+            
+            setTimeout(() => {
+                firstCard.classList.remove('selected', 'wrong');
+                secondCard.classList.remove('selected', 'wrong');
+                resetBoard();
+            }, 1000);
+        }
+
+        function resetBoard() {
+            [firstCard, secondCard, lockBoard] = [null, null, false];
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            new QuizEngine('quizContainer', quizQuestions).init();
+            initGame();
+            
+            const quickNav = document.getElementById('quickNav');
+            window.addEventListener('scroll', () => quickNav.classList.toggle('scrolled', window.scrollY > 200));
+        });
+    </script>
+</body>
+</html>

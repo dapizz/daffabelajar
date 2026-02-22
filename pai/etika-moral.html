@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Etika dan Moral - Pendidikan Agama Islam">
+    <title>Etika dan Moral - Media Belajar Daffa</title>
+    <link rel="stylesheet" href="../matematika-wajib/style.css">
+    <style>
+        /* Custom Styles for Ethics Page */
+
+        /* Verse Box Styling (Dark Slate Theme) */
+        .verse-box {
+            background: linear-gradient(135deg, #1c1c1c 0%, #354a5f 100%); /* Modern Dark/Slate */
+            border-left: 5px solid #f1c40f;
+            padding: 25px;
+            margin: 20px 0;
+            border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            color: #ffffff;
+            position: relative;
+            overflow: hidden;
+        }
+        .verse-box::after {
+            content: "﷽";
+            position: absolute; right: -10px; bottom: -20px;
+            font-size: 6rem; opacity: 0.05; font-family: 'Amiri', serif; color: #fff;
+        }
+        .verse-arabic {
+            font-size: 1.6rem; text-align: right; line-height: 2;
+            margin-bottom: 10px; font-family: 'Amiri', serif;
+            color: #ffffff; font-weight: bold;
+        }
+        .verse-translation { font-style: italic; color: #bdc3c7; line-height: 1.6; }
+        .verse-source { font-weight: bold; text-align: right; font-size: 0.9rem; color: #f1c40f; margin-top: 10px; }
+
+        /* Concept Cards */
+        .concept-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px; margin: 20px 0;
+        }
+        .concept-card {
+            background: var(--bg-card); padding: 15px; border-radius: var(--radius-md);
+            border-top: 3px solid var(--border-color); transition: transform 0.2s;
+        }
+        .concept-card:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .concept-icon { font-size: 2rem; margin-bottom: 10px; display: block; }
+        .concept-title { font-weight: bold; margin-bottom: 5px; color: var(--accent-primary); }
+
+        /* Hadith Box */
+        .hadith-box {
+            background: rgba(241, 196, 15, 0.1);
+            border: 1px solid rgba(241, 196, 15, 0.3);
+            padding: 15px; border-radius: var(--radius-md);
+            margin: 15px 0; color: var(--text-primary);
+        }
+        .hadith-text { font-style: italic; }
+        .hadith-source { font-weight: bold; font-size: 0.85rem; margin-top: 5px; text-align: right; }
+
+        /* Game Area */
+        .game-container {
+            background: var(--bg-secondary); border-radius: var(--radius-lg);
+            padding: 20px; border: 1px solid var(--border-color); margin-top: 20px;
+        }
+        .game-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 12px; margin-top: 15px;
+        }
+        .game-card {
+            background: var(--bg-card); border: 2px solid var(--border-color);
+            border-radius: var(--radius-md); padding: 12px; text-align: center;
+            cursor: pointer; transition: all 0.2s ease; font-weight: 600;
+            min-height: 70px; display: flex; align-items: center; justify-content: center;
+            font-size: 0.95rem;
+        }
+        .game-card:hover { transform: translateY(-2px); border-color: var(--accent-secondary); }
+        
+        /* Game States */
+        .game-card.selected { border-color: var(--accent-primary); background: rgba(52, 152, 219, 0.1); color: var(--accent-primary); }
+        .game-card.matched { border-color: var(--success); background: rgba(39, 174, 96, 0.1); color: var(--success); cursor: default; opacity: 0.8; }
+        .game-card.wrong { border-color: var(--error); background: rgba(231, 76, 60, 0.1); animation: shake 0.4s; }
+        
+        @keyframes shake {
+            0% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } 100% { transform: translateX(0); }
+        }
+        .game-status { text-align: center; font-size: 1.1rem; margin-bottom: 10px; font-weight: bold; color: var(--text-secondary); }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="page-wrapper">
+        <header class="header">
+            <div class="header-inner">
+                <div class="logo">
+                    <svg class="logo-icon" viewBox="0 0 40 40" fill="none">
+                        <rect x="4" y="8" width="32" height="24" rx="2" stroke="currentColor" stroke-width="2"/>
+                        <path d="M4 14h32" stroke="currentColor" stroke-width="2"/>
+                        <circle cx="10" cy="11" r="2" fill="currentColor"/>
+                        <circle cx="16" cy="11" r="2" fill="currentColor"/>
+                        <rect x="8" y="18" width="24" height="2" rx="1" fill="currentColor" opacity="0.5"/>
+                    </svg>
+                    <span class="logo-text">Media Belajar Daffa</span>
+                </div>
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle tema">
+                    <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+                    <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                </button>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="container">
+                <div class="page-header">
+                    <nav class="breadcrumb">
+                        <a href="../index.html">Beranda</a><span>/</span>
+                        <a href="index.html">PAI</a><span>/</span>
+                        <span class="current">Etika dan Moral</span>
+                    </nav>
+                    <div class="accent-line"></div>
+                    <h1 class="page-title">Etika dan Moral</h1>
+                    <p class="page-subtitle">Menerapkan nilai-nilai Islam dalam kehidupan modern, media sosial, dan lingkungan.</p>
+                </div>
+
+                <div class="nav-btn-group">
+                    <a href="index.html" class="nav-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg> Kembali ke Daftar Materi</a>
+                    <a href="../index.html" class="nav-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Beranda</a>
+                </div>
+
+                <nav class="quick-nav" id="quickNav">
+                    <a href="#medsos" class="quick-nav-btn">Media Sosial</a>
+                    <a href="#pergaulan" class="quick-nav-btn">Pergaulan</a>
+                    <a href="#pelajar" class="quick-nav-btn">Tanggung Jawab</a>
+                    <a href="#kejujuran" class="quick-nav-btn">Kejujuran</a>
+                    <a href="#lingkungan" class="quick-nav-btn">Lingkungan</a>
+                    <a href="#interaktif" class="quick-nav-btn">Game</a>
+                </nav>
+
+                <!-- 1. Etika Bermedia Sosial -->
+                <section class="content-section" id="medsos">
+                    <div class="section-header"><h2 class="section-title">1. Etika Bermedia Sosial</h2></div>
+                    <div class="material-content">
+                        <p>Media sosial adalah pedang bermata dua. Islam mengajarkan adab dalam berkomunikasi digital.</p>
+                        <div class="verse-box">
+                            <div class="verse-arabic">يَٰٓأَيُّهَا ٱلَّذِينَ ءَامَنُوٓا۟ إِن جَآءَكُمْ فَاسِقٌۢ بِنَبَإٍ فَتَبَيَّنُوٓا۟ أَن تُصِيبُوا۟ قَوْمًۢا بِجَهَٰلَةٍ فَتُصْبِحُوا۟ عَلَىٰ مَا فَعَلْتُمْ نَٰدِمِينَ</div>
+                            <div class="verse-translation">“Hai orang-orang yang beriman, jika datang kepadamu orang fasik membawa suatu berita, maka periksalah dengan teliti agar kamu tidak menimpakan suatu musibah kepada suatu kaum tanpa mengetahui keadaannya yang menyebabkan kamu menyesal atas perbuatanmu itu.”</div>
+                            <div class="verse-source">QS. Al-Hujurat: 6</div>
+                        </div>
+                        <div class="concept-grid">
+                            <div class="concept-card" style="border-color: #3498db;">
+                                <span class="concept-icon">🔍</span>
+                                <span class="concept-title">Tabayyun (Cek Fakta)</span>
+                                <p>Jangan asal share (sebarluaskan) berita sebelum dipastikan kebenarannya.</p>
+                            </div>
+                            <div class="concept-card" style="border-color: #3498db;">
+                                <span class="concept-icon">🤐</span>
+                                <span class="concept-title">Jaga Aib</span>
+                                <p>Hindari menyebarluaskan aib orang lain (video kekerasan, pornografi, ujaran kebencian).</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 2. Menjaga Pergaulan -->
+                <section class="content-section" id="pergaulan">
+                    <div class="section-header"><h2 class="section-title">2. Menjaga Pergaulan</h2></div>
+                    <div class="material-content">
+                        <p>Islam sangat menekankan pentingnya memilih teman, karena pergaulan mempengaruhi karakter.</p>
+                        <div class="hadith-box">
+                            <p class="hadith-text">"Seseorang itu tergantung agama temannya. Maka hendaklah salah seorang di antara kalian memperhatikan siapa yang ia jadikan teman."</p>
+                            <p class="hadith-source">HR. Abu Daud & Tirmidzi</p>
+                        </div>
+                        <ul>
+                            <li><strong>Bergaul dengan orang sholeh</strong>: Akan mendapat ketenangan dan petunjuk.</li>
+                            <li><strong>Menghindari pergaulan bebas</strong>: Menjauhi minuman keras, narkoba, dan perbuatan zina.</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <!-- 3. Tanggung Jawab Pelajar -->
+                <section class="content-section" id="pelajar">
+                    <div class="section-header"><h2 class="section-title">3. Tanggung Jawab sebagai Pelajar</h2></div>
+                    <div class="material-content">
+                        <div class="concept-grid">
+                            <div class="concept-card" style="border-color: #f1c40f;">
+                                <span class="concept-icon">🎒</span>
+                                <span class="concept-title">Kewajiban Belajar</span>
+                                <p>Menuntut ilmu adalah kewajiban. Menjadi generasi pintar dan berakhlak.</p>
+                            </div>
+                            <div class="concept-card" style="border-color: #f1c40f;">
+                                <span class="concept-icon">🙇</span>
+                                <span class="concept-title">Hormat Guru</span>
+                                <p>Menghormati dan taat kepada guru selama tidak bertentangan dengan agama.</p>
+                            </div>
+                            <div class="concept-card" style="border-color: #f1c40f;">
+                                <span class="concept-icon">⏰</span>
+                                <span class="concept-title">Disiplin</span>
+                                <p>Manajemen waktu antara belajar, ibadah, dan bermain.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 4. Kejujuran dalam Pendidikan -->
+                <section class="content-section" id="kejujuran">
+                    <div class="section-header"><h2 class="section-title">4. Nilai Kejujuran dalam Pendidikan</h2></div>
+                    <div class="material-content">
+                        <p>Kejujuran adalah fondasi ilmu. Mencontek adalah bentuk kebohongan yang merusak masa depan.</p>
+                        <div class="verse-box">
+                            <div class="verse-arabic">وَيْلٌ لِّلْمُطَفِّفِينَ</div>
+                            <div class="verse-translation">“Kecelakaan besarlah bagi orang-orang yang curang.”</div>
+                            <div class="verse-source">QS. Al-Mutaffifin: 1</div>
+                        </div>
+                        <div class="warning-box" style="background: rgba(231, 76, 60, 0.1); border-left: 4px solid #e74c3c; padding: 15px; margin-top: 15px; border-radius: 4px;">
+                            <span style="color: #e74c3c; font-weight: bold;">⚠️ Dampak Mencontek:</span>
+                            <ul style="margin: 5px 0 0 20px; padding: 0;">
+                                <li>Menghapus keberkahan ilmu.</li>
+                                <li>Membunuh kreativitas.</li>
+                                <li>Membiasakan diri dengan kebohongan.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 5. Menjaga Lingkungan -->
+                <section class="content-section" id="lingkungan">
+                    <div class="section-header"><h2 class="section-title">5. Menjaga Lingkungan</h2></div>
+                    <div class="material-content">
+                        <p>Manusia adalah khalifah di bumi. Merusak alam berarti ingkar janji.</p>
+                        <div class="verse-box">
+                            <div class="verse-arabic">ظَهَرَ ٱلْفَسَادُ فِى ٱلْبَرِّ وَٱلْبَحْرِ بِمَا كَسَبَتْ أَيْدِى ٱلنَّاسِ لِيُذِيقَهُم بَعْضَ ٱلَّذِى عَمِلُوا۟ لَعَلَّهُمْ يَرْجِعُونَ</div>
+                            <div class="verse-translation">“Telah nampak kerusakan di darat dan di laut disebabkan karena perbuatan tangan manusia, supaya Allah merasakan kepada mereka sebahagian dari (akibat) perbuatan mereka, agar mereka kembali (ke jalan yang benar).”</div>
+                            <div class="verse-source">QS. Ar-Rum: 41</div>
+                        </div>
+                        <h4>Bentuk Peduli Lingkungan:</h4>
+                        <ol>
+                            <li>Menjaga kebersihan (Ad-Diinu an-Nadzhifah).</li>
+                            <li>Reboisasi (Menanam pohon).</li>
+                            <li>Mengurangi sampah plastik.</li>
+                            <li>Hemat dalam penggunaan air dan listrik.</li>
+                        </ol>
+                    </div>
+                </section>
+
+                <!-- INTERAKTIF: GAME PASANGAN NILAI -->
+                <section class="content-section" id="interaktif">
+                    <div class="section-header"><h2 class="section-title">Game Pasangan Nilai Moral</h2></div>
+                    <div class="sim-container">
+                        <p style="text-align:center;">Cocokkan istilah di kiri dengan definisi/sikap yang tepat di kanan.</p>
+                        
+                        <div class="game-status">Skor: <span id="score">0</span> / 6</div>
+                        
+                        <div class="game-grid" id="gameGrid">
+                            <!-- Generated by JS -->
+                        </div>
+                        <button class="action-btn start" onclick="initGame()" style="display:block; margin-top:20px; margin-left:auto; margin-right:auto;">Ulangi Game</button>
+                    </div>
+                </section>
+
+                <section class="content-section" id="kuis">
+                    <div class="section-header"><h2 class="section-title">Kuis</h2></div>
+                    <div id="quizContainer"></div>
+                </section>
+            </div>
+        </main>
+        <footer class="footer">
+            <div class="footer-inner">
+                <div class="footer-brand">
+                    <span class="footer-name">Media Belajar Daffa</span>
+                    <span class="footer-class">Muhammad Daffa Athallah - XII-M4-1</span>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script src="../matematika-wajib/script.js"></script>
+    <script src="../matematika-wajib/quiz-engine.js"></script>
+    <script>
+        const quizQuestions = [
+            { question: "Menyebarkan berita hoaks di media sosial termasuk melanggar prinsip...", options: ["Tabayyun", "Qanaah", "Tawadhu", "Ujub"], correct: 0, explanation: "Tabayyun adalah cek kebenaran." },
+            { question: "Hadist tentang pentingnya memilih teman menyebutkan bahwa seseorang tergantung...", options: ["Hartanya", "Agama temannya", "Pekerjaannya", "Keturunannya"], correct: 1, explanation: "Teman mempengaruhi karakter." },
+            { question: "Mencontek dalam ujian termasuk akhlak...", options: ["Mazmumah", "Mahmudah", "Karimah", "Madzmumah"], correct: 0, explanation: "Mencontek adalah tercela (dusta/curang)." },
+            { question: "Islam melarang mencemari lingkungan karena manusia adalah...", options: ["Penguasa", "Khalifah", "Penikmat", "Pendatang"], correct: 1, explanation: "Khalifah berarti pemelihara bumi." }
+        ];
+
+        // ==========================================
+        // MATCHING GAME LOGIC
+        // ==========================================
+        const gameData = [
+            { term: "Tabayyun", match: "Cek Fakta" },
+            { term: "Mencontek", match: "Tercela" },
+            { term: "Khalifah", match: "Pelihara Bumi" },
+            { term: "Adab", match: "Sopan Santun" },
+            { term: "Ujaran Kebencian", match: "Hate Speech" },
+            { term: "Disiplin", match: "Tertib Waktu" }
+        ];
+
+        let cards = [];
+        let firstCard = null;
+        let secondCard = null;
+        let lockBoard = false;
+        let matches = 0;
+
+        function initGame() {
+            const grid = document.getElementById('gameGrid');
+            grid.innerHTML = '';
+            matches = 0;
+            document.getElementById('score').textContent = matches;
+            firstCard = null;
+            secondCard = null;
+            lockBoard = false;
+
+            cards = [];
+            gameData.forEach((item, index) => {
+                cards.push({ id: index, type: 'term', text: item.term, matchId: index });
+                cards.push({ id: index + 100, type: 'match', text: item.match, matchId: index });
+            });
+
+            cards.sort(() => Math.random() - 0.5);
+
+            cards.forEach(card => {
+                const cardEl = document.createElement('div');
+                cardEl.classList.add('game-card');
+                cardEl.dataset.id = card.id;
+                cardEl.dataset.matchId = card.matchId;
+                cardEl.textContent = card.text;
+                cardEl.addEventListener('click', flipCard);
+                grid.appendChild(cardEl);
+            });
+        }
+
+        function flipCard() {
+            if (lockBoard) return;
+            if (this === firstCard) return;
+            if (this.classList.contains('matched')) return;
+
+            this.classList.add('selected');
+
+            if (!firstCard) {
+                firstCard = this;
+                return;
+            }
+
+            secondCard = this;
+            checkForMatch();
+        }
+
+        function checkForMatch() {
+            let isMatch = firstCard.dataset.matchId === secondCard.dataset.matchId;
+
+            if (isMatch) {
+                disableCards();
+                matches++;
+                document.getElementById('score').textContent = matches;
+                if (matches === gameData.length) {
+                    setTimeout(() => alert("Masya Allah! Karakter muliamu teruji dengan baik!"), 300);
+                }
+            } else {
+                unflipCards();
+            }
+        }
+
+        function disableCards() {
+            firstCard.classList.remove('selected');
+            secondCard.classList.remove('selected');
+            firstCard.classList.add('matched');
+            secondCard.classList.add('matched');
+            resetBoard();
+        }
+
+        function unflipCards() {
+            lockBoard = true;
+            firstCard.classList.add('wrong');
+            secondCard.classList.add('wrong');
+            
+            setTimeout(() => {
+                firstCard.classList.remove('selected', 'wrong');
+                secondCard.classList.remove('selected', 'wrong');
+                resetBoard();
+            }, 800);
+        }
+
+        function resetBoard() {
+            [firstCard, secondCard, lockBoard] = [null, null, false];
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            new QuizEngine('quizContainer', quizQuestions).init();
+            initGame();
+            
+            const quickNav = document.getElementById('quickNav');
+            window.addEventListener('scroll', () => quickNav.classList.toggle('scrolled', window.scrollY > 200));
+        });
+    </script>
+</body>
+</html>

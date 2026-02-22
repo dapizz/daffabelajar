@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Suhu dan Kalor - Fisika">
+    <title>Suhu dan Kalor - Media Belajar Daffa</title>
+    <link rel="stylesheet" href="../matematika-wajib/style.css">
+    <style>
+        /* Custom Styles */
+        .sim-container {
+            background: var(--bg-secondary); border-radius: var(--radius-lg);
+            padding: 20px; margin: 20px 0; border: 1px solid var(--border-color);
+        }
+        .canvas-box { background: var(--bg-card); border-radius: var(--radius-md); width: 100%; height: 300px; position: relative; overflow: hidden; }
+        canvas { width: 100%; height: 100%; display: block; }
+        
+        .action-btn {
+            padding: 10px 20px; border: none; border-radius: var(--radius-sm);
+            font-weight: bold; cursor: pointer; font-size: 1rem;
+            display: inline-flex; align-items: center; gap: 8px;
+            transition: all 0.2s; color: white; border: none;
+        }
+        .action-btn.start { background: #27ae60; box-shadow: 0 4px 0 #1e8449; }
+        .action-btn:active { transform: translateY(2px); box-shadow: none; }
+
+        /* Thermometer */
+        .thermo-container { display: flex; justify-content: center; align-items: center; gap: 30px; flex-wrap: wrap; }
+        .thermo-svg { width: 60px; height: 250px; }
+        .thermo-tube { fill: #ecf0f1; stroke: #bdc3c7; stroke-width: 2; }
+        .thermo-mercury { fill: #e74c3c; }
+        .scale-display { background: #2c3e50; color: #fff; padding: 10px; border-radius: 8px; min-width: 80px; text-align: center; }
+
+        /* Phase Change Graph */
+        .graph-box { border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 10px; background: #fff; }
+        .axis-label { font-size: 12px; fill: var(--text-muted); }
+
+        /* Heat Transfer Tabs */
+        .ht-tabs { display: flex; gap: 10px; margin-bottom: 15px; justify-content: center; }
+        .ht-tab { padding: 8px 15px; border: 1px solid var(--border-color); border-radius: 20px; cursor: pointer; background: var(--bg-card); transition: all 0.2s; }
+        .ht-tab.active { background: var(--accent-primary); color: white; border-color: var(--accent-primary); }
+
+        /* Summary Box */
+        .summary-box {
+            background: var(--bg-card); border-left: 4px solid var(--accent-primary);
+            padding: 15px; margin-top: 15px; border-radius: 0 8px 8px 0;
+        }
+        .summary-title { font-weight: bold; margin-bottom: 5px; display: block; }
+    </style>
+</head>
+<body>
+    <div class="page-wrapper">
+        <header class="header">
+            <div class="header-inner">
+                <div class="logo">
+                    <svg class="logo-icon" viewBox="0 0 40 40" fill="none">
+                        <rect x="4" y="8" width="32" height="24" rx="2" stroke="currentColor" stroke-width="2"/>
+                        <path d="M4 14h32" stroke="currentColor" stroke-width="2"/>
+                        <circle cx="10" cy="11" r="2" fill="currentColor"/>
+                        <circle cx="16" cy="11" r="2" fill="currentColor"/>
+                        <rect x="8" y="18" width="24" height="2" rx="1" fill="currentColor" opacity="0.5"/>
+                    </svg>
+                    <span class="logo-text">Media Belajar Daffa</span>
+                </div>
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle tema">
+                    <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+                    <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                </button>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="container">
+                <div class="page-header">
+                    <nav class="breadcrumb">
+                        <a href="../index.html">Beranda</a><span>/</span>
+                        <a href="index.html">Fisika</a><span>/</span>
+                        <span class="current">Suhu dan Kalor</span>
+                    </nav>
+                    <div class="accent-line"></div>
+                    <h1 class="page-title">Suhu dan Kalor</h1>
+                    <p class="page-subtitle">Mempelajari konsep suhu, pemuaian, kalor, dan cara perpindahannya.</p>
+                </div>
+
+                <div class="nav-btn-group">
+                    <a href="index.html" class="nav-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg> Kembali ke Daftar Materi</a>
+                    <a href="../index.html" class="nav-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Beranda</a>
+                </div>
+
+                <nav class="quick-nav" id="quickNav">
+                    <a href="#skala-suhu" class="quick-nav-btn">Skala Suhu</a>
+                    <a href="#pemuaian" class="quick-nav-btn">Pemuaian</a>
+                    <a href="#kalor" class="quick-nav-btn">Kalor</a>
+                    <a href="#asas-black" class="quick-nav-btn">Asas Black</a>
+                    <a href="#perpindahan" class="quick-nav-btn">Perpindahan</a>
+                    <a href="#kuis" class="quick-nav-btn">Kuis</a>
+                </nav>
+
+                <!-- 1. Skala Suhu -->
+                <section class="content-section" id="skala-suhu">
+                    <div class="section-header"><h2 class="section-title">1. Skala Suhu</h2></div>
+                    <div class="material-content">
+                        <p>Suhu adalah ukuran derajat panas atau dinginnya suatu benda. Alat ukurnya adalah termometer.</p>
+                        <h4>Rumus Konversi:</h4>
+                        <div class="formula-box">
+                            <div class="formula">C : (R : F : K) = 5 : 4 : 9 : 273</div>
+                            <p style="font-size:0.9rem; margin-top:5px;">
+                                C = 5/9 (F - 32) <br>
+                                K = C + 273
+                            </p>
+                        </div>
+                    </div>
+                    <div class="sim-container">
+                        <div class="slider-control">
+                            <span class="slider-label">Suhu (°C):</span>
+                            <input type="range" class="slider-input" id="tempC" min="-50" max="150" value="25">
+                            <span class="slider-value"><span id="valTempC">25</span> °C</span>
+                        </div>
+                        
+                        <div class="thermo-container">
+                            <!-- SVG Thermometer -->
+                            <svg class="thermo-svg" viewBox="0 0 60 250">
+                                <rect x="20" y="10" width="20" height="180" rx="10" class="thermo-tube"/>
+                                <circle cx="30" cy="210" r="25" class="thermo-tube"/>
+                                <rect id="mercuryLevel" x="24" y="180" width="12" height="10" class="thermo-mercury"/>
+                                <circle cx="30" cy="210" r="20" class="thermo-mercury"/>
+                                <!-- Scale Ticks -->
+                                <text x="45" y="30" fill="#7f8c8d" font-size="10">150</text>
+                                <text x="45" y="100" fill="#7f8c8d" font-size="10">75</text>
+                                <text x="45" y="180" fill="#7f8c8d" font-size="10">0</text>
+                            </svg>
+                            
+                            <!-- Displays -->
+                            <div style="display:flex; flex-direction:column; gap:10px;">
+                                <div class="scale-display">Celsius: <span id="dispC">25</span> °C</div>
+                                <div class="scale-display" style="background:#3498db;">Fahrenheit: <span id="dispF">77</span> °F</div>
+                                <div class="scale-display" style="background:#9b59b6;">Reamur: <span id="dispR">20</span> °R</div>
+                                <div class="scale-display" style="background:#e67e22;">Kelvin: <span id="dispK">298</span> K</div>
+                            </div>
+                        </div>
+                        <div class="summary-box">
+                            <span class="summary-title">Penjelasan:</span>
+                            <p style="margin:0; font-size:0.9rem;">
+                                Geser slider untuk mengubah suhu. Perhatikan perubahan tinggi raksa (merah) pada termometer dan konversi otomatis ke skala lain.
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 2. Pemuaian -->
+                <section class="content-section" id="pemuaian">
+                    <div class="section-header"><h2 class="section-title">2. Pemuaian Zat</h2></div>
+                    <div class="material-content">
+                        <p>Hampir semua zat memuai bila dipanaskan dan menyusut bila didinginkan.</p>
+                        <div class="formula-box">
+                            <div class="formula-label">Pemuaian Panjang (Linear)</div>
+                            <div class="formula">L = L₀ (1 + α . ΔT)</div>
+                            <p style="font-size:0.9rem; margin-top:5px;">α = Koefisien muai panjang.</p>
+                        </div>
+                    </div>
+                    <div class="sim-container">
+                        <div style="display:flex; flex-wrap:wrap; gap:20px;">
+                            <div style="flex:1; min-width:250px;">
+                                <div class="slider-control">
+                                    <span class="slider-label">ΔT (Perubahan Suhu):</span>
+                                    <input type="range" class="slider-input" id="expDT" min="0" max="100" value="0">
+                                    <span class="slider-value"><span id="valExpDT">0</span> °C</span>
+                                </div>
+                                <div style="background:var(--bg-card); padding:10px; border-radius:var(--radius-sm);">
+                                    <p><strong>Panjang Awal (L₀):</strong> 100 cm</p>
+                                    <p><strong>α (Baja):</strong> 0.000011 /°C</p>
+                                    <p><strong>Panjang Akhir:</strong> <span id="dispL" style="color:var(--accent-primary); font-weight:bold;">100.00 cm</span></p>
+                                    <p><strong>Selisih:</strong> <span id="dispDeltaL">0.00 cm</span></p>
+                                </div>
+                                <button class="action-btn start" onclick="animateExpansion()" style="margin-top:10px; width:100%;">Animasi Pemanasan</button>
+                            </div>
+                            <div style="flex:1; min-width:250px;">
+                                <canvas id="expCanvas" class="canvas-box" style="height:200px;"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 3. Kalor & Perubahan Wujud -->
+                <section class="content-section" id="kalor">
+                    <div class="section-header"><h2 class="section-title">3. Kalor dan Perubahan Wujud</h2></div>
+                    <div class="material-content">
+                        <div class="formula-box">
+                            <div class="formula-label">Kalor (Q)</div>
+                            <div class="formula">Q = m . c . ΔT</div>
+                        </div>
+                        <div class="formula-box" style="margin-top:10px;">
+                            <div class="formula-label">Kalor Laten (L)</div>
+                            <div class="formula">Q = m . L</div>
+                        </div>
+                    </div>
+                    <div class="sim-container">
+                        <p style="text-align:center; color:var(--text-muted);">Grafik Pemanasan Es (1 kg es dari -20°C menjadi uap).</p>
+                        <div class="graph-box">
+                            <canvas id="phaseCanvas" height="300"></canvas>
+                        </div>
+                        <button class="action-btn start" onclick="animatePhaseChange()" style="display:block; margin:10px auto;">Mulai Pemanasan</button>
+                        <div class="summary-box" id="phaseStatus">
+                            <span class="summary-title">Status: Siap</span>
+                            <p style="margin:0;">Tekan tombol untuk melihat proses perubahan wujud (Es -> Air -> Uap). Perhatikan suhu konstan saat perubahan wujud.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 4. Asas Black -->
+                <section class="content-section" id="asas-black">
+                    <div class="section-header"><h2 class="section-title">4. Asas Black</h2></div>
+                    <div class="material-content">
+                        <p>Pada sistem tertutup, kalor yang dilepas oleh benda bersuhu tinggi sama dengan kalor yang diterima oleh benda bersuhu rendah.</p>
+                        <div class="formula-box">
+                            <div class="formula">Q lepas = Q terima</div>
+                            <div style="margin-top:5px;">m₁.c.(T₁ - Ta) = m₂.c.(Ta - T₂)</div>
+                        </div>
+                    </div>
+                    <div class="sim-container">
+                        <div style="display:flex; flex-wrap:wrap; gap:20px;">
+                            <div style="flex:1; min-width:200px; border-right:1px solid var(--border-color); padding-right:10px;">
+                                <h4 style="text-align:center; color:#e74c3c;">Air Panas</h4>
+                                <div class="slider-control"><span class="slider-label">Massa:</span><input type="range" class="slider-input" id="bm1" min="50" max="200" value="100"><span class="slider-value"><span id="valM1">100</span> g</span></div>
+                                <div class="slider-control"><span class="slider-label">Suhu Awal:</span><input type="range" class="slider-input" id="bT1" min="40" max="100" value="80"><span class="slider-value"><span id="valT1">80</span> °C</span></div>
+                            </div>
+                            <div style="flex:1; min-width:200px; padding-left:10px;">
+                                <h4 style="text-align:center; color:#3498db;">Air Dingin</h4>
+                                <div class="slider-control"><span class="slider-label">Massa:</span><input type="range" class="slider-input" id="bm2" min="50" max="200" value="50"><span class="slider-value"><span id="valM2">50</span> g</span></div>
+                                <div class="slider-control"><span class="slider-label">Suhu Awal:</span><input type="range" class="slider-input" id="bT2" min="0" max="35" value="25"><span class="slider-value"><span id="valT2">25</span> °C</span></div>
+                            </div>
+                        </div>
+                        
+                        <canvas id="mixCanvas" class="canvas-box" style="height:200px; margin-top:20px;"></canvas>
+                        
+                        <div class="summary-box" style="text-align:center;">
+                            <h3>Suhu Akhir Campuran (Ta)</h3>
+                            <span style="font-size:2rem; font-weight:bold; color:var(--accent-primary)" id="dispTa">62.0 °C</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 5. Perpindahan Kalor -->
+                <section class="content-section" id="perpindahan">
+                    <div class="section-header"><h2 class="section-title">5. Perpindahan Kalor</h2></div>
+                    <div class="material-content">
+                        <table class="info-table">
+                            <tr><th>Jenis</th><th>Mekanisme</th><th>Contoh</th></tr>
+                            <tr><td>Konduksi</td><td>Perpindahan melalui zat perantara tanpa perpindahan partikel.</td><td>Sendok panas di teh.</td></tr>
+                            <tr><td>Konveksi</td><td>Perpindahan melalui aliran zat.</td><td>Angin, air mendidih.</td></tr>
+                            <tr><td>Radiasi</td><td>Perpindahan tanpa zat perantara (pancaran).</td><td>Sinar matahari.</td></tr>
+                        </table>
+                    </div>
+                    <div class="sim-container">
+                        <div class="ht-tabs">
+                            <div class="ht-tab active" onclick="setHeatMode('konduksi')">Konduksi</div>
+                            <div class="ht-tab" onclick="setHeatMode('konveksi')">Konveksi</div>
+                            <div class="ht-tab" onclick="setHeatMode('radiasi')">Radiasi</div>
+                        </div>
+                        <canvas id="htCanvas" class="canvas-box" style="height:250px;"></canvas>
+                        <p id="htDesc" style="text-align:center; color:var(--text-muted); margin-top:10px;">
+                            Konduksi: Partikel bergetar dan menyalurkan energi ke tetangganya.
+                        </p>
+                    </div>
+                </section>
+
+                <section class="content-section" id="kuis">
+                    <div class="section-header"><h2 class="section-title">Kuis</h2></div>
+                    <div id="quizContainer"></div>
+                </section>
+            </div>
+        </main>
+        <footer class="footer">...</footer>
+    </div>
+
+    <script src="../matematika-wajib/script.js"></script>
+    <script src="../matematika-wajib/quiz-engine.js"></script>
+    <script>
+        const quizQuestions = [
+            { question: "Suhu 45°C sama dengan ... °F", options: ["81", "113", "145", "53"], correct: 1, explanation: "F = 9/5 * C + 32 = 9/5 * 45 + 32 = 113." },
+            { question: "Perpindahan kalor tanpa zat perantara disebut...", options: ["Konduksi", "Konveksi", "Radiasi", "Evaporasi"], correct: 2 },
+            { question: "Pada saat es mencair, suhunya...", options: ["Naik", "Turun", "Tetap", "Naik lalu turun"], correct: 2, explanation: "Energi digunakan untuk memutus ikatan molekul, bukan menaikkan suhu." }
+        ];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            new QuizEngine('quizContainer', quizQuestions).init();
+            const quickNav = document.getElementById('quickNav');
+            window.addEventListener('scroll', () => quickNav.classList.toggle('scrolled', window.scrollY > 200));
+
+            // 1. Temperature Scales
+            const tempC = document.getElementById('tempC');
+            function updateTemp() {
+                const C = parseFloat(tempC.value);
+                const F = (9/5 * C) + 32;
+                const R = 4/5 * C;
+                const K = C + 273;
+                
+                document.getElementById('valTempC').textContent = C;
+                document.getElementById('dispC').textContent = C;
+                document.getElementById('dispF').textContent = F.toFixed(1);
+                document.getElementById('dispR').textContent = R.toFixed(1);
+                document.getElementById('dispK').textContent = K;
+
+                // Update Mercury Height
+                // Range: -50 to 150 (Total 200). Height available: 150px.
+                const mercuryHeight = ((C + 50) / 200) * 150;
+                const topY = 180 - mercuryHeight; // 180 is base for 0 degree approx, adjust logic
+                // Actually simpler: Total height of mercury column based on range
+                const baseY = 30; // Top of 150C
+                const rangeH = 150; // Pixels for 200 deg range
+                const level = baseY + ((150 - C) / 200) * rangeH; 
+                
+                document.getElementById('mercuryLevel').setAttribute('y', level);
+                document.getElementById('mercuryLevel').setAttribute('height', 190 - level);
+            }
+            tempC.addEventListener('input', updateTemp);
+            updateTemp();
+
+            // 2. Expansion
+            const expDT = document.getElementById('expDT');
+            const expCanvas = document.getElementById('expCanvas');
+            const expCtx = expCanvas.getContext('2d');
+            
+            function updateExpansion() {
+                const dT = parseFloat(expDT.value);
+                document.getElementById('valExpDT').textContent = dT;
+                
+                const L0 = 100;
+                const alpha = 0.000011;
+                const dL = L0 * alpha * dT;
+                const L = L0 + dL;
+
+                document.getElementById('dispL').textContent = L.toFixed(4) + " cm";
+                document.getElementById('dispDeltaL').textContent = dL.toFixed(4) + " cm";
+
+                // Draw
+                expCtx.clearRect(0, 0, expCanvas.width, expCanvas.height);
+                const baseW = 100; // pixels
+                const scale = (expCanvas.width - 100) / 100; // scale factor
+                const currentW = L * scale;
+                
+                // Draw Rod
+                const startX = 50;
+                const endX = startX + currentW;
+                const colorVal = Math.min(255, 100 + dT*1.5);
+                expCtx.fillStyle = `rgb(${colorVal}, ${100 - dT*0.5}, ${100 - dT*0.5})`; // Redder when hot
+                expCtx.fillRect(startX, expCanvas.height/2 - 20, currentW, 40);
+                
+                // Draw Fixed End
+                expCtx.fillStyle = '#7f8c8d';
+                expCtx.fillRect(20, expCanvas.height/2 - 40, 30, 80);
+                
+                // Draw Ruler
+                expCtx.strokeStyle = '#bdc3c7';
+                expCtx.beginPath(); expCtx.moveTo(50, expCanvas.height/2 + 50); expCtx.lineTo(expCanvas.width - 50, expCanvas.height/2 + 50); expCtx.stroke();
+                expCtx.fillStyle='#333';
+                expCtx.font="12px Arial";
+                expCtx.fillText("0 cm", 50, expCanvas.height/2 + 70);
+                expCtx.fillText("100 cm", 50 + 100*scale, expCanvas.height/2 + 70);
+            }
+            expDT.addEventListener('input', updateExpansion);
+            updateExpansion();
+
+            window.animateExpansion = function() {
+                let t = 0;
+                const interval = setInterval(() => {
+                    t += 2;
+                    if(t > 100) { clearInterval(interval); }
+                    expDT.value = t;
+                    updateExpansion();
+                }, 50);
+            };
+
+            // 3. Phase Change
+            const phaseCanvas = document.getElementById('phaseCanvas');
+            const phaseCtx = phaseCanvas.getContext('2d');
+            let phaseAnim = null;
+
+            window.animatePhaseChange = function() {
+                if(phaseAnim) clearInterval(phaseAnim);
+                phaseCanvas.width = phaseCanvas.parentElement.clientWidth;
+                phaseCanvas.height = 300;
+                
+                const status = document.getElementById('phaseStatus');
+                let x = 50;
+                const endX = phaseCanvas.width - 50;
+                const tMax = 150; // Time steps
+                let t = 0;
+
+                phaseAnim = setInterval(() => {
+                    t++;
+                    if(t > tMax) { clearInterval(phaseAnim); }
+
+                    // Clear
+                    phaseCtx.clearRect(0, 0, phaseCanvas.width, phaseCanvas.height);
+                    
+                    // Axes
+                    phaseCtx.strokeStyle = '#333';
+                    phaseCtx.beginPath(); 
+                    phaseCtx.moveTo(50, 20); phaseCtx.lineTo(50, 250); 
+                    phaseCtx.lineTo(phaseCanvas.width - 20, 250); 
+                    phaseCtx.stroke();
+                    
+                    // Labels
+                    phaseCtx.fillStyle = '#333';
+                    phaseCtx.fillText("T (°C)", 10, 20);
+                    phaseCtx.fillText("Waktu", phaseCanvas.width - 50, 270);
+                    phaseCtx.fillText("100°", 20, 50);
+                    phaseCtx.fillText("0°", 30, 200);
+
+                    // Draw Curve
+                    phaseCtx.beginPath();
+                    phaseCtx.strokeStyle = '#e74c3c';
+                    phaseCtx.lineWidth = 2;
+                    
+                    // Calculate progress
+                    const prog = t / tMax;
+                    const totalW = phaseCanvas.width - 100;
+                    const currX = 50 + prog * totalW;
+
+                    // Simulate Curve Logic (Simplified segments)
+                    // Segments: Ice(-20 to 0), Melt(Flat), Water(0 to 100), Boil(Flat), Steam(100+)
+                    // Map time to phases
+                    let y;
+                    if (prog < 0.15) { // Heating Ice (-20 to 0)
+                        status.innerHTML = "<span class='summary-title'>Status: Memanaskan Es</span><p>Es -20°C -> 0°C (Q = mcΔT)</p>";
+                        y = 200 - ( (prog/0.15) * 20 ); 
+                    } else if (prog < 0.35) { // Melting
+                        status.innerHTML = "<span class='summary-title'>Status: Es Mencair</span><p>Suhu Konstan 0°C (Kalor Laten Lebur)</p>";
+                        y = 180;
+                    } else if (prog < 0.7) { // Heating Water (0 to 100)
+                        status.innerHTML = "<span class='summary-title'>Status: Memanaskan Air</span><p>Air 0°C -> 100°C</p>";
+                        const p = (prog - 0.35) / 0.35;
+                        y = 180 - (p * 130);
+                    } else if (prog < 0.9) { // Boiling
+                        status.innerHTML = "<span class='summary-title'>Status: Air Mendidih</span><p>Suhu Konstan 100°C (Kalor Laten Uap)</p>";
+                        y = 50;
+                    } else { // Steam
+                        status.innerHTML = "<span class='summary-title'>Status: Uap</span><p>Uap > 100°C</p>";
+                        y = 50 - ((prog-0.9)/0.1 * 10);
+                    }
+
+                    // Draw path up to current point
+                    // Need to draw segment by segment
+                    phaseCtx.moveTo(50, 220); // Start -20C
+                    for(let i=0; i<=t; i++) {
+                        const p = i/tMax;
+                        const cx = 50 + p*totalW;
+                        let cy;
+                        if (p < 0.15) cy = 200 - ((p/0.15)*20);
+                        else if (p < 0.35) cy = 180;
+                        else if (p < 0.7) { const tp = (p-0.35)/0.35; cy = 180 - (tp*130); }
+                        else if (p < 0.9) cy = 50;
+                        else { cy = 50 - ((p-0.9)/0.1 * 10); }
+                        
+                        phaseCtx.lineTo(cx, cy);
+                    }
+                    phaseCtx.stroke();
+
+                }, 50);
+            };
+
+            // 4. Black's Principle
+            const bm1 = document.getElementById('bm1');
+            const bT1 = document.getElementById('bT1');
+            const bm2 = document.getElementById('bm2');
+            const bT2 = document.getElementById('bT2');
+            const mixCanvas = document.getElementById('mixCanvas');
+            const mixCtx = mixCanvas.getContext('2d');
+
+            function updateMix() {
+                const m1 = parseFloat(bm1.value);
+                const T1 = parseFloat(bT1.value);
+                const m2 = parseFloat(bm2.value);
+                const T2 = parseFloat(bT2.value);
+
+                document.getElementById('valM1').textContent = m1; document.getElementById('valT1').textContent = T1;
+                document.getElementById('valM2').textContent = m2; document.getElementById('valT2').textContent = T2;
+
+                // Ta = (m1*T1 + m2*T2) / (m1 + m2)  (assuming c is same for water)
+                const Ta = (m1*T1 + m2*T2) / (m1 + m2);
+                document.getElementById('dispTa').textContent = Ta.toFixed(1) + " °C";
+
+                // Draw Beakers
+                mixCtx.clearRect(0, 0, mixCanvas.width, mixCanvas.height);
+                const w = mixCanvas.width;
+                const h = mixCanvas.height;
+
+                // Beaker 1 (Hot)
+                mixCtx.fillStyle="#e74c3c";
+                mixCtx.fillRect(w*0.15, h*0.2, w*0.2, h*0.6); // Liquid
+                mixCtx.strokeStyle="#bdc3c7"; mixCtx.lineWidth=2;
+                mixCtx.strokeRect(w*0.15, h*0.2, w*0.2, h*0.6); // Glass
+                mixCtx.fillStyle="#333";
+                mixCtx.fillText(`${T1}°C`, w*0.2, h*0.1);
+
+                // Beaker 2 (Cold)
+                mixCtx.fillStyle="#3498db";
+                mixCtx.fillRect(w*0.55, h*0.2, w*0.2, h*0.6);
+                mixCtx.strokeRect(w*0.55, h*0.2, w*0.2, h*0.6);
+                mixCtx.fillStyle="#333";
+                mixCtx.fillText(`${T2}°C`, w*0.6, h*0.1);
+
+                // Mix Arrow
+                mixCtx.fillStyle="#333";
+                mixCtx.fillText(`Campuran: ${Ta.toFixed(1)}°C`, w*0.35, h*0.9);
+                
+                // Color blend indication
+                const ratio = m1/(m1+m2);
+                // Simple visual of mixture below
+                const r = Math.floor(231 * ratio + 52 * (1-ratio));
+                const g = Math.floor(76 * ratio + 152 * (1-ratio));
+                const b = Math.floor(60 * ratio + 219 * (1-ratio));
+                mixCtx.fillStyle=`rgb(${r},${g},${b})`;
+                mixCtx.fillRect(w*0.35, h*0.3, w*0.3, h*0.4);
+            }
+
+            bm1.oninput = updateMix; bT1.oninput = updateMix;
+            bm2.oninput = updateMix; bT2.oninput = updateMix;
+            updateMix();
+
+            // 5. Heat Transfer
+            const htCanvas = document.getElementById('htCanvas');
+            const htCtx = htCanvas.getContext('2d');
+            let htMode = 'konduksi';
+            let particles = [];
+            for(let i=0; i<50; i++) particles.push({x:0, y:0, vx:0, vy:0});
+
+            window.setHeatMode = function(mode) {
+                htMode = mode;
+                const desc = document.getElementById('htDesc');
+                document.querySelectorAll('.ht-tab').forEach(t => t.classList.remove('active'));
+                event.target.classList.add('active');
+
+                if(mode==='konduksi') desc.textContent = "Konduksi: Partikel bergetar dan menyalurkan energi ke tetangganya.";
+                if(mode==='konveksi') desc.textContent = "Konveksi: Terjadi aliran massa (panas naik, dingin turun).";
+                if(mode==='radiasi') desc.textContent = "Radiasi: Pancaran gelombang elektromagnetik.";
+
+                // Reset particles
+                particles.forEach((p,i) => {
+                    if(mode==='konduksi') {
+                        const col = i % 10; const row = Math.floor(i/10);
+                        p.x = 50 + col*30; p.y = 50 + row*30; p.vx=0; p.vy=0;
+                    } else {
+                        p.x = Math.random()*htCanvas.width; p.y = Math.random()*htCanvas.height;
+                    }
+                });
+            };
+
+            function animateHeat() {
+                htCtx.clearRect(0, 0, htCanvas.width, htCanvas.height);
+                
+                if(htMode === 'konduksi') {
+                    // Lattice
+                    particles.forEach(p => {
+                        // Vibrate
+                        const dx = (Math.random()-0.5)*4;
+                        const dy = (Math.random()-0.5)*4;
+                        htCtx.beginPath(); htCtx.arc(p.x+dx, p.y+dy, 3, 0, Math.PI*2); htCtx.fill();
+                    });
+                    // Flame
+                    htCtx.fillStyle="#e74c3c";
+                    htCtx.fillRect(0, 50, 40, 100);
+                    htCtx.fillStyle="#f39c12";
+                    htCtx.fillText("Panas", 5, 110);
+                } 
+                else if(htMode === 'konveksi') {
+                    // Box
+                    htCtx.strokeStyle="#333"; htCtx.strokeRect(50, 20, htCanvas.width-100, htCanvas.height-40);
+                    // Flame
+                    htCtx.fillStyle="#e74c3c"; htCtx.fillRect(htCanvas.width/2-20, htCanvas.height-30, 40, 20);
+                    
+                    particles.forEach(p => {
+                        // Simple circular flow logic
+                        if(p.y > htCanvas.height/2 && p.x < htCanvas.width/2) p.vx += 0.1; // Bottom left move right
+                        if(p.x > htCanvas.width/2 && p.y < htCanvas.height-20) p.vy -= 0.2; // Right side move up
+                        if(p.x < 50) p.vx += 0.1; // Left side move right/down
+                        if(p.y < 30) p.vy += 0.2; // Top move down
+                        
+                        p.x += p.vx; p.y += p.vy;
+                        p.vx *= 0.95; p.vy *= 0.95; // Friction
+                        
+                        // Loop
+                        if(p.x < 50) p.x = 50; if(p.x > htCanvas.width-50) p.x = htCanvas.width-50;
+                        if(p.y < 20) p.y = 20; if(p.y > htCanvas.height-20) p.y = htCanvas.height-20;
+
+                        htCtx.beginPath(); htCtx.arc(p.x, p.y, 2, 0, Math.PI*2); htCtx.fill();
+                    });
+                }
+                else if(htMode === 'radiasi') {
+                    // Sun
+                    htCtx.fillStyle="#f1c40f";
+                    htCtx.beginPath(); htCtx.arc(100, htCanvas.height/2, 40, 0, Math.PI*2); htCtx.fill();
+                    
+                    // Waves
+                    htCtx.strokeStyle="#f39c12";
+                    for(let i=0; i<5; i++) {
+                        const startAngle = (Date.now()/100 + i * 1) % Math.PI;
+                        const r = 60 + i*20;
+                        htCtx.beginPath();
+                        htCtx.arc(100, htCanvas.height/2, r, startAngle, startAngle + 1);
+                        htCtx.stroke();
+                    }
+                    
+                    // Target
+                    htCtx.fillStyle="#2c3e50";
+                    htCtx.fillRect(htCanvas.width-100, htCanvas.height/2-50, 50, 100);
+                }
+                
+                requestAnimationFrame(animateHeat);
+            }
+            animateHeat();
+            
+            function resizeCanvases() {
+                updateExpansion();
+                updateMix();
+            }
+            window.addEventListener('resize', resizeCanvases);
+            resizeCanvases();
+        });
+    </script>
+</body>
+</html>

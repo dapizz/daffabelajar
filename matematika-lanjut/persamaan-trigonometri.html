@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Persamaan Trigonometri - Matematika Tingkat Lanjut">
+    <title>Persamaan Trigonometri - Media Belajar Daffa</title>
+    <link rel="stylesheet" href="../matematika-wajib/style.css">
+    <style>
+        /* Fraction Styles */
+        .fraction {
+            display: inline-flex; flex-direction: column;
+            align-items: center; vertical-align: middle;
+            margin: 0 4px; font-family: var(--font-display);
+        }
+        .fraction-numerator { padding: 2px 8px; font-size: 1rem; line-height: 1.3; }
+        .fraction-line { width: 100%; height: 2px; background: var(--text-primary); border-radius: 1px; }
+        .fraction-denominator { padding: 2px 8px; font-size: 1rem; line-height: 1.3; }
+        .formula-box .fraction { background: var(--bg-card); padding: 8px 12px; border-radius: var(--radius-sm); margin: 0 8px; }
+        .formula-box .fraction-line { background: var(--accent-primary); }
+
+        /* Graph Styles */
+        .trig-graph-container {
+            background: var(--bg-secondary); border-radius: var(--radius-lg);
+            padding: 20px; margin: 20px 0; position: relative;
+        }
+        .trig-svg { width: 100%; height: auto; min-height: 250px; }
+        .grid-line { stroke: var(--border-light); stroke-width: 0.5; }
+        .axis { stroke: var(--text-muted); stroke-width: 1.5; }
+        .func-line { fill: none; stroke: var(--accent-primary); stroke-width: 2.5; }
+        .target-line { stroke: var(--error); stroke-width: 2; stroke-dasharray: 4,4; }
+        .solution-point { fill: var(--success); stroke: white; stroke-width: 2; }
+        .solution-label { font-size: 11px; font-weight: bold; fill: var(--text-primary); }
+
+        /* Info Table */
+        .info-table { width: 100%; border-collapse: collapse; margin: 15px 0; font-size: 0.9rem; }
+        .info-table th, .info-table td { border: 1px solid var(--border-color); padding: 10px; text-align: center; }
+        .info-table th { background: var(--bg-secondary); color: var(--accent-primary); }
+        .info-table td { text-align: left; padding-left: 15px; }
+        
+        /* Relation Box */
+        .relation-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        .relation-title { font-weight: 700; color: var(--text-primary); margin-bottom: 10px; display: block; text-align: center; }
+    </style>
+</head>
+<body>
+    <div class="page-wrapper">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-inner">
+                <div class="logo">
+                    <svg class="logo-icon" viewBox="0 0 40 40" fill="none">
+                        <rect x="4" y="8" width="32" height="24" rx="2" stroke="currentColor" stroke-width="2"/>
+                        <path d="M4 14h32" stroke="currentColor" stroke-width="2"/>
+                        <circle cx="10" cy="11" r="2" fill="currentColor"/>
+                        <circle cx="16" cy="11" r="2" fill="currentColor"/>
+                        <rect x="8" y="18" width="24" height="2" rx="1" fill="currentColor" opacity="0.5"/>
+                    </svg>
+                    <span class="logo-text">Media Belajar Daffa</span>
+                </div>
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle tema">
+                    <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+                    <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                </button>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="container">
+                <div class="page-header">
+                    <nav class="breadcrumb">
+                        <a href="../index.html">Beranda</a><span>/</span>
+                        <a href="index.html">Matematika Lanjut</a><span>/</span>
+                        <span class="current">Persamaan Trigonometri & Relasi Sudut</span>
+                    </nav>
+                    <div class="accent-line"></div>
+                    <h1 class="page-title">Persamaan Trigonometri & Relasi Sudut</h1>
+                    <p class="page-subtitle">Memahami relasi sudut, menentukan solusi persamaan trigonometri dasar, dan solusi umum.</p>
+                </div>
+
+                <div class="nav-btn-group">
+                    <a href="index.html" class="nav-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg> Kembali ke Daftar Materi</a>
+                    <a href="../index.html" class="nav-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Beranda</a>
+                </div>
+
+                <nav class="quick-nav" id="quickNav">
+                    <a href="#materi-inti" class="quick-nav-btn">Materi</a>
+                    <a href="#animasi-interaktif" class="quick-nav-btn">Animasi</a>
+                    <a href="#contoh-soal" class="quick-nav-btn">Contoh Soal</a>
+                    <a href="#latihan-soal" class="quick-nav-btn">Latihan</a>
+                    <a href="#kuis" class="quick-nav-btn">Kuis</a>
+                </nav>
+
+                <!-- Learning Objectives -->
+                <section class="content-section">
+                    <div class="section-header"><h2 class="section-title">Tujuan Pembelajaran</h2></div>
+                    <div class="objectives-list">
+                        <div class="objective-item"><span class="objective-number">1</span><span class="objective-text">Memahami relasi sudut (sudut berelasi)</span></div>
+                        <div class="objective-item"><span class="objective-number">2</span><span class="objective-text">Menentukan nilai fungsi trigonometri di berbagai kuadran</span></div>
+                        <div class="objective-item"><span class="objective-number">3</span><span class="objective-text">Menyelesaikan persamaan trigonometri dasar</span></div>
+                        <div class="objective-item"><span class="objective-number">4</span><span class="objective-text">Menentukan solusi umum dan solusi dalam interval tertentu</span></div>
+                    </div>
+                </section>
+
+                <!-- Material Content -->
+                <section class="content-section" id="materi-inti">
+                    <div class="section-header"><h2 class="section-title">Materi Inti</h2></div>
+                    <div class="material-content">
+                        <h3>1. Relasi Sudut (Sudut Berelasi)</h3>
+                        <p>Relasi sudut adalah hubungan antara sudut di kuadran I (sudut lancip) dengan sudut di kuadran lainnya. Jika α adalah sudut lancip (0° < α < 90°), maka:</p>
+
+                        <div class="relation-box">
+                            <span class="relation-title">Sudut di Kuadran II (180° - α)</span>
+                            <table class="info-table">
+                                <tr><th>fungsi</th><th>Hubungan</th></tr>
+                                <tr><td>sin (180° - α)</td><td>= sin α</td></tr>
+                                <tr><td>cos (180° - α)</td><td>= - cos α</td></tr>
+                                <tr><td>tan (180° - α)</td><td>= - tan α</td></tr>
+                            </table>
+                        </div>
+
+                        <div class="relation-box">
+                            <span class="relation-title">Sudut di Kuadran III (180° + α)</span>
+                            <table class="info-table">
+                                <tr><th>fungsi</th><th>Hubungan</th></tr>
+                                <tr><td>sin (180° + α)</td><td>= - sin α</td></tr>
+                                <tr><td>cos (180° + α)</td><td>= - cos α</td></tr>
+                                <tr><td>tan (180° + α)</td><td>= tan α</td></tr>
+                            </table>
+                        </div>
+
+                        <div class="relation-box">
+                            <span class="relation-title">Sudut di Kuadran IV (360° - α)</span>
+                            <table class="info-table">
+                                <tr><th>fungsi</th><th>Hubungan</th></tr>
+                                <tr><td>sin (360° - α)</td><td>= - sin α</td></tr>
+                                <tr><td>cos (360° - α)</td><td>= cos α</td></tr>
+                                <tr><td>tan (360° - α)</td><td>= - tan α</td></tr>
+                            </table>
+                        </div>
+
+                        <h4>Sudut Negatif (-α)</h4>
+                        <p>Sudut negatif diukur searah jarum jam dari sumbu X positif.</p>
+                        <div class="formula-box">
+                            <div class="formula">sin (-α) = - sin α</div>
+                            <div class="formula" style="margin-top:5px;">cos (-α) = cos α</div>
+                            <div class="formula" style="margin-top:5px;">tan (-α) = - tan α</div>
+                        </div>
+
+                        <h3>2. Solusi Persamaan Dasar</h3>
+                        <p>Misalkan α adalah sudut istimewa yang memenuhi (misal: jika sin x = 0.5, maka α = 30°).</p>
+
+                        <h4>a. Persamaan sin x = a</h4>
+                        <p>Solusi dalam interval 0° ≤ x < 360°:</p>
+                        <div class="formula-box">
+                            <div class="formula">x₁ = α</div>
+                            <div class="formula" style="margin-top:5px;">x₂ = (180° - α)</div>
+                        </div>
+                        <div class="formula-box">
+                            <div class="formula-label">Solusi Umum (k adalah bilangan bulat)</div>
+                            <div class="formula">x = α + k . 360° <strong>atau</strong> x = (180° - α) + k . 360°</div>
+                        </div>
+
+                        <h4>b. Persamaan cos x = a</h4>
+                        <p>Solusi dalam interval 0° ≤ x < 360°:</p>
+                        <div class="formula-box">
+                            <div class="formula">x₁ = α</div>
+                            <div class="formula" style="margin-top:5px;">x₂ = (360° - α) = -α</div>
+                        </div>
+                        <div class="formula-box">
+                            <div class="formula-label">Solusi Umum</div>
+                            <div class="formula">x = ± α + k . 360°</div>
+                        </div>
+
+                        <h4>c. Persamaan tan x = a</h4>
+                        <p>Solusi dalam interval 0° ≤ x < 360°:</p>
+                        <div class="formula-box">
+                            <div class="formula">x₁ = α</div>
+                            <div class="formula" style="margin-top:5px;">x₂ = (180° + α)</div>
+                        </div>
+                        <div class="formula-box">
+                            <div class="formula-label">Solusi Umum</div>
+                            <div class="formula">x = α + k . 180°</div>
+                        </div>
+
+                        <h3>3. Tips Menentukan Sudut Kuadran</h3>
+                        <table class="info-table">
+                            <tr><th>Tanda a</th><th>Sin</th><th>Cos</th><th>Tan</th></tr>
+                            <tr>
+                                <td>Positif (+)</td>
+                                <td>Kuadran I dan II</td>
+                                <td>Kuadran I dan IV</td>
+                                <td>Kuadran I dan III</td>
+                            </tr>
+                            <tr>
+                                <td>Negatif (-)</td>
+                                <td>Kuadran III dan IV</td>
+                                <td>Kuadran II dan III</td>
+                                <td>Kuadran II dan IV</td>
+                            </tr>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Interactive Animations -->
+                <section class="content-section" id="animasi-interaktif">
+                    <div class="section-header"><h2 class="section-title">Visualisasi Solusi</h2></div>
+
+                    <div class="animation-container">
+                        <div class="animation-header"><span class="animation-title">Grafik Solusi sin x = a</span></div>
+                        <p style="font-size:0.9rem; color:var(--text-muted); text-align:center; margin-bottom:10px;">
+                            Geser slider untuk mengubah nilai target. Titik hijau menunjukkan solusi dalam interval 0° - 360°.
+                        </p>
+                        
+                        <div class="slider-control">
+                            <span class="slider-label">Target a:</span>
+                            <input type="range" class="slider-input" id="targetVal" min="-100" max="100" value="50">
+                            <span class="slider-value" id="targetValText">0.5</span>
+                        </div>
+
+                        <div class="trig-graph-container">
+                            <svg id="trigGraph" class="trig-svg" viewBox="0 0 400 250">
+                                <defs><pattern id="gridTrig" width="25" height="25" patternUnits="userSpaceOnUse"><path d="M 25 0 L 0 0 0 25" fill="none" class="grid-line"/></pattern></defs>
+                                <rect width="100%" height="100%" fill="url(#gridTrig)"/>
+                                
+                                <!-- Axes -->
+                                <line x1="20" y1="125" x2="380" y2="125" class="axis"/>
+                                <line x1="20" y1="20" x2="20" y2="230" class="axis"/>
+                                
+                                <!-- Labels -->
+                                <text x="230" y="240" fill="var(--text-secondary)" font-size="12">0</text>
+                                <text x="125" y="240" fill="var(--text-secondary)" font-size="12">180</text>
+                                <text x="20" y="240" fill="var(--text-secondary)" font-size="12">360</text>
+                                
+                                <!-- Target Line -->
+                                <line id="targetLine" x1="0" y1="125" x2="400" y2="125" class="target-line"/>
+                                
+                                <!-- Sin Wave (Pre-rendered approximate path) -->
+                                <path d="M 20,125 Q 45,20 95,125 T 170,125 T 245,125 T 320,125 L 380,125" class="func-line" fill="none"/>
+                                
+                                <!-- Solution Points -->
+                                <circle id="sol1" cx="0" cy="0" r="6" class="solution-point" style="display:none;"/>
+                                <circle id="sol2" cx="0" cy="0" r="6" class="solution-point" style="display:none;"/>
+                                <text id="textSol1" x="0" y="0" class="solution-label" style="display:none;"></text>
+                                <text id="textSol2" x="0" y="0" class="solution-label" style="display:none;"></text>
+                            </svg>
+                        </div>
+                        <div class="info-box">
+                            <strong>Solusi:</strong> <span id="solutionText">x₁ = 30°, x₂ = 150°</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Example Problems -->
+                <section class="content-section" id="contoh-soal">
+                    <div class="section-header"><h2 class="section-title">Contoh Soal</h2></div>
+
+                    <div class="example-card">
+                        <div class="example-header"><span class="example-number">1</span><span class="example-title">Relasi Sudut</span></div>
+                        <div class="example-body">
+                            <p class="example-question">Tentukan nilai cos 150°.</p>
+                            <div class="solution-steps">
+                                <div class="solution-step"><span class="step-marker">1</span><div class="step-content">
+                                    <span class="step-label">Analisis Kuadran</span>
+                                    <p class="step-text">150° terletak di Kuadran II (90° < 150° < 180°). Di Kuadran II, nilai Cos negatif.</p>
+                                </div></div>
+                                <div class="solution-step"><span class="step-marker">2</span><div class="step-content">
+                                    <span class="step-label">Relasi Sudut</span>
+                                    <p class="step-text">150° = 180° - 30°.</p>
+                                    <span class="step-math">cos 150° = cos (180° - 30°) = - cos 30°</span>
+                                </div></div>
+                                <div class="solution-step"><span class="step-marker">3</span><div class="step-content">
+                                    <span class="step-label">Hitung</span>
+                                    <span class="step-math">cos 150° = - (<span class="fraction"><span class="fraction-numerator">1</span><span class="fraction-line"></span><span class="fraction-denominator">2</span></span> √3)</span>
+                                </div></div>
+                            </div>
+                            <div class="example-answer"><svg class="answer-icon">...</svg><span class="answer-text">cos 150° = -½ √3</span></div>
+                        </div>
+                    </div>
+
+                    <div class="example-card">
+                        <div class="example-header"><span class="example-number">2</span><span class="example-title">Solusi Sinus</span></div>
+                        <div class="example-body">
+                            <p class="example-question">Tentukan solusi umum dari sin x = -<span class="fraction"><span class="fraction-numerator">1</span><span class="fraction-line"></span><span class="fraction-denominator">2</span></span> √2.</p>
+                            <div class="solution-steps">
+                                <div class="solution-step"><span class="step-marker">1</span><div class="step-content">
+                                    <span class="step-label">Sudut Acuan (α)</span>
+                                    <p class="step-text">sin α = 1/2 √2 → α = 45°.</p>
+                                    <p class="step-text">Karena nilai negatif, maka sudut berada di Kuadran III dan IV.</p>
+                                </div></div>
+                                <div class="solution-step"><span class="step-marker">2</span><div class="step-content">
+                                    <span class="step-label">Solusi</span>
+                                    <span class="step-math">x₁ = 180° + 45° = 225°</span>
+                                    <span class="step-math">x₂ = 360° - 45° = 315°</span>
+                                </div></div>
+                                <div class="solution-step"><span class="step-marker">3</span><div class="step-content">
+                                    <span class="step-label">Solusi Umum</span>
+                                    <span class="step-math">x = 225° + k . 360° atau x = 315° + k . 360°</span>
+                                </div></div>
+                            </div>
+                            <div class="example-answer"><svg class="answer-icon">...</svg><span class="answer-text">x = 225° + k . 360° atau 315° + k . 360°</span></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Practice Problems -->
+                <section class="content-section" id="latihan-soal">
+                    <div class="section-header"><h2 class="section-title">Latihan Soal</h2></div>
+                    <div class="practice-grid">
+                        <div class="practice-item"><span class="practice-number">1</span><div class="practice-content"><p class="practice-question">Tentukan nilai sin 210°.</p></div></div>
+                        <div class="practice-item"><span class="practice-number">2</span><div class="practice-content"><p class="practice-question">Tentukan solusi cos x = 1/2 untuk 0° ≤ x < 360°.</p></div></div>
+                        <div class="practice-item"><span class="practice-number">3</span><div class="practice-content"><p class="practice-question">Selesaikan sin 2x = 1/2.</p></div></div>
+                    </div>
+                </section>
+
+                <!-- Quiz Section -->
+                <section class="content-section" id="kuis">
+                    <div class="section-header"><h2 class="section-title">Kuis</h2></div>
+                    <div id="quizContainer"></div>
+                </section>
+            </div>
+        </main>
+        <footer class="footer">...</footer>
+    </div>
+
+    <script src="../matematika-wajib/script.js"></script>
+    <script src="../matematika-wajib/quiz-engine.js"></script>
+    <script>
+        const quizQuestions = [
+            { question: "Nilai sin 150° adalah...", options: ["1/2", "1/2 √3", "-1/2", "-1/2 √3"], correct: 0, explanation: "150° = 180 - 30. Sin positif di Kuadran II." },
+            { question: "Cos (180° + α) sama dengan...", options: ["cos α", "- cos α", "sin α", "- sin α"], correct: 1, explanation: "Sudut di Kuadran III, Cos bernilai negatif." },
+            { question: "Solusi sin x = 1/2 pada interval 0≤x<360 adalah...", options: ["30° dan 150°", "60° dan 120°", "30° dan 330°", "60° dan 300°"], correct: 0, explanation: "Sin positif di Kuadran I (30°) dan II (180-30=150°)." },
+            { question: "Tan (360° - α) = ...", options: ["tan α", "- tan α", "cot α", "- cot α"], correct: 1, explanation: "Tan di Kuadran IV bernilai negatif." }
+        ];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            new QuizEngine('quizContainer', quizQuestions).init();
+            
+            const quickNav = document.getElementById('quickNav');
+            window.addEventListener('scroll', () => quickNav.classList.toggle('scrolled', window.scrollY > 200));
+
+            // --- Graph Visualization Logic ---
+            const targetSlider = document.getElementById('targetVal');
+            const targetText = document.getElementById('targetValText');
+            const targetLine = document.getElementById('targetLine');
+            const sol1 = document.getElementById('sol1');
+            const sol2 = document.getElementById('sol2');
+            const textSol1 = document.getElementById('textSol1');
+            const textSol2 = document.getElementById('textSol2');
+            const solutionText = document.getElementById('solutionText');
+
+            function updateGraph() {
+                const val = parseInt(targetSlider.value) / 100; // -1 to 1
+                targetText.textContent = val.toFixed(2);
+
+                // SVG Map: Y=125 is zero. Height 105 is unit 1.
+                const centerY = 125;
+                const unitY = 105;
+                
+                // Update Target Line Position
+                const yPos = centerY - (val * unitY);
+                targetLine.setAttribute('y1', yPos);
+                targetLine.setAttribute('y2', yPos);
+
+                // Check if solutions exist
+                if(Math.abs(val) > 1) {
+                    sol1.style.display = "none";
+                    sol2.style.display = "none";
+                    textSol1.style.display = "none";
+                    textSol2.style.display = "none";
+                    solutionText.innerHTML = "Tidak ada solusi (|a| > 1)";
+                    return;
+                }
+
+                // Calculate Solutions (in degrees)
+                // Angle alpha
+                let alpha = Math.asin(val) * (180 / Math.PI);
+                
+                // Solution 1: alpha (mapped to 0-360)
+                let x1 = alpha;
+                if(x1 < 0) x1 += 360;
+
+                // Solution 2: 180 - alpha
+                let x2 = 180 - alpha;
+
+                // Normalize x2
+                if(x2 < 0) x2 += 360;
+                if(x2 >= 360) x2 -= 360;
+                if(x2 < 0) x2 += 360; // ensure positive
+
+                // Map to SVG X coordinate
+                const scaleX = (deg) => 20 + deg;
+
+                // Update SVG Points
+                sol1.style.display = "block";
+                sol2.style.display = "block";
+                sol1.setAttribute('cx', scaleX(x1));
+                sol1.setAttribute('cy', yPos);
+                sol2.setAttribute('cx', scaleX(x2));
+                sol2.setAttribute('cy', yPos);
+
+                textSol1.style.display = "block";
+                textSol2.style.display = "block";
+                textSol1.setAttribute('x', scaleX(x1));
+                textSol1.setAttribute('y', yPos - 15);
+                textSol1.textContent = `${Math.round(x1)}°`;
+                
+                textSol2.setAttribute('x', scaleX(x2));
+                textSol2.setAttribute('y', yPos - 15);
+                textSol2.textContent = `${Math.round(x2)}°`;
+
+                solutionText.innerHTML = `x₁ = ${Math.round(x1)}°, x₂ = ${Math.round(x2)}°`;
+            }
+
+            if(targetSlider) { targetSlider.oninput = updateGraph; updateGraph(); }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Listrik Dinamis - Fisika">
+    <title>Listrik Dinamis - Media Belajar Daffa</title>
+    <link rel="stylesheet" href="../matematika-wajib/style.css">
+    <style>
+        /* Custom Styles */
+        .sim-container {
+            background: var(--bg-secondary); border-radius: var(--radius-lg);
+            padding: 20px; margin: 20px 0; border: 1px solid var(--border-color);
+        }
+        .canvas-box { background: var(--bg-card); border-radius: var(--radius-md); width: 100%; height: 300px; position: relative; overflow: hidden; }
+        canvas { width: 100%; height: 100%; display: block; }
+        
+        .action-btn {
+            padding: 10px 20px; border: none; border-radius: var(--radius-sm);
+            font-weight: bold; cursor: pointer; font-size: 1rem;
+            display: inline-flex; align-items: center; gap: 8px;
+            transition: all 0.2s; color: white; border: none;
+        }
+        .action-btn.start { background: #27ae60; box-shadow: 0 4px 0 #1e8449; }
+        .action-btn.mode { background: #3498db; box-shadow: 0 4px 0 #2980b9; }
+        .action-btn:active { transform: translateY(2px); box-shadow: none; }
+
+        /* Display Components */
+        .meter-display {
+            background: #2c3e50; color: #00ff00; font-family: 'Courier New', monospace;
+            padding: 5px 15px; border-radius: 4px; display: inline-block;
+            font-size: 1.1rem; text-shadow: 0 0 5px #00ff00; margin: 5px;
+        }
+        
+        /* Circuit SVG Styles */
+        .circuit-svg-box {
+            background: #fff; border-radius: 8px; border: 1px solid #ddd;
+            padding: 10px; margin-top: 15px;
+        }
+        .circuit-visible { display: block; }
+        .circuit-hidden { display: none; }
+        
+        .data-label {
+            background: rgba(255,255,255,0.9); padding: 2px 6px; border-radius: 4px;
+            font-size: 12px; font-weight: bold; color: #333;
+        }
+        .wire { stroke: #555; stroke-width: 3; fill: none; }
+        .component { stroke: #333; stroke-width: 2; fill: #fff; }
+        
+        /* Summary Box */
+        .summary-box {
+            background: var(--bg-card); border-left: 4px solid var(--accent-primary);
+            padding: 15px; margin-top: 15px; border-radius: 0 8px 8px 0;
+        }
+        .summary-title { font-weight: bold; margin-bottom: 5px; display: block; }
+
+        /* Table for comparison */
+        .info-table { width: 100%; border-collapse: collapse; margin: 15px 0; font-size: 0.9rem; }
+        .info-table th, .info-table td { border: 1px solid var(--border-color); padding: 8px; text-align: center; }
+        .info-table th { background: var(--bg-card); color: var(--accent-primary); }
+    </style>
+</head>
+<body>
+    <div class="page-wrapper">
+        <header class="header">
+            <div class="header-inner">
+                <div class="logo">
+                    <svg class="logo-icon" viewBox="0 0 40 40" fill="none">
+                        <rect x="4" y="8" width="32" height="24" rx="2" stroke="currentColor" stroke-width="2"/>
+                        <path d="M4 14h32" stroke="currentColor" stroke-width="2"/>
+                        <circle cx="10" cy="11" r="2" fill="currentColor"/>
+                        <circle cx="16" cy="11" r="2" fill="currentColor"/>
+                        <rect x="8" y="18" width="24" height="2" rx="1" fill="currentColor" opacity="0.5"/>
+                    </svg>
+                    <span class="logo-text">Media Belajar Daffa</span>
+                </div>
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle tema">
+                    <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+                    <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                </button>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="container">
+                <div class="page-header">
+                    <nav class="breadcrumb">
+                        <a href="../index.html">Beranda</a><span>/</span>
+                        <a href="index.html">Fisika</a><span>/</span>
+                        <span class="current">Listrik Dinamis</span>
+                    </nav>
+                    <div class="accent-line"></div>
+                    <h1 class="page-title">Listrik Dinamis</h1>
+                    <p class="page-subtitle">Mempelajari muatan listrik yang bergerak (arus listrik), rangkaian, dan energi listrik.</p>
+                </div>
+
+                <div class="nav-btn-group">
+                    <a href="index.html" class="nav-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg> Kembali ke Daftar Materi</a>
+                    <a href="../index.html" class="nav-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Beranda</a>
+                </div>
+
+                <nav class="quick-nav" id="quickNav">
+                    <a href="#arus-ohm" class="quick-nav-btn">Arus & Ohm</a>
+                    <a href="#hambatan" class="quick-nav-btn">Hambatan</a>
+                    <a href="#rangkaian" class="quick-nav-btn">Rangkaian</a>
+                    <a href="#energi" class="quick-nav-btn">Energi & Daya</a>
+                    <a href="#kuis" class="quick-nav-btn">Kuis</a>
+                </nav>
+
+                <!-- 1. Arus & Hukum Ohm -->
+                <section class="content-section" id="arus-ohm">
+                    <div class="section-header"><h2 class="section-title">1. Arus Listrik & Hukum Ohm</h2></div>
+                    <div class="material-content">
+                        <h3>Arus Listrik</h3>
+                        <p>Arus listrik adalah aliran muatan listrik per satuan waktu. Secara matematis didefinisikan sebagai:</p>
+                        <div class="formula-box">
+                            <div class="formula">I = <span class="fraction"><span class="fraction-numerator">Q</span><span class="fraction-line"></span><span class="fraction-denominator">t</span></span></div>
+                            <p style="margin-top:5px; font-size:0.9rem;">I = Arus (Ampere), Q = Muatan (Coulomb), t = Waktu (sekon).</p>
+                        </div>
+                        <p>Arah arus konvensional mengalir dari potensial tinggi (+) ke potensial rendah (-), sedangkan aliran elektron sebaliknya.</p>
+
+                        <h3>Hukum Ohm</h3>
+                        <p>Hukum Ohm menyatakan bahwa besar arus yang mengalir dalam sebuah penghantar berbanding lurus dengan beda potensial dan berbanding terbalik dengan hambatannya.</p>
+                        <div class="formula-box">
+                            <div class="formula">V = I . R</div>
+                            <p style="margin-top:5px; font-size:0.9rem;">V = Tegangan (Volt), I = Arus (Ampere), R = Hambatan (Ohm).</p>
+                        </div>
+                    </div>
+                    <div class="sim-container">
+                        <div class="slider-control">
+                            <span class="slider-label">Tegangan (V):</span>
+                            <input type="range" class="slider-input" id="ohmV" min="0" max="12" value="6" step="0.5">
+                            <span class="slider-value"><span id="valOhmV">6</span> V</span>
+                        </div>
+                        <div class="slider-control">
+                            <span class="slider-label">Hambatan (R):</span>
+                            <input type="range" class="slider-input" id="ohmR" min="1" max="20" value="10" step="0.5">
+                            <span class="slider-value"><span id="valOhmR">10</span> Ω</span>
+                        </div>
+                        
+                        <div style="display:flex; justify-content:center; gap:20px; margin:15px 0;">
+                            <div style="text-align:center;">
+                                <span style="font-size:0.8rem; color:var(--text-muted)">Arus (I)</span><br>
+                                <span class="meter-display" id="dispOhmI">0.60 A</span>
+                            </div>
+                        </div>
+
+                        <canvas id="ohmCanvas" class="canvas-box" style="height:150px;"></canvas>
+                        <div class="summary-box">
+                            <span class="summary-title">Penjelasan Simulasi:</span>
+                            <p style="margin:0; font-size:0.9rem;">Partikel biru (elektron) bergerak melintasi resistor. Semakin besar Arus (I), semakin cepat gerakan elektron. Coba naikkan Tegangan atau turunkan Hambatan untuk melihat efeknya.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 2. Hambatan Listrik -->
+                <section class="content-section" id="hambatan">
+                    <div class="section-header"><h2 class="section-title">2. Hambatan Listrik</h2></div>
+                    <div class="material-content">
+                        <p>Hambatan listrik adalah ukuran kemampuan penghantar untuk menghambat aliran arus listrik. Hambatan dipengaruhi oleh tiga faktor utama:</p>
+                        <ol>
+                            <li><strong>Panjang Penghantar (L)</strong>: Semakin panjang, semakin besar hambatan.</li>
+                            <li><strong>Luas Penampang (A)</strong>: Semakin lebar/tebal, semakin kecil hambatan.</li>
+                            <li><strong>Jenis Bahan (ρ)</strong>: Setiap bahan memiliki resistivitas berbeda.</li>
+                        </ol>
+                        <div class="formula-box">
+                            <div class="formula">R = ρ <span class="fraction"><span class="fraction-numerator">L</span><span class="fraction-line"></span><span class="fraction-denominator">A</span></span></div>
+                        </div>
+                    </div>
+                    <div class="sim-container">
+                        <div style="display:flex; flex-wrap:wrap; gap:20px;">
+                            <div style="flex:1; min-width:250px;">
+                                <div class="slider-control">
+                                    <span class="slider-label">Panjang (L):</span>
+                                    <input type="range" class="slider-input" id="resL" min="10" max="100" value="50">
+                                    <span class="slider-value"><span id="valResL">50</span> cm</span>
+                                </div>
+                                <div class="slider-control">
+                                    <span class="slider-label">Luas Penampang (A):</span>
+                                    <input type="range" class="slider-input" id="resA" min="1" max="10" value="2" step="0.5">
+                                    <span class="slider-value"><span id="valResA">2</span> mm²</span>
+                                </div>
+                                <div class="summary-box">
+                                    <span class="summary-title">Hasil Perhitungan (ρ=1):</span>
+                                    <p style="margin:0;">
+                                        R = L / A = <span id="sumL">50</span> / <span id="sumA">2</span> = 
+                                        <span style="font-size:1.5rem; font-weight:bold; color:var(--accent-primary)" id="dispResR">25.00 Ω</span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div style="flex:1; min-width:250px;">
+                                <canvas id="resCanvas" class="canvas-box" style="height:200px;"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 3. Rangkaian Seri & Paralel -->
+                <section class="content-section" id="rangkaian">
+                    <div class="section-header"><h2 class="section-title">3. Rangkaian Seri dan Paralel</h2></div>
+                    <div class="material-content">
+                        <table class="info-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Rangkaian Seri</th>
+                                    <th>Rangkaian Paralel</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Arus (I)</strong></td>
+                                    <td>Sama di semua titik (I = I₁ = I₂)</td>
+                                    <td>Terbagi (I = I₁ + I₂)</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Tegangan (V)</strong></td>
+                                    <td>Terbagi (V = V₁ + V₂)</td>
+                                    <td>Sama di semua cabang (V = V₁ = V₂)</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Hambatan (R)</strong></td>
+                                    <td>Rtotal = R₁ + R₂ + ...</td>
+                                    <td>1/Rtotal = 1/R₁ + 1/R₂ + ...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="sim-container">
+                        <div style="text-align:center; margin-bottom:15px;">
+                            <button class="action-btn mode active" id="btnSeri" onclick="setCircuitMode('seri')">Mode Seri</button>
+                            <button class="action-btn mode" id="btnParalel" onclick="setCircuitMode('paralel')">Mode Paralel</button>
+                        </div>
+                        
+                        <div class="slider-control">
+                            <span class="slider-label">Tegangan Sumber (V):</span>
+                            <input type="range" class="slider-input" id="cirV" min="1" max="24" value="12" step="1">
+                            <span class="slider-value"><span id="valCirV">12</span> V</span>
+                        </div>
+
+                        <div class="circuit-svg-box">
+                            <!-- SERI CIRCUIT SVG -->
+                            <svg id="svgSeri" width="100%" height="200" viewBox="0 0 500 200" class="circuit-visible">
+                                <!-- Wires -->
+                                <path d="M50 100 L150 100" class="wire"/>
+                                <path d="M250 100 L350 100" class="wire"/>
+                                <path d="M450 100 L450 150 L50 150 L50 100" class="wire"/>
+                                
+                                <!-- Battery -->
+                                <rect x="30" y="130" width="40" height="20" fill="#e74c3c" stroke="#c0392b" stroke-width="2"/>
+                                <text x="50" y="145" text-anchor="middle" fill="white" font-size="10">V</text>
+
+                                <!-- R1 -->
+                                <rect x="150" y="90" width="100" height="20" class="component"/>
+                                <text x="200" y="85" text-anchor="middle" class="data-label">R1 = 10Ω</text>
+                                <text x="200" y="130" text-anchor="middle" id="seriI1" class="data-label" style="fill:blue">I = ... A</text>
+
+                                <!-- R2 -->
+                                <rect x="350" y="90" width="100" height="20" class="component"/>
+                                <text x="400" y="85" text-anchor="middle" class="data-label">R2 = 20Ω</text>
+                                <text x="400" y="130" text-anchor="middle" id="seriI2" class="data-label" style="fill:blue">I = ... A</text>
+                                
+                                <!-- V Source Label -->
+                                <text x="50" y="175" text-anchor="middle" id="seriVSource" class="data-label" style="fill:black">V = 12V</text>
+                            </svg>
+
+                            <!-- PARALEL CIRCUIT SVG -->
+                            <svg id="svgParalel" width="100%" height="200" viewBox="0 0 500 200" class="circuit-hidden">
+                                <!-- Wires -->
+                                <path d="M50 100 L100 100 L100 50 L400 50 L400 100 L450 100" class="wire"/> <!-- Top line -->
+                                <path d="M50 100 L100 100 L100 150 L400 150 L400 100 L450 100" class="wire"/> <!-- Bottom line -->
+                                <path d="M450 100 L450 50" class="wire"/> <!-- Right vert -->
+                                
+                                <!-- Battery -->
+                                <rect x="30" y="80" width="20" height="40" fill="#e74c3c" stroke="#c0392b" stroke-width="2"/>
+                                <text x="40" y="105" text-anchor="middle" fill="white" font-size="10">V</text>
+
+                                <!-- R1 (Top Branch) -->
+                                <rect x="200" y="40" width="100" height="20" class="component"/>
+                                <text x="250" y="30" text-anchor="middle" class="data-label">R1 = 10Ω</text>
+                                <text x="250" y="80" text-anchor="middle" id="parI1" class="data-label" style="fill:blue">I1 = ... A</text>
+
+                                <!-- R2 (Bottom Branch) -->
+                                <rect x="200" y="140" width="100" height="20" class="component"/>
+                                <text x="250" y="175" text-anchor="middle" class="data-label">R2 = 20Ω</text>
+                                <text x="250" y="135" text-anchor="middle" id="parI2" class="data-label" style="fill:blue">I2 = ... A</text>
+                                
+                                <!-- V Source Label -->
+                                <text x="450" y="75" text-anchor="middle" id="parVSource" class="data-label" style="fill:black">V = 12V</text>
+                            </svg>
+                        </div>
+
+                        <div class="summary-box" style="margin-top:15px;">
+                            <span class="summary-title">Analisis Rangkaian:</span>
+                            <p id="circuitSummary" style="margin:5px 0 0 0; line-height:1.5;">Memperbarui data...</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 4. Energi dan Daya -->
+                <section class="content-section" id="energi">
+                    <div class="section-header"><h2 class="section-title">4. Energi dan Daya Listrik</h2></div>
+                    <div class="material-content">
+                        <h3>Daya Listrik (P)</h3>
+                        <p>Daya listrik adalah energi listrik yang digunakan per satuan waktu.</p>
+                        <div class="formula-box">
+                            <div class="formula">P = V . I = I² R = V²/R</div>
+                            <p style="margin-top:5px; font-size:0.9rem;">Satuan: Watt (W)</p>
+                        </div>
+
+                        <h3>Energi Listrik (W)</h3>
+                        <p>Energi yang digunakan selama selang waktu tertentu.</p>
+                        <div class="formula-box">
+                            <div class="formula">W = P . t</div>
+                            <p style="margin-top:5px; font-size:0.9rem;">Satuan: Joule (J). Untuk tagihan listrik: kWh.</p>
+                        </div>
+                    </div>
+                    <div class="sim-container">
+                        <div class="slider-control">
+                            <span class="slider-label">Daya (P):</span>
+                            <input type="range" class="slider-input" id="powP" min="100" max="1000" value="500">
+                            <span class="slider-value"><span id="valPowP">500</span> Watt</span>
+                        </div>
+                        <div class="slider-control">
+                            <span class="slider-label">Waktu (t):</span>
+                            <input type="range" class="slider-input" id="powT" min="10" max="120" value="60">
+                            <span class="slider-value"><span id="valPowT">60</span> detik</span>
+                        </div>
+                        
+                        <div style="display:flex; flex-wrap:wrap; gap:20px; align-items:center;">
+                            <div style="flex:1; min-width:200px;">
+                                <div style="background:var(--bg-card); border-radius:var(--radius-md); padding:15px; text-align:center;">
+                                    <h4>Simulasi Ketel Listrik</h4>
+                                    <div style="margin:10px 0;">
+                                        <span style="font-size:0.9rem">Energi Terpakai:</span><br>
+                                        <span class="meter-display" id="dispEnergy">30000 J</span>
+                                    </div>
+                                    <button class="action-btn start" onclick="startHeating()" style="width:100%;">Nyalakan Ketel</button>
+                                    <div style="margin-top:10px; text-align:left; font-size:0.85rem; color:var(--text-muted);">
+                                        <strong>Kesimpulan:</strong><br>
+                                        <span id="energySummary">Dengan daya 500 Watt selama 60 detik, energi yang digunakan adalah 30000 Joule.</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="flex:1; min-width:200px;">
+                                <canvas id="kettleCanvas" width="250" height="250" style="display:block; margin:0 auto;"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="content-section" id="kuis">
+                    <div class="section-header"><h2 class="section-title">Kuis</h2></div>
+                    <div id="quizContainer"></div>
+                </section>
+            </div>
+        </main>
+        <footer class="footer">...</footer>
+    </div>
+
+    <script src="../matematika-wajib/script.js"></script>
+    <script src="../matematika-wajib/quiz-engine.js"></script>
+    <script>
+        const quizQuestions = [
+            { question: "Satuan SI untuk Hambatan Listrik adalah...", options: ["Ampere", "Volt", "Ohm", "Watt"], correct: 2 },
+            { question: "Pada rangkaian paralel, yang nilainya sama di setiap cabang adalah...", options: ["Arus", "Tegangan", "Hambatan", "Energi"], correct: 1 },
+            { question: "Jika panjang kawat digandakan, maka hambatannya akan...", options: ["Setengahnya", "Tetap", "Dua kali lipat", "Empat kali lipat"], correct: 2 },
+        ];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            new QuizEngine('quizContainer', quizQuestions).init();
+            const quickNav = document.getElementById('quickNav');
+            window.addEventListener('scroll', () => quickNav.classList.toggle('scrolled', window.scrollY > 200));
+
+            // ==========================================
+            // 1. OHM'S LAW SIMULATOR
+            // ==========================================
+            const ohmV = document.getElementById('ohmV');
+            const ohmR = document.getElementById('ohmR');
+            const ohmCanvas = document.getElementById('ohmCanvas');
+            const ohmCtx = ohmCanvas.getContext('2d');
+            let electrons = [];
+            
+            function initElectrons() {
+                electrons = [];
+                const num = 30;
+                for(let i=0; i<num; i++) {
+                    electrons.push({ x: (i / num) * ohmCanvas.width, y: ohmCanvas.height/2 });
+                }
+            }
+
+            function animateOhm() {
+                // Read Values
+                const V = parseFloat(ohmV.value);
+                const R = parseFloat(ohmR.value);
+                const I = V / R;
+                
+                // Update Text
+                document.getElementById('valOhmV').textContent = V;
+                document.getElementById('valOhmR').textContent = R;
+                document.getElementById('dispOhmI').textContent = I.toFixed(2) + " A";
+
+                ohmCtx.clearRect(0, 0, ohmCanvas.width, ohmCanvas.height);
+                
+                // Draw Wire
+                ohmCtx.fillStyle = '#bdc3c7';
+                ohmCtx.fillRect(20, 65, ohmCanvas.width - 40, 20);
+
+                // Draw Resistor Symbol
+                ohmCtx.strokeStyle = '#e74c3c';
+                ohmCtx.lineWidth = 2;
+                ohmCtx.beginPath();
+                ohmCtx.moveTo(120, 75);
+                for(let j=0; j<6; j++) {
+                    let dir = (j%2===0?-1:1);
+                    ohmCtx.lineTo(130 + j*15, 75 + dir*10);
+                }
+                ohmCtx.lineTo(240, 75);
+                ohmCtx.stroke();
+
+                // Update Electrons
+                const speed = I * 8; // Visual speed
+                ohmCtx.fillStyle = '#3498db';
+                electrons.forEach(e => {
+                    e.x += speed;
+                    if(e.x > ohmCanvas.width - 20) e.x = 20;
+                    ohmCtx.beginPath();
+                    ohmCtx.arc(e.x, e.y, 4, 0, Math.PI*2);
+                    ohmCtx.fill();
+                });
+
+                requestAnimationFrame(animateOhm);
+            }
+            
+            initElectrons();
+            animateOhm();
+
+            // ==========================================
+            // 2. RESISTANCE SIMULATOR
+            // ==========================================
+            const resL = document.getElementById('resL');
+            const resA = document.getElementById('resA');
+            const resCanvas = document.getElementById('resCanvas');
+            const resCtx = resCanvas.getContext('2d');
+            
+            function updateResistance() {
+                // Read Values
+                const L = parseFloat(resL.value);
+                const A = parseFloat(resA.value);
+                const R = L / A; // Simplified R = L/A
+
+                // Update Text
+                document.getElementById('valResL').textContent = L;
+                document.getElementById('valResA').textContent = A;
+                document.getElementById('sumL').textContent = L;
+                document.getElementById('sumA').textContent = A;
+                document.getElementById('dispResR').textContent = R.toFixed(2) + " Ω";
+
+                // Draw
+                resCtx.clearRect(0, 0, resCanvas.width, resCanvas.height);
+                
+                const startX = 50;
+                const centerY = resCanvas.height / 2;
+                const width = L * 2; // Scale
+                const height = A * 15; // Scale
+
+                // Wire representation
+                resCtx.fillStyle = '#bdc3c7';
+                resCtx.fillRect(startX, centerY - height/2, width, height);
+                
+                resCtx.strokeStyle = '#7f8c8d';
+                resCtx.strokeRect(startX, centerY - height/2, width, height);
+                
+                resCtx.fillStyle = '#2c3e50';
+                resCtx.font = "12px Arial";
+                resCtx.fillText(`L = ${L} cm`, startX + width/2 - 20, centerY + height/2 + 20);
+                resCtx.fillText(`A = ${A} mm²`, startX - 40, centerY);
+            }
+
+            resL.addEventListener('input', updateResistance);
+            resA.addEventListener('input', updateResistance);
+            updateResistance();
+
+            // ==========================================
+            // 3. CIRCUIT SIMULATOR
+            // ==========================================
+            let circuitMode = 'seri';
+            const cirV = document.getElementById('cirV');
+            const svgSeri = document.getElementById('svgSeri');
+            const svgParalel = document.getElementById('svgParalel');
+
+            window.setCircuitMode = function(mode) {
+                circuitMode = mode;
+                document.getElementById('btnSeri').classList.toggle('active', mode === 'seri');
+                document.getElementById('btnParalel').classList.toggle('active', mode === 'paralel');
+                
+                if(mode === 'seri') {
+                    svgSeri.classList.remove('circuit-hidden');
+                    svgSeri.classList.add('circuit-visible');
+                    svgParalel.classList.remove('circuit-visible');
+                    svgParalel.classList.add('circuit-hidden');
+                } else {
+                    svgParalel.classList.remove('circuit-hidden');
+                    svgParalel.classList.add('circuit-visible');
+                    svgSeri.classList.remove('circuit-visible');
+                    svgSeri.classList.add('circuit-hidden');
+                }
+                updateCircuit();
+            }
+
+            function updateCircuit() {
+                const V = parseFloat(cirV.value);
+                document.getElementById('valCirV').textContent = V;
+                
+                const R1 = 10, R2 = 20;
+                let Rtotal, Itotal, I1, I2;
+                let summary = "";
+
+                if(circuitMode === 'seri') {
+                    Rtotal = R1 + R2;
+                    Itotal = V / Rtotal;
+                    I1 = Itotal;
+                    I2 = Itotal;
+                    
+                    document.getElementById('seriI1').textContent = `I = ${I1.toFixed(2)} A`;
+                    document.getElementById('seriI2').textContent = `I = ${I2.toFixed(2)} A`;
+                    document.getElementById('seriVSource').textContent = `V = ${V} V`;
+                    
+                    summary = `<strong>Rangkaian Seri:</strong><br>`;
+                    summary += `Rtotal = R1 + R2 = ${R1} + ${R2} = <strong>${Rtotal} Ω</strong><br>`;
+                    summary += `Itotal = V / Rtotal = ${V} / ${Rtotal} = <strong>${Itotal.toFixed(2)} A</strong><br>`;
+                    summary += `<span style="color:var(--accent-primary)">Kesimpulan: Arus sama di semua titik (${Itotal.toFixed(2)} A). Tegangan terbagi.</span>`;
+                } else {
+                    Rtotal = (R1 * R2) / (R1 + R2);
+                    Itotal = V / Rtotal;
+                    I1 = V / R1;
+                    I2 = V / R2;
+                    
+                    document.getElementById('parI1').textContent = `I1 = ${I1.toFixed(2)} A`;
+                    document.getElementById('parI2').textContent = `I2 = ${I2.toFixed(2)} A`;
+                    document.getElementById('parVSource').textContent = `V = ${V} V`;
+                    
+                    summary = `<strong>Rangkaian Paralel:</strong><br>`;
+                    summary += `1/Rtotal = 1/R1 + 1/R2 → Rtotal = <strong>${Rtotal.toFixed(2)} Ω</strong><br>`;
+                    summary += `I1 = V/R1 = ${V}/${R1} = <strong>${I1.toFixed(2)} A</strong><br>`;
+                    summary += `I2 = V/R2 = ${V}/${R2} = <strong>${I2.toFixed(2)} A</strong><br>`;
+                    summary += `<span style="color:var(--accent-primary)">Kesimpulan: Tegangan sama di semua cabang (${V} V). Arus terbagi.</span>`;
+                }
+
+                document.getElementById('circuitSummary').innerHTML = summary;
+            }
+
+            cirV.addEventListener('input', updateCircuit);
+            setCircuitMode('seri');
+
+            // ==========================================
+            // 4. ENERGY & POWER SIMULATOR
+            // ==========================================
+            const powP = document.getElementById('powP');
+            const powT = document.getElementById('powT');
+            const ketCanvas = document.getElementById('kettleCanvas');
+            const ketCtx = ketCanvas.getContext('2d');
+            let heatingAnim = null;
+            let tempPercent = 0;
+
+            function updateEnergy() {
+                const P = parseFloat(powP.value);
+                const t = parseFloat(powT.value);
+                const W = P * t;
+                
+                document.getElementById('valPowP').textContent = P;
+                document.getElementById('valPowT').textContent = t;
+                document.getElementById('dispEnergy').textContent = W.toFixed(0) + " J";
+                document.getElementById('energySummary').textContent = `Dengan daya ${P} Watt selama ${t} detik, energi yang digunakan adalah ${W.toFixed(0)} Joule.`;
+            }
+            
+            // Attach listeners immediately
+            powP.addEventListener('input', updateEnergy);
+            powT.addEventListener('input', updateEnergy);
+            updateEnergy(); // Init
+
+            function drawKettle(level) {
+                ketCtx.clearRect(0, 0, 250, 250);
+                // Kettle Body
+                ketCtx.strokeStyle = '#7f8c8d';
+                ketCtx.lineWidth = 4;
+                ketCtx.strokeRect(50, 50, 150, 150);
+                
+                // Water
+                ketCtx.fillStyle = '#3498db';
+                const waterTop = 200 - (level * 1.5);
+                ketCtx.fillRect(52, waterTop, 146, 198-waterTop);
+
+                // Bubbles if hot
+                if(level > 20) {
+                    ketCtx.fillStyle = 'rgba(255,255,255,0.5)';
+                    for(let i=0; i<10; i++) {
+                        let bx = 60 + Math.random()*130;
+                        let by = waterTop + 10 + Math.random()*50;
+                        ketCtx.beginPath(); ketCtx.arc(bx, by, 2+Math.random()*3, 0, Math.PI*2); ketCtx.fill();
+                    }
+                }
+                
+                // Text
+                ketCtx.fillStyle = '#333';
+                ketCtx.font = "14px Arial";
+                ketCtx.fillText("Air Mendidih", 85, 30);
+            }
+
+            window.startHeating = function() {
+                if(heatingAnim) clearInterval(heatingAnim);
+                tempPercent = 0;
+                const t = parseFloat(powT.value);
+                const steps = 50;
+                const interval = (t * 1000) / steps; // Sync animation time with slider
+                
+                heatingAnim = setInterval(() => {
+                    tempPercent += 2;
+                    drawKettle(tempPercent);
+                    
+                    if(tempPercent >= 100) {
+                        clearInterval(heatingAnim);
+                        heatingAnim = null;
+                    }
+                }, interval);
+            };
+
+            drawKettle(0);
+
+            // Resize Canvases
+            function resizeCanvases() {
+                const c1 = ohmCanvas; 
+                c1.width = c1.parentElement.clientWidth; 
+                c1.height = 150;
+                initElectrons();
+                
+                const c2 = resCanvas;
+                c2.width = c2.parentElement.clientWidth;
+                c2.height = 200;
+                updateResistance();
+            }
+            window.addEventListener('resize', resizeCanvases);
+            resizeCanvases();
+        });
+    </script>
+</body>
+</html>

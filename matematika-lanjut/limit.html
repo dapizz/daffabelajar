@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Limit Fungsi - Matematika Tingkat Lanjut">
+    <title>Limit Fungsi - Media Belajar Daffa</title>
+    <link rel="stylesheet" href="../matematika-wajib/style.css">
+    <style>
+        /* Fraction Styles */
+        .fraction {
+            display: inline-flex; flex-direction: column;
+            align-items: center; vertical-align: middle;
+            margin: 0 4px; font-family: var(--font-display);
+        }
+        .fraction-numerator { padding: 2px 8px; font-size: 1rem; line-height: 1.3; }
+        .fraction-line { width: 100%; height: 2px; background: var(--text-primary); border-radius: 1px; }
+        .fraction-denominator { padding: 2px 8px; font-size: 1rem; line-height: 1.3; }
+        .formula-box .fraction { background: var(--bg-card); padding: 8px 12px; border-radius: var(--radius-sm); margin: 0 8px; }
+        .formula-box .fraction-line { background: var(--accent-primary); }
+
+        /* Graph Styles */
+        .graph-stage {
+            background: var(--bg-secondary); border-radius: var(--radius-lg);
+            padding: 20px; margin: 20px 0; position: relative;
+        }
+        .graph-svg { width: 100%; height: auto; min-height: 300px; background: var(--bg-card); border-radius: var(--radius-md); }
+        .grid-line { stroke: var(--border-light); stroke-width: 0.5; }
+        .axis { stroke: var(--text-muted); stroke-width: 1.5; }
+        .func-line { fill: none; stroke: var(--accent-primary); stroke-width: 2.5; }
+        .hole-point { fill: white; stroke: var(--accent-primary); stroke-width: 2; }
+        .approach-point { fill: var(--success); stroke: white; stroke-width: 2; transition: cx 0.05s; }
+        .approach-line { stroke: var(--success); stroke-width: 1; stroke-dasharray: 4,4; opacity: 0.7; }
+        
+        .value-table {
+            width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.9rem; text-align: center;
+        }
+        .value-table th { background: var(--bg-secondary); padding: 5px; }
+        .value-table td { border: 1px solid var(--border-light); padding: 5px; font-family: var(--font-display); }
+    </style>
+</head>
+<body>
+    <div class="page-wrapper">
+        <header class="header">
+            <div class="header-inner">
+                <div class="logo">
+                    <svg class="logo-icon" viewBox="0 0 40 40" fill="none">
+                        <rect x="4" y="8" width="32" height="24" rx="2" stroke="currentColor" stroke-width="2"/>
+                        <path d="M4 14h32" stroke="currentColor" stroke-width="2"/>
+                        <circle cx="10" cy="11" r="2" fill="currentColor"/>
+                        <circle cx="16" cy="11" r="2" fill="currentColor"/>
+                        <rect x="8" y="18" width="24" height="2" rx="1" fill="currentColor" opacity="0.5"/>
+                    </svg>
+                    <span class="logo-text">Media Belajar Daffa</span>
+                </div>
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle tema">
+                    <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+                    <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                </button>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="container">
+                <div class="page-header">
+                    <nav class="breadcrumb">
+                        <a href="../index.html">Beranda</a><span>/</span>
+                        <a href="index.html">Matematika Lanjut</a><span>/</span>
+                        <span class="current">Limit Fungsi</span>
+                    </nav>
+                    <div class="accent-line"></div>
+                    <h1 class="page-title">Limit Fungsi</h1>
+                    <p class="page-subtitle">Memahami konsep pendekatan nilai fungsi, teknik penyelesaian, dan limit trigonometri.</p>
+                </div>
+
+                <div class="nav-btn-group">
+                    <a href="index.html" class="nav-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg> Kembali ke Daftar Materi</a>
+                    <a href="../index.html" class="nav-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Beranda</a>
+                </div>
+
+                <nav class="quick-nav" id="quickNav">
+                    <a href="#materi-inti" class="quick-nav-btn">Materi</a>
+                    <a href="#animasi-interaktif" class="quick-nav-btn">Animasi</a>
+                    <a href="#contoh-soal" class="quick-nav-btn">Contoh Soal</a>
+                    <a href="#latihan-soal" class="quick-nav-btn">Latihan</a>
+                    <a href="#kuis" class="quick-nav-btn">Kuis</a>
+                </nav>
+
+                <!-- Material Content -->
+                <section class="content-section" id="materi-inti">
+                    <div class="section-header"><h2 class="section-title">Materi Inti</h2></div>
+                    <div class="material-content">
+                        <h3>1. Konsep Limit</h3>
+                        <p>Limit mendeskripsikan nilai yang "didekati" oleh suatu fungsi saat variabelnya mendekati suatu titik tertentu, meskipun fungsi tidak terdefinisi di titik tersebut.</p>
+                        <div class="formula-box">
+                            <div class="formula-label">Notasi</div>
+                            <div class="formula">lim<sub>x→a</sub> f(x) = L</div>
+                            <p style="font-size:0.9rem; margin-top:5px;">"Bila x mendekati a, maka f(x) mendekati L."</p>
+                        </div>
+
+                        <h3>2. Limit Tak Hingga</h3>
+                        <p>Menentukan perilaku fungsi saat x menuju tak hingga (∞).</p>
+                        <h4>Aturan Umum:</h4>
+                        <p>Untuk limit x → ∞, bagi pembilang dan penyebut dengan pangkat tertinggi dari x.</p>
+                        <div class="formula-box">
+                            <div class="formula">lim<sub>x→∞</sub> <span class="fraction"><span class="fraction-numerator">a x<sup>n</sup> + ...</span><span class="fraction-line"></span><span class="fraction-denominator">b x<sup>m</sup> + ...</span></span></div>
+                            <ul style="text-align:left; margin-top:10px; font-size:0.9rem;">
+                                <li>Jika n < m → Limit = 0.</li>
+                                <li>Jika n = m → Limit = a/b.</li>
+                                <li>Jika n > m → Limit = ∞.</li>
+                            </ul>
+                        </div>
+
+                        <h3>3. Limit Bentuk Tak Tentu</h3>
+                        <p>Terjadi saat substitusi langsung menghasilkan bentuk seperti 0/0 atau ∞/∞. Diperlukan manipulasi aljabar.</p>
+                        
+                        <h4>a. Teknik Faktorisasi</h4>
+                        <p>Faktorkan pembilang dan penyebut, lalu coret faktor yang sama.</p>
+                        
+                        <h4>b. Teknik Mengalikan Sekawan</h4>
+                        <p>Digunakan untuk bentuk akar. Kalikan pembilang dan penyebut dengan sekawan penyebut.</p>
+
+                        <h3>4. Limit Fungsi Trigonometri</h3>
+                        <p>Rumus dasar yang sering digunakan:</p>
+                        <div class="formula-box">
+                            <div class="formula">lim<sub>x→0</sub> <span class="fraction"><span class="fraction-numerator">sin x</span><span class="fraction-line"></span><span class="fraction-denominator">x</span></span> = 1</div>
+                            <div class="formula" style="margin-top:5px;">lim<sub>x→0</sub> <span class="fraction"><span class="fraction-numerator">tan x</span><span class="fraction-line"></span><span class="fraction-denominator">x</span></span> = 1</div>
+                            <div class="formula" style="margin-top:5px;">lim<sub>x→0</sub> <span class="fraction"><span class="fraction-numerator">1 - cos x</span><span class="fraction-line"></span><span class="fraction-denominator">x</span></span> = 0</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Interactive Animations -->
+                <section class="content-section" id="animasi-interaktif">
+                    <div class="section-header"><h2 class="section-title">Visualisator Limit</h2></div>
+
+                    <div class="animation-container">
+                        <div class="animation-header"><span class="animation-title">Konsep Mendekati Nilai (Approaching Limit)</span></div>
+                        <p style="font-size:0.9rem; color:var(--text-muted); text-align:center; margin-bottom:10px;">
+                            Fungsi: f(x) = (x² - 1) / (x - 1). Lihat bagaimana nilai fungsi saat x mendekati 1.
+                            (Perhatikan: f(1) tidak terdefinisi/tidak ada, tapi Limitnya ada).
+                        </p>
+                        
+                        <div class="graph-stage">
+                            <div class="slider-control">
+                                <span class="slider-label">Nilai x mendekati 1:</span>
+                                <input type="range" class="slider-input" id="limitX" min="0" max="2" step="0.01" value="0">
+                                <span class="slider-value" id="valX">0.00</span>
+                            </div>
+                            <svg id="limitSvg" class="graph-svg" viewBox="0 0 400 300">
+                                <defs><pattern id="gridLim" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M 20 0 L 0 0 0 20" fill="none" class="grid-line"/></pattern></defs>
+                                <rect width="100%" height="100%" fill="url(#gridLim)"/>
+                                
+                                <!-- Axes -->
+                                <line x1="200" y1="0" x2="200" y2="300" class="axis"/> <!-- x=1 -->
+                                <line x1="0" y1="150" x2="400" y2="150" class="axis"/> <!-- y=2 -->
+                                
+                                <!-- Line y = x + 1 -->
+                                <line x1="0" y1="50" x2="400" y2="350" class="func-line" stroke-opacity="0.5"/>
+                                
+                                <!-- Hole at x=1 -->
+                                <circle cx="200" cy="150" r="4" class="hole-point"/>
+                                
+                                <!-- Approach Point -->
+                                <circle id="aptPoint" cx="0" cy="0" r="5" class="approach-point"/>
+                                <line id="aptLine" x1="0" y1="0" x2="0" y2="0" class="approach-line"/>
+                            </svg>
+                        </div>
+
+                        <table class="value-table">
+                            <thead>
+                                <tr>
+                                    <th>x</th>
+                                    <th>f(x)</th>
+                                    <th>Keterangan</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td id="tblX">0.00</td>
+                                    <td id="tblFx">-</td>
+                                    <td id="tblNote" style="color:var(--text-muted);">Geser slider ke kanan</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                        <div class="info-box" style="margin-top:15px;">
+                            <strong>Kesimpulan:</strong> Meskipun f(1) tidak ada (lubang), grafik mendekati nilai <strong>y = 2</strong>. Jadi, lim<sub>x→1</sub> f(x) = 2.
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Example Problems -->
+                <section class="content-section" id="contoh-soal">
+                    <div class="section-header"><h2 class="section-title">Contoh Soal</h2></div>
+
+                    <div class="example-card">
+                        <div class="example-header"><span class="example-number">1</span><span class="example-title">Faktorisasi</span></div>
+                        <div class="example-body">
+                            <p class="example-question">Tentukan lim<sub>x→2</sub> <span class="fraction"><span class="fraction-numerator">x² - 4</span><span class="fraction-line"></span><span class="fraction-denominator">x - 2</span></span>.</p>
+                            <div class="solution-steps">
+                                <div class="solution-step"><span class="step-marker">1</span><div class="step-content">
+                                    <span class="step-label">Substitusi</span>
+                                    <p class="step-text">Substitusi x=2 menghasilkan 0/0 (Tak Tentu).</p>
+                                </div></div>
+                                <div class="solution-step"><span class="step-marker">2</span><div class="step-content">
+                                    <span class="step-label">Faktorisasi</span>
+                                    <span class="step-math">x² - 4 = (x + 2)(x - 2)</span>
+                                </div></div>
+                                <div class="solution-step"><span class="step-marker">3</span><div class="step-content">
+                                    <span class="step-label">Coret</span>
+                                    <span class="step-math">lim<sub>x→2</sub> (x + 2) = 2 + 2 = 4</span>
+                                </div></div>
+                            </div>
+                            <div class="example-answer"><svg class="answer-icon">...</svg><span class="answer-text">Limit = 4</span></div>
+                        </div>
+                    </div>
+                    
+                    <div class="example-card">
+                        <div class="example-header"><span class="example-number">2</span><span class="example-title">Limit Trigonometri</span></div>
+                        <div class="example-body">
+                            <p class="example-question">Tentukan lim<sub>x→0</sub> <span class="fraction"><span class="fraction-numerator">sin 2x</span><span class="fraction-line"></span><span class="fraction-denominator">x</span></span>.</p>
+                            <div class="solution-steps">
+                                <div class="solution-step"><span class="step-marker">1</span><div class="step-content">
+                                    <span class="step-label">Ubah Bentuk</span>
+                                    <p class="step-text">Kalikan bagi 2 agar mendapatkan bentuk dasar.</p>
+                                    <span class="step-math">= lim<sub>x→0</sub> 2 . <span class="fraction"><span class="fraction-numerator">sin 2x</span><span class="fraction-line"></span><span class="fraction-denominator">2x</span></span></span>
+                                </div></div>
+                                <div class="solution-step"><span class="step-marker">2</span><div class="step-content">
+                                    <span class="step-label">Gunakan Rumus</span>
+                                    <span class="step-math">lim<sub>u→0</sub> <span class="fraction"><span class="fraction-numerator">sin u</span><span class="fraction-line"></span><span class="fraction-denominator">u</span></span> = 1</span>
+                                    <span class="step-math">= 2 . (1) = 2</span>
+                                </div></div>
+                            </div>
+                            <div class="example-answer"><svg class="answer-icon">...</svg><span class="answer-text">Limit = 2</span></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Practice Problems -->
+                <section class="content-section" id="latihan-soal">
+                    <div class="section-header"><h2 class="section-title">Latihan Soal</h2></div>
+                    <div class="practice-grid">
+                        <div class="practice-item"><span class="practice-number">1</span><div class="practice-content"><p class="practice-question">Tentukan lim<sub>x→3</sub> <span class="fraction"><span class="fraction-numerator">x² - 9</span><span class="fraction-line"></span><span class="fraction-denominator">x - 3</span></span>.</p></div></div>
+                        <div class="practice-item"><span class="practice-number">2</span><div class="practice-content"><p class="practice-question">Hitung lim<sub>x→∞</sub> <span class="fraction"><span class="fraction-numerator">3x² + 2x</span><span class="fraction-line"></span><span class="fraction-denominator">2x² - 5</span></span>.</p></div></div>
+                        <div class="practice-item"><span class="practice-number">3</span><div class="practice-content"><p class="practice-question">Tentukan lim<sub>x→0</sub> <span class="fraction"><span class="fraction-numerator">1 - cos 2x</span><span class="fraction-line"></span><span class="fraction-denominator">x²</span></span>. (Hint: Gunakan identitas 1-cos2x = 2sin²x)</p></div></div>
+                    </div>
+                </section>
+
+                <!-- Quiz Section -->
+                <section class="content-section" id="kuis">
+                    <div class="section-header"><h2 class="section-title">Kuis</h2></div>
+                    <div id="quizContainer"></div>
+                </section>
+            </div>
+        </main>
+        <footer class="footer">...</footer>
+    </div>
+
+    <script src="../matematika-wajib/script.js"></script>
+    <script src="../matematika-wajib/quiz-engine.js"></script>
+    <script>
+        const quizQuestions = [
+            { question: "Hasil dari lim x→2 (x² - 4) / (x - 2) adalah...", options: ["0", "2", "4", "Tak Hingga"], correct: 2, explanation: "Faktorisasi pembilang menjadi (x-2)(x+2), coret (x-2), sisa x+2. Substitusi x=2 -> 4." },
+            { question: "lim x→∞ (2x / (x+1)) = ...", options: ["0", "1", "2", "∞"], correct: 2, explanation: "Derajat pembilang = penyebut. Limit = koef x pembilang / koef x penyebut = 2/1 = 2." },
+            { question: "lim x→0 (sin x / x) = ...", options: ["0", "1", "-1", "∞"], correct: 1, explanation: "Rumus dasar limit trigonometri." },
+            { question: "Bentuk 0/0 disebut bentuk...", options: ["Pasti", "Tak Tentu", "Tak Hingga", "Konstan"], correct: 1, explanation: "0/0 adalah bentuk tak tentu yang memerlukan manipulasi aljabar." }
+        ];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            new QuizEngine('quizContainer', quizQuestions).init();
+            
+            const quickNav = document.getElementById('quickNav');
+            window.addEventListener('scroll', () => quickNav.classList.toggle('scrolled', window.scrollY > 200));
+
+            // --- Limit Visualization Logic ---
+            // Func: f(x) = (x^2 - 1) / (x - 1) = x + 1, hole at x=1.
+            // Limit as x->1 is 2.
+            
+            const slider = document.getElementById('limitX');
+            const aptPoint = document.getElementById('aptPoint');
+            const aptLine = document.getElementById('aptLine');
+            const tblX = document.getElementById('tblX');
+            const tblFx = document.getElementById('tblFx');
+            const tblNote = document.getElementById('tblNote');
+            
+            // SVG Params
+            // x: -1 to 3 maps to 0 to 400. Center x=1 is at 200.
+            // y: 0 to 4 maps to 350 to -50. Center y=2 is at 150.
+            // Scale: 100px per unit.
+            const O = {x: 200, y: 150}; // Origin (1,2) in math
+            const Scale = 100;
+
+            function updateLimit() {
+                let x = parseFloat(slider.value);
+                
+                // Calculate f(x)
+                let fx;
+                let note = "";
+                if (Math.abs(x - 1) < 0.01) {
+                    // Stop exactly at 1
+                    x = 1.0;
+                    fx = "Tidak Terdefinisi";
+                    note = "f(1) tidak ada!";
+                    aptPoint.setAttribute('cx', O.x); // Force position
+                    aptPoint.setAttribute('cy', O.y); // Force position
+                } else {
+                    fx = x + 1; // Simplified function
+                    note = x < 1 ? "Dari kiri (x < 1)" : "Dari kanan (x > 1)";
+                    
+                    // Calculate SVG coords
+                    const svgX = O.x + (x - 1) * Scale;
+                    const svgY = O.y - (fx - 2) * Scale;
+                    
+                    // Update Point
+                    aptPoint.setAttribute('cx', svgX);
+                    aptPoint.setAttribute('cy', svgY);
+                    
+                    // Update Line (from point to limit line y=2)
+                    aptLine.setAttribute('x1', svgX);
+                    aptLine.setAttribute('y1', svgY);
+                    aptLine.setAttribute('x2', svgX);
+                    aptLine.setAttribute('y2', O.y);
+                }
+
+                // Update Table
+                tblX.textContent = x.toFixed(2);
+                tblFx.textContent = typeof fx === 'number' ? fx.toFixed(2) : fx;
+                tblNote.textContent = note;
+                
+                document.getElementById('valX').textContent = x.toFixed(2);
+            }
+
+            if(slider) { slider.oninput = updateLimit; updateLimit(); }
+        });
+    </script>
+</body>
+</html>

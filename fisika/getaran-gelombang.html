@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Getaran dan Gelombang - Fisika">
+    <title>Getaran dan Gelombang - Media Belajar Daffa</title>
+    <link rel="stylesheet" href="../matematika-wajib/style.css">
+    <style>
+        /* Custom Styles */
+        .sim-container {
+            background: var(--bg-secondary); border-radius: var(--radius-lg);
+            padding: 20px; margin: 20px 0; border: 1px solid var(--border-color);
+        }
+        .canvas-box { background: var(--bg-card); border-radius: var(--radius-md); width: 100%; height: 300px; position: relative; overflow: hidden; }
+        canvas { width: 100%; height: 100%; }
+        
+        .action-btn {
+            padding: 10px 20px; border: none; border-radius: var(--radius-sm);
+            font-weight: bold; cursor: pointer; font-size: 1rem;
+            display: inline-flex; align-items: center; gap: 8px;
+            transition: all 0.2s; color: white;
+        }
+        .action-btn.start { background: #27ae60; box-shadow: 0 4px 0 #1e8449; }
+        .action-btn.stop { background: #e74c3c; box-shadow: 0 4px 0 #c0392b; }
+        .action-btn:active { transform: translateY(2px); box-shadow: none; }
+
+        /* Energy Bars */
+        .energy-bars { display: flex; height: 200px; align-items: flex-end; justify-content: center; gap: 20px; margin-top: 10px; }
+        .e-bar-group { width: 60px; display: flex; flex-direction: column; align-items: center; }
+        .e-bar { width: 100%; transition: height 0.05s linear; border-radius: 4px 4px 0 0; }
+        .e-bar-ek { background: #e74c3c; } /* Kinetic */
+        .e-bar-ep { background: #3498db; } /* Potential */
+        .e-bar-label { margin-top: 5px; font-size: 0.8rem; font-weight: bold; }
+
+        /* Wave Type Comparison */
+        .wave-compare { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        @media (max-width: 768px) { .wave-compare { grid-template-columns: 1fr; } }
+        
+        .particle-row {
+            display: flex; justify-content: space-around; margin-bottom: 5px;
+        }
+        .particle {
+            width: 10px; height: 10px; background: var(--accent-primary); border-radius: 50%;
+            transition: transform 0.1s linear;
+        }
+    </style>
+</head>
+<body>
+    <div class="page-wrapper">
+        <header class="header">
+            <div class="header-inner">
+                <div class="logo">
+                    <svg class="logo-icon" viewBox="0 0 40 40" fill="none">
+                        <rect x="4" y="8" width="32" height="24" rx="2" stroke="currentColor" stroke-width="2"/>
+                        <path d="M4 14h32" stroke="currentColor" stroke-width="2"/>
+                        <circle cx="10" cy="11" r="2" fill="currentColor"/>
+                        <circle cx="16" cy="11" r="2" fill="currentColor"/>
+                        <rect x="8" y="18" width="24" height="2" rx="1" fill="currentColor" opacity="0.5"/>
+                    </svg>
+                    <span class="logo-text">Media Belajar Daffa</span>
+                </div>
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle tema">
+                    <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+                    <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                </button>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="container">
+                <div class="page-header">
+                    <nav class="breadcrumb">
+                        <a href="../index.html">Beranda</a><span>/</span>
+                        <a href="index.html">Fisika</a><span>/</span>
+                        <span class="current">Getaran dan Gelombang</span>
+                    </nav>
+                    <div class="accent-line"></div>
+                    <h1 class="page-title">Getaran dan Gelombang</h1>
+                    <p class="page-subtitle">Mempelajari fenomena getaran harmonik, karakteristik gelombang, dan sifat-sifatnya.</p>
+                </div>
+
+                <div class="nav-btn-group">
+                    <a href="index.html" class="nav-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg> Kembali ke Daftar Materi</a>
+                    <a href="../index.html" class="nav-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Beranda</a>
+                </div>
+
+                <nav class="quick-nav" id="quickNav">
+                    <a href="#shm" class="quick-nav-btn">Getaran Harmonik</a>
+                    <a href="#bandul" class="quick-nav-btn">Periode & Frekuensi</a>
+                    <a href="#jenis-gelombang" class="quick-nav-btn">Jenis Gelombang</a>
+                    <a href="#cepat-rambat" class="quick-nav-btn">Cepat Rambat</a>
+                    <a href="#bunyi" class="quick-nav-btn">Gelombang Bunyi</a>
+                    <a href="#kuis" class="quick-nav-btn">Kuis</a>
+                </nav>
+
+                <!-- 1. Getaran Harmonik Sederhana (Pegas) -->
+                <section class="content-section" id="shm">
+                    <div class="section-header"><h2 class="section-title">1. Getaran Harmonik Sederhana (Pegas)</h2></div>
+                    <div class="material-content">
+                        <p>Getaran yang resultan gayanya sebanding dengan simpangannya dan arahnya menuju titik kesetimbangan.</p>
+                        <div class="formula-box">
+                            <div class="formula">F = -k . x &nbsp;&nbsp; atau &nbsp;&nbsp; a = -ω² . x</div>
+                        </div>
+                    </div>
+                    <div class="sim-container">
+                        <div style="display:flex; flex-wrap:wrap; gap:20px;">
+                            <div style="flex:1; min-width:300px;">
+                                <div class="slider-control">
+                                    <span class="slider-label">Massa (m):</span>
+                                    <input type="range" class="slider-input" id="shmM" min="0.5" max="5" step="0.1" value="1">
+                                    <span class="slider-value"><span id="valShmM">1</span> kg</span>
+                                </div>
+                                <div class="slider-control">
+                                    <span class="slider-label">Konstanta Pegas (k):</span>
+                                    <input type="range" class="slider-input" id="shmK" min="10" max="100" step="5" value="20">
+                                    <span class="slider-value"><span id="valShmK">20</span> N/m</span>
+                                </div>
+                                <div class="slider-control">
+                                    <span class="slider-label">Amplitudo (A):</span>
+                                    <input type="range" class="slider-input" id="shmA" min="20" max="80" value="50">
+                                    <span class="slider-value"><span id="valShmA">50</span> px</span>
+                                </div>
+                                <div style="margin-top:15px; background:var(--bg-card); padding:10px; border-radius:var(--radius-sm);">
+                                    <strong>Periode (T):</strong> <span id="dispShmT" style="color:var(--accent-primary)">...</span><br>
+                                    <strong>Frekuensi (f):</strong> <span id="dispShmf">...</span>
+                                </div>
+                                <div style="display:flex; gap:10px; justify-content:center; margin-top:15px;">
+                                    <button class="action-btn start" onclick="toggleShm()">Mulai / Pause</button>
+                                </div>
+                            </div>
+                            <div style="flex:1; min-width:300px;">
+                                <canvas id="shmCanvas" class="canvas-box"></canvas>
+                                <div class="energy-bars">
+                                    <div class="e-bar-group">
+                                        <div class="e-bar e-bar-ek" id="barEk" style="height:0px;"></div>
+                                        <span class="e-bar-label" style="color:#e74c3c">Ek</span>
+                                    </div>
+                                    <div class="e-bar-group">
+                                        <div class="e-bar e-bar-ep" id="barEp" style="height:0px;"></div>
+                                        <span class="e-bar-label" style="color:#3498db">Ep</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 2. Periode & Frekuensi (Bandul) -->
+                <section class="content-section" id="bandul">
+                    <div class="section-header"><h2 class="section-title">2. Periode dan Frekuensi (Bandul Sederhana)</h2></div>
+                    <div class="material-content">
+                        <div class="formula-box">
+                            <div class="formula">T = 2π √(L/g)</div>
+                            <p style="font-size:0.9rem; margin-top:5px;">L = Panjang tali, g = percepatan gravitasi.</p>
+                        </div>
+                    </div>
+                    <div class="sim-container">
+                        <div style="display:flex; flex-wrap:wrap; gap:20px; align-items:center;">
+                            <div style="flex:1; min-width:250px;">
+                                <div class="slider-control">
+                                    <span class="slider-label">Panjang Tali (L):</span>
+                                    <input type="range" class="slider-input" id="pendL" min="0.5" max="2.5" step="0.1" value="1">
+                                    <span class="slider-value"><span id="valPendL">1</span> m</span>
+                                </div>
+                                <div style="margin-top:20px; text-align:center;">
+                                    <p>Periode (T): <strong id="dispPendT" style="font-size:1.2rem; color:var(--accent-primary)">2.01 s</strong></p>
+                                    <p>Frekuensi (f): <strong id="dispPendf">0.50 Hz</strong></p>
+                                </div>
+                            </div>
+                            <div style="flex:1; min-width:250px; height:300px; position:relative;">
+                                <canvas id="pendCanvas" class="canvas-box"></canvas>
+                            </div>
+                        </div>
+                        <p style="font-size:0.85rem; color:var(--text-muted); margin-top:15px;">
+                            <strong>Catatan:</strong> Periode bandul tidak bergantung pada massa bebannya, hanya panjang tali.
+                        </p>
+                    </div>
+                </section>
+
+                <!-- 3. Jenis Gelombang -->
+                <section class="content-section" id="jenis-gelombang">
+                    <div class="section-header"><h2 class="section-title">3. Jenis Gelombang Mekanik</h2></div>
+                    <div class="sim-container">
+                        <div class="wave-compare">
+                            <!-- Transversal -->
+                            <div style="background:var(--bg-card); padding:15px; border-radius:var(--radius-md);">
+                                <h4 style="text-align:center; color:#3498db; margin-bottom:10px;">Gelombang Transversal</h4>
+                                <p style="font-size:0.8rem; text-align:center;">Arah getar ⊥ Arah rambat</p>
+                                <div id="transContainer" style="height:150px; border-bottom:1px dashed var(--border-color); position:relative;">
+                                    <!-- Generated by JS -->
+                                </div>
+                                <div style="text-align:center; margin-top:10px;">
+                                    <span style="font-size:0.8rem; color:var(--text-muted)">Contoh: Gelombang tali, cahaya.</span>
+                                </div>
+                            </div>
+                            <!-- Longitudinal -->
+                            <div style="background:var(--bg-card); padding:15px; border-radius:var(--radius-md);">
+                                <h4 style="text-align:center; color:#e74c3c; margin-bottom:10px;">Gelombang Longitudinal</h4>
+                                <p style="font-size:0.8rem; text-align:center;">Arah getar // Arah rambat</p>
+                                <div id="longContainer" style="height:150px; display:flex; align-items:center; overflow:hidden;">
+                                    <!-- Generated by JS -->
+                                </div>
+                                <div style="text-align:center; margin-top:10px;">
+                                    <span style="font-size:0.8rem; color:var(--text-muted)">Contoh: Gelombang bunyi di udara.</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 4. Cepat Rambat Gelombang -->
+                <section class="content-section" id="cepat-rambat">
+                    <div class="section-header"><h2 class="section-title">4. Cepat Rambat Gelombang</h2></div>
+                    <div class="material-content">
+                        <div class="formula-box"><div class="formula">v = λ . f = λ / T</div></div>
+                    </div>
+                    <div class="sim-container">
+                        <div class="slider-control">
+                            <span class="slider-label">Frekuensi (f):</span>
+                            <input type="range" class="slider-input" id="waveF" min="0.5" max="3" step="0.1" value="1">
+                            <span class="slider-value"><span id="valWaveF">1</span> Hz</span>
+                        </div>
+                        <div class="slider-control">
+                            <span class="slider-label">Panjang Gelombang (λ):</span>
+                            <input type="range" class="slider-input" id="waveL" min="50" max="200" step="10" value="100">
+                            <span class="slider-value"><span id="valWaveL">100</span> px</span>
+                        </div>
+                        <div style="background:var(--bg-card); padding:10px; border-radius:var(--radius-sm); margin:15px 0; text-align:center;">
+                            Cepat Rambat (v): <strong id="dispWaveV" style="font-size:1.2rem; color:var(--accent-primary)">100 px/s</strong>
+                        </div>
+                        <canvas id="waveCanvas" class="canvas-box" style="height:200px;"></canvas>
+                    </div>
+                </section>
+
+                <!-- 5. Gelombang Bunyi -->
+                <section class="content-section" id="bunyi">
+                    <div class="section-header"><h2 class="section-title">5. Gelombang Bunyi</h2></div>
+                    <div class="material-content">
+                        <p>Bunyi adalah gelombang longitudinal yang merambat melalui medium padat, cair, atau gas.</p>
+                        <ul>
+                            <li><strong>Nada (Pitch):</strong> Ditentukan oleh frekuensi. Semakin tinggi frekuensi, semakin tinggi nadanya.</li>
+                            <li><strong>Kuat Bunyi:</strong> Ditentukan oleh amplitudo. Semakin besar amplitudo, semakin keras bunyinya.</li>
+                        </ul>
+                    </div>
+                    <div class="sim-container">
+                        <div class="slider-control">
+                            <span class="slider-label">Frekuensi (Nada):</span>
+                            <input type="range" class="slider-input" id="sndF" min="1" max="5" step="0.1" value="2">
+                            <span class="slider-value"><span id="valSndF">2</span> Hz (skala)</span>
+                        </div>
+                        <div class="slider-control">
+                            <span class="slider-label">Amplitudo (Keras):</span>
+                            <input type="range" class="slider-input" id="sndA" min="5" max="40" step="1" value="20">
+                            <span class="slider-value"><span id="valSndA">20</span></span>
+                        </div>
+                        <canvas id="soundCanvas" class="canvas-box" style="height:200px;"></canvas>
+                        <p style="font-size:0.8rem; color:var(--text-muted); margin-top:10px; text-align:center;">
+                            Visualisasi speaker bergetar dan rapatan-renggangan partikel udara.
+                        </p>
+                    </div>
+                </section>
+
+                <section class="content-section" id="kuis">
+                    <div class="section-header"><h2 class="section-title">Kuis</h2></div>
+                    <div id="quizContainer"></div>
+                </section>
+            </div>
+        </main>
+        <footer class="footer">...</footer>
+    </div>
+
+    <script src="../matematika-wajib/script.js"></script>
+    <script src="../matematika-wajib/quiz-engine.js"></script>
+    <script>
+        const quizQuestions = [
+            { question: "Getaran yang resultan gayanya sebanding dengan simpangannya disebut...", options: ["Getaran Bebas", "Getaran Harmonik", "Getaran Paksa", "Getaran Teredam"], correct: 1 },
+            { question: "Satuan SI untuk frekuensi adalah...", options: ["Meter", "Hertz", "Newton", "Detik"], correct: 1 },
+            { question: "Gelombang yang arah getarnya tegak lurus arah rambatnya adalah gelombang...", options: ["Longitudinal", "Transversal", "Elektromagnetik", "Bunyi"], correct: 1 },
+            { question: "Jika panjang tali bandul diperpanjang, maka periodenya akan...", options: ["Kecil", "Tetap", "Besar", "Hilang"], correct: 2 }
+        ];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            new QuizEngine('quizContainer', quizQuestions).init();
+            const quickNav = document.getElementById('quickNav');
+            window.addEventListener('scroll', () => quickNav.classList.toggle('scrolled', window.scrollY > 200));
+
+            // --- 1. SHM SPRING SIMULATOR ---
+            const shmCanvas = document.getElementById('shmCanvas');
+            const shmCtx = shmCanvas.getContext('2d');
+            let shmRunning = false;
+            let shmTime = 0;
+            const shmM = document.getElementById('shmM'); const shmK = document.getElementById('shmK'); const shmA = document.getElementById('shmA');
+
+            function updateShmParams() {
+                const m = parseFloat(shmM.value);
+                const k = parseFloat(shmK.value);
+                const w = Math.sqrt(k/m); // Omega
+                const T = (2 * Math.PI) / w;
+                const f = 1 / T;
+                document.getElementById('valShmM').textContent = m;
+                document.getElementById('valShmK').textContent = k;
+                document.getElementById('valShmA').textContent = shmA.value;
+                document.getElementById('dispShmT').textContent = T.toFixed(2) + " s";
+                document.getElementById('dispShmf').textContent = f.toFixed(2) + " Hz";
+                return { m, k, w, A: parseFloat(shmA.value) };
+            }
+            
+            function drawSpring(ctx, x1, y1, x2, y2, coils) {
+                ctx.beginPath(); ctx.moveTo(x1, y1);
+                const dx = x2 - x1; const dy = y2 - y1;
+                const len = Math.sqrt(dx*dx + dy*dy);
+                const ux = dx/len, uy = dy/len; // Unit vectors
+                const px = -uy, py = ux; // Perpendicular
+                const segLen = len / (coils * 2 + 2);
+                let currX = x1, currY = y1;
+                
+                // Start straight
+                currX += ux * segLen; currY += uy * segLen;
+                ctx.lineTo(currX, currY);
+
+                for(let i=0; i<coils*2; i++) {
+                    const dir = (i%2===0?1:-1) * 10; // Width
+                    currX += ux * segLen + px * dir * 0; // Simplified spring logic for vertical
+                    currY += uy * segLen; // Move down
+                    ctx.lineTo(currX + px*dir, currY);
+                }
+                ctx.lineTo(x2, y2);
+                ctx.stroke();
+            }
+
+            function animateShm() {
+                if(!shmRunning) return;
+                const p = updateShmParams();
+                shmTime += 0.02;
+                const y = p.A * Math.cos(p.w * shmTime);
+                const v = p.A * p.w * Math.sin(p.w * shmTime); // Velocity magnitude part
+                
+                // Energy calculation (Emax = 0.5*k*A^2)
+                const Em = 0.5 * p.k * p.A * p.A;
+                const Ek = 0.5 * p.m * v * v;
+                const Ep = Em - Ek;
+
+                // Draw
+                shmCtx.clearRect(0, 0, shmCanvas.width, shmCanvas.height);
+                // Support
+                shmCtx.fillStyle = '#7f8c8d';
+                shmCtx.fillRect(shmCanvas.width/2 - 50, 0, 100, 10);
+                
+                // Spring & Mass
+                const anchorY = 10;
+                const massY = anchorY + 100 + y; // 100 is rest length
+                const massSize = 40 + p.m * 5; // Size based on mass
+                
+                // Draw Spring (Simple Lines)
+                shmCtx.strokeStyle = '#95a5a6';
+                shmCtx.lineWidth = 2;
+                let springTop = anchorY;
+                let springBot = massY;
+                let coils = 10;
+                let springX = shmCanvas.width/2;
+                shmCtx.beginPath();
+                shmCtx.moveTo(springX, springTop);
+                let step = (springBot - springTop) / (coils * 2);
+                let side = -1;
+                for(let i=1; i<=coils*2; i++) {
+                    shmCtx.lineTo(springX + (side*15), springTop + (step*i));
+                    side *= -1;
+                }
+                shmCtx.lineTo(springX, springBot);
+                shmCtx.stroke();
+
+                // Mass
+                shmCtx.fillStyle = '#e74c3c';
+                shmCtx.fillRect(springX - massSize/2, massY, massSize, massSize);
+                
+                // Update Energy Bars
+                const scale = 150 / Em;
+                document.getElementById('barEk').style.height = (Ek * scale) + "px";
+                document.getElementById('barEp').style.height = (Ep * scale) + "px";
+
+                requestAnimationFrame(animateShm);
+            }
+
+            window.toggleShm = function() {
+                shmRunning = !shmRunning;
+                if(shmRunning) {
+                    shmTime = 0;
+                    animateShm();
+                }
+            };
+
+            shmM.oninput = updateShmParams; shmK.oninput = updateShmParams; shmA.oninput = updateShmParams;
+            updateShmParams();
+
+            // --- 2. PENDULUM SIMULATOR ---
+            const pendCanvas = document.getElementById('pendCanvas');
+            const pendCtx = pendCanvas.getContext('2d');
+            const pendL = document.getElementById('pendL');
+            const g = 9.8;
+            let pendAngle = Math.PI / 4; // Start angle
+            let pendAngVel = 0;
+            let pendTime = 0;
+
+            function updatePendParams() {
+                const L = parseFloat(pendL.value);
+                const T = 2 * Math.PI * Math.sqrt(L / g);
+                document.getElementById('valPendL').textContent = L;
+                document.getElementById('dispPendT').textContent = T.toFixed(2) + " s";
+                document.getElementById('dispPendf').textContent = (1/T).toFixed(2) + " Hz";
+                return L;
+            }
+
+            function animatePend() {
+                const L = updatePendParams();
+                const dt = 0.016;
+                const pxL = L * 100; // Scale for pixels (100px = 1m)
+                
+                // Simple Euler integration for physics
+                // a = - (g/L) * sin(theta)
+                const angAcc = -(9.8 / L) * Math.sin(pendAngle);
+                pendAngVel += angAcc * dt;
+                pendAngle += pendAngVel * dt;
+                pendTime += dt;
+                
+                // Clear
+                pendCtx.clearRect(0, 0, pendCanvas.width, pendCanvas.height);
+                
+                // Pivot
+                const pivotX = pendCanvas.width/2;
+                const pivotY = 20;
+                pendCtx.fillStyle = '#34495e';
+                pendCtx.beginPath(); pendCtx.arc(pivotX, pivotY, 5, 0, Math.PI*2); pendCtx.fill();
+                
+                // Bob position
+                const bobX = pivotX + pxL * Math.sin(pendAngle);
+                const bobY = pivotY + pxL * Math.cos(pendAngle);
+                
+                // String
+                pendCtx.strokeStyle = '#7f8c8d'; pendCtx.lineWidth = 2;
+                pendCtx.beginPath(); pendCtx.moveTo(pivotX, pivotY); pendCtx.lineTo(bobX, bobY); pendCtx.stroke();
+                
+                // Bob
+                pendCtx.fillStyle = '#e74c3c';
+                pendCtx.beginPath(); pendCtx.arc(bobX, bobY, 15, 0, Math.PI*2); pendCtx.fill();
+
+                requestAnimationFrame(animatePend);
+            }
+            animatePend(); // Auto run
+
+            // --- 3. WAVE TYPES ANIMATION ---
+            // Transversal
+            const transDiv = document.getElementById('transContainer');
+            const longDiv = document.getElementById('longContainer');
+            
+            // Generate Particles
+            for(let i=0; i<20; i++) {
+                // Trans
+                let d = document.createElement('div');
+                d.className = 'particle'; d.id='t'+i;
+                transDiv.appendChild(d);
+                // Long
+                d = document.createElement('div');
+                d.className = 'particle'; d.id='l'+i;
+                d.style.background = '#e74c3c';
+                longDiv.appendChild(d);
+            }
+
+            let waveTime = 0;
+            function animateWaveTypes() {
+                waveTime += 0.1;
+                // Transversal: Move Up-Down
+                for(let i=0; i<20; i++) {
+                    const p = document.getElementById('t'+i);
+                    // y = A sin(kx - wt)
+                    const yPos = 75 + 50 * Math.sin(0.5*i - waveTime); // 75 is center
+                    p.style.transform = `translateY(${yPos - 75}px)`;
+                }
+                // Longitudinal: Move Left-Right
+                for(let i=0; i<20; i++) {
+                    const p = document.getElementById('l'+i);
+                    // x = A sin(kx - wt)
+                    const xPos = 10 + 10 * Math.sin(0.5*i - waveTime); 
+                    // Normal pos is i*15
+                    p.style.transform = `translateX(${xPos}px)`;
+                }
+                requestAnimationFrame(animateWaveTypes);
+            }
+            animateWaveTypes();
+
+            // --- 4. WAVE SPEED SIMULATOR ---
+            const waveCanvas = document.getElementById('waveCanvas');
+            const waveCtx = waveCanvas.getContext('2d');
+            const waveF = document.getElementById('waveF'); const waveL = document.getElementById('waveL');
+
+            function updateWaveParams() {
+                const f = parseFloat(waveF.value);
+                const l = parseFloat(waveL.value);
+                document.getElementById('valWaveF').textContent = f;
+                document.getElementById('valWaveL').textContent = l;
+                document.getElementById('dispWaveV').textContent = (f*l).toFixed(1) + " px/s";
+                return { f, l };
+            }
+
+            let wt = 0;
+            function animateWaveSpeed() {
+                const p = updateWaveParams();
+                wt += 0.05;
+                waveCtx.clearRect(0, 0, waveCanvas.width, waveCanvas.height);
+                
+                waveCtx.strokeStyle = '#3498db';
+                waveCtx.lineWidth = 3;
+                waveCtx.beginPath();
+                
+                // y = A sin( (2pi/lambda)x - (2pi*f)t )
+                const amp = 50;
+                const startX = - (wt * p.l * p.f * 0.5) % p.l; // Moving offset
+                
+                for(let x=0; x<waveCanvas.width; x++) {
+                    // Formula: y = A sin( (2pi/lambda)(x+phase) )
+                    const angle = (2 * Math.PI / p.l) * (x + (wt * p.l * p.f * 10)); // Scale time for visual
+                    const y = waveCanvas.height/2 + amp * Math.sin(angle);
+                    if(x===0) waveCtx.moveTo(x, y);
+                    else waveCtx.lineTo(x, y);
+                }
+                waveCtx.stroke();
+
+                // Labels
+                waveCtx.fillStyle = '#7f8c8d';
+                waveCtx.fillText("λ", 50, 20);
+
+                requestAnimationFrame(animateWaveSpeed);
+            }
+            animateWaveSpeed();
+
+            // --- 5. SOUND SIMULATOR ---
+            const soundCanvas = document.getElementById('soundCanvas');
+            const soundCtx = soundCanvas.getContext('2d');
+            const sndF = document.getElementById('sndF'); const sndA = document.getElementById('sndA');
+
+            function updateSoundParams() {
+                document.getElementById('valSndF').textContent = sndF.value;
+                document.getElementById('valSndA').textContent = sndA.value;
+            }
+            
+            let st = 0;
+            function animateSound() {
+                updateSoundParams();
+                st += 0.1;
+                const f = parseFloat(sndF.value);
+                const A = parseFloat(sndA.value);
+                
+                soundCtx.clearRect(0, 0, soundCanvas.width, soundCanvas.height);
+                
+                // Speaker Cone
+                const cx = 50;
+                const cy = soundCanvas.height/2;
+                const coneX = cx + A * Math.sin(2 * Math.PI * f * st);
+                
+                soundCtx.fillStyle = '#34495e';
+                soundCtx.fillRect(coneX - 20, cy - 40, 20, 80);
+                
+                // Particles (Density Waves)
+                soundCtx.fillStyle = '#e74c3c';
+                for(let x=80; x<soundCanvas.width; x+=15) {
+                    // Longitudinal wave: position offset creates density
+                    const offset = A * 0.7 * Math.sin(0.05*x - st);
+                    const px = x + offset;
+                    const density = Math.cos(0.05*x - st); 
+                    // Visualize density: high density = dark, low = light
+                    const alpha = (density + 1) / 2; // 0 to 1
+                    soundCtx.fillStyle = `rgba(52, 152, 219, ${alpha})`;
+                    soundCtx.beginPath();
+                    soundCtx.arc(px, cy, 5, 0, Math.PI*2);
+                    soundCtx.fill();
+                }
+
+                requestAnimationFrame(animateSound);
+            }
+            animateSound();
+
+            // Resize Canvases
+            function resizeCanvases() {
+                const canvases = [shmCanvas, pendCanvas, waveCanvas, soundCanvas];
+                canvases.forEach(c => {
+                    c.width = c.parentElement.clientWidth;
+                    c.height = c.parentElement.clientHeight;
+                });
+            }
+            window.addEventListener('resize', resizeCanvases);
+            resizeCanvases();
+        });
+    </script>
+</body>
+</html>

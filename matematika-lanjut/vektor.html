@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Vektor - Matematika Tingkat Lanjut">
+    <title>Vektor - Media Belajar Daffa</title>
+    <link rel="stylesheet" href="../matematika-wajib/style.css">
+    <style>
+        /* Fraction Styles */
+        .fraction {
+            display: inline-flex; flex-direction: column;
+            align-items: center; vertical-align: middle;
+            margin: 0 4px; font-family: var(--font-display);
+        }
+        .fraction-numerator { padding: 2px 8px; font-size: 1rem; line-height: 1.3; }
+        .fraction-line { width: 100%; height: 2px; background: var(--text-primary); border-radius: 1px; }
+        .fraction-denominator { padding: 2px 8px; font-size: 1rem; line-height: 1.3; }
+        .formula-box .fraction { background: var(--bg-card); padding: 8px 12px; border-radius: var(--radius-sm); margin: 0 8px; }
+        .formula-box .fraction-line { background: var(--accent-primary); }
+
+        /* Vector Canvas Styles */
+        .vector-stage {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+        .vector-svg {
+            width: 100%;
+            height: auto;
+            min-height: 350px;
+            background: var(--bg-card);
+            border-radius: var(--radius-md);
+        }
+        .grid-line { stroke: var(--border-light); stroke-width: 0.5; }
+        .axis { stroke: var(--text-muted); stroke-width: 1.5; }
+        .vector-arrow { stroke-width: 3; stroke-linecap: round; }
+        .vector-label { font-weight: bold; font-size: 14px; }
+        
+        /* Result Box */
+        .calc-result {
+            background: var(--accent-lighter);
+            padding: 15px;
+            border-radius: var(--radius-md);
+            margin-top: 15px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        .calc-item { text-align: center; }
+        .calc-label { font-size: 0.85rem; color: var(--text-muted); display: block; }
+        .calc-val { font-size: 1.1rem; font-weight: bold; color: var(--accent-primary); }
+
+        /* Legend */
+        .legend {
+            display: flex; justify-content: center; gap: 20px; margin-top: 10px; font-size: 0.85rem;
+        }
+        .legend-item { display: flex; align-items: center; gap: 5px; }
+        .dot { width: 12px; height: 12px; border-radius: 50%; }
+    </style>
+</head>
+<body>
+    <div class="page-wrapper">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-inner">
+                <div class="logo">
+                    <svg class="logo-icon" viewBox="0 0 40 40" fill="none">
+                        <rect x="4" y="8" width="32" height="24" rx="2" stroke="currentColor" stroke-width="2"/>
+                        <path d="M4 14h32" stroke="currentColor" stroke-width="2"/>
+                        <circle cx="10" cy="11" r="2" fill="currentColor"/>
+                        <circle cx="16" cy="11" r="2" fill="currentColor"/>
+                        <rect x="8" y="18" width="24" height="2" rx="1" fill="currentColor" opacity="0.5"/>
+                    </svg>
+                    <span class="logo-text">Media Belajar Daffa</span>
+                </div>
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle tema">
+                    <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+                    <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                </button>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="container">
+                <div class="page-header">
+                    <nav class="breadcrumb">
+                        <a href="../index.html">Beranda</a><span>/</span>
+                        <a href="index.html">Matematika Lanjut</a><span>/</span>
+                        <span class="current">Vektor</span>
+                    </nav>
+                    <div class="accent-line"></div>
+                    <h1 class="page-title">Vektor</h1>
+                    <p class="page-subtitle">Memahami besaran vektor, operasi vektor (penjumlahan, pengurangan), panjang vektor, dan resultan vektor.</p>
+                </div>
+
+                <!-- Navigation Buttons (Sudah disesuaikan) -->
+                <div class="nav-btn-group">
+                    <a href="index.html" class="nav-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg> Kembali ke Daftar Materi</a>
+                    <a href="../index.html" class="nav-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Beranda</a>
+                </div>
+
+                <nav class="quick-nav" id="quickNav">
+                    <a href="#materi-inti" class="quick-nav-btn">Materi</a>
+                    <a href="#animasi-interaktif" class="quick-nav-btn">Animasi</a>
+                    <a href="#contoh-soal" class="quick-nav-btn">Contoh Soal</a>
+                    <a href="#latihan-soal" class="quick-nav-btn">Latihan</a>
+                    <a href="#kuis" class="quick-nav-btn">Kuis</a>
+                </nav>
+
+                <!-- Learning Objectives -->
+                <section class="content-section">
+                    <div class="section-header"><h2 class="section-title">Tujuan Pembelajaran</h2></div>
+                    <div class="objectives-list">
+                        <div class="objective-item"><span class="objective-number">1</span><span class="objective-text">Memahami konsep vektor dan besaran skalar</span></div>
+                        <div class="objective-item"><span class="objective-number">2</span><span class="objective-text">Melakukan operasi penjumlahan dan pengurangan vektor</span></div>
+                        <div class="objective-item"><span class="objective-number">3</span><span class="objective-text">Menghitung panjang (magnitudo) vektor</span></div>
+                        <div class="objective-item"><span class="objective-number">4</span><span class="objective-text">Menentukan resultan dua vektor</span></div>
+                    </div>
+                </section>
+
+                <!-- Material Content -->
+                <section class="content-section" id="materi-inti">
+                    <div class="section-header"><h2 class="section-title">Materi Inti</h2></div>
+                    <div class="material-content">
+                        <h3>1. Pengertian Vektor</h3>
+                        <p><strong>Vektor</strong> adalah besaran yang memiliki besar (magnitudo) dan arah. Contoh: gaya, kecepatan, perpindahan.</p>
+                        <p><strong>Skalar</strong> adalah besaran yang hanya memiliki besar. Contoh: massa, waktu, suhu.</p>
+                        
+                        <h4>Notasi Vektor:</h4>
+                        <ul>
+                            <li>Vektor a ditulis <strong>a</strong> atau <span style="text-decoration: overline;">a</span>.</li>
+                            <li>Dinyatakan dalam komponen: <strong>a</strong> = (a<sub>x</sub>, a<sub>y</sub>) atau <strong>a</strong> = a<sub>x</sub> i + a<sub>y</sub> j.</li>
+                        </ul>
+
+                        <h3>2. Panjang Vektor (Magnitudo)</h3>
+                        <p>Panjang vektor a = (x, y) adalah:</p>
+                        <div class="formula-box">
+                            <div class="formula">|a| = √(x² + y²)</div>
+                        </div>
+
+                        <h3>3. Operasi Vektor</h3>
+                        <h4>a. Penjumlahan & Pengurangan</h4>
+                        <p>Jika a = (x₁, y₁) dan b = (x₂, y₂), maka:</p>
+                        <div class="formula-box">
+                            <div class="formula">a + b = (x₁ + x₂, y₁ + y₂)</div>
+                            <div class="formula" style="margin-top:5px;">a - b = (x₁ - x₂, y₁ - y₂)</div>
+                        </div>
+
+                        <h4>b. Perkalian dengan Skalar (k)</h4>
+                        <div class="formula-box">
+                            <div class="formula">k . a = (k . x, k . y)</div>
+                        </div>
+
+                        <h3>4. Resultan Dua Vektor</h3>
+                        <p>Jika dua vektor membentuk sudut θ, resultannya R dapat dihitung dengan aturan cosinus:</p>
+                        <div class="formula-box">
+                            <div class="formula">R² = a² + b² + 2 a b cos θ</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Interactive Animations -->
+                <section class="content-section" id="animasi-interaktif">
+                    <div class="section-header"><h2 class="section-title">Visualisasi Vektor Interaktif</h2></div>
+
+                    <div class="animation-container">
+                        <div class="animation-header"><span class="animation-title">Penjumlahan Vektor (a + b)</span></div>
+                        
+                        <div class="vector-stage">
+                            <svg id="vectorSvg" class="vector-svg" viewBox="0 0 400 400">
+                                <!-- Defs for Arrowheads -->
+                                <defs>
+                                    <marker id="arrowRed" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+                                        <path d="M0,0 L0,6 L9,3 z" fill="#e74c3c" />
+                                    </marker>
+                                    <marker id="arrowBlue" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+                                        <path d="M0,0 L0,6 L9,3 z" fill="#3498db" />
+                                    </marker>
+                                    <marker id="arrowGreen" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+                                        <path d="M0,0 L0,6 L9,3 z" fill="#2ecc71" />
+                                    </marker>
+                                    <pattern id="gridVec" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M 20 0 L 0 0 0 20" fill="none" class="grid-line"/></pattern>
+                                </defs>
+                                
+                                <!-- Grid -->
+                                <rect width="100%" height="100%" fill="url(#gridVec)"/>
+                                <!-- Axes -->
+                                <line x1="200" y1="0" x2="200" y2="400" class="axis"/>
+                                <line x1="0" y1="200" x2="400" y2="200" class="axis"/>
+                                
+                                <!-- Vector A (Red) -->
+                                <line id="vecA" x1="200" y1="200" x2="280" y2="120" class="vector-arrow" stroke="#e74c3c" marker-end="url(#arrowRed)"/>
+                                <!-- Vector B (Blue) -->
+                                <line id="vecB" x1="200" y1="200" x2="280" y2="200" class="vector-arrow" stroke="#3498db" marker-end="url(#arrowBlue)"/>
+                                <!-- Resultant A+B (Green) -->
+                                <line id="vecR" x1="200" y1="200" x2="360" y2="120" class="vector-arrow" stroke="#2ecc71" stroke-dasharray="5,5" marker-end="url(#arrowGreen)"/>
+                                
+                                <!-- Components (Dashed Help Lines) -->
+                                <line id="helpA" x1="280" y1="200" x2="280" y2="120" stroke="#e74c3c" stroke-width="1" stroke-dasharray="3,3" opacity="0.5"/>
+                                <line id="helpB" x1="200" y1="120" x2="280" y2="120" stroke="#3498db" stroke-width="1" stroke-dasharray="3,3" opacity="0.5"/>
+                                
+                                <!-- Labels -->
+                                <text x="220" y="150" fill="#e74c3c" class="vector-label" id="labelA">a</text>
+                                <text x="230" y="195" fill="#3498db" class="vector-label" id="labelB">b</text>
+                                <text x="305" y="145" fill="#2ecc71" class="vector-label" id="labelR">a+b</text>
+                            </svg>
+                        </div>
+
+                        <!-- Controls -->
+                        <div class="slider-control">
+                            <span class="slider-label" style="color:#e74c3c;">Vektor a (x, y):</span>
+                            <input type="range" class="slider-input" id="ax" min="-5" max="5" step="1" value="4">
+                            <span class="slider-value" id="axVal">4</span>
+                            <input type="range" class="slider-input" id="ay" min="-5" max="5" step="1" value="4">
+                            <span class="slider-value" id="ayVal">4</span>
+                        </div>
+                        <div class="slider-control">
+                            <span class="slider-label" style="color:#3498db;">Vektor b (x, y):</span>
+                            <input type="range" class="slider-input" id="bx" min="-5" max="5" step="1" value="4">
+                            <span class="slider-value" id="bxVal">4</span>
+                            <input type="range" class="slider-input" id="by" min="-5" max="5" step="1" value="0">
+                            <span class="slider-value" id="byVal">0</span>
+                        </div>
+
+                        <div class="calc-result">
+                            <div class="calc-item">
+                                <span class="calc-label">Panjang |a|</span>
+                                <span class="calc-val" id="lenA">5.66</span>
+                            </div>
+                            <div class="calc-item">
+                                <span class="calc-label">Panjang |b|</span>
+                                <span class="calc-val" id="lenB">4.00</span>
+                            </div>
+                            <div class="calc-item" style="grid-column: 1 / -1; border-top: 1px solid var(--border-light); padding-top: 10px;">
+                                <span class="calc-label">Resultan a + b</span>
+                                <span class="calc-val" id="resR">(8, 4)</span>
+                                <span class="calc-label" style="font-size:0.75rem;">|R| = <span id="lenR">8.94</span></span>
+                            </div>
+                        </div>
+                        
+                        <div class="legend">
+                            <div class="legend-item"><div class="dot" style="background:#e74c3c"></div> Vektor a</div>
+                            <div class="legend-item"><div class="dot" style="background:#3498db"></div> Vektor b</div>
+                            <div class="legend-item"><div class="dot" style="background:#2ecc71"></div> Resultan</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Example Problems -->
+                <section class="content-section" id="contoh-soal">
+                    <div class="section-header"><h2 class="section-title">Contoh Soal</h2></div>
+
+                    <div class="example-card">
+                        <div class="example-header"><span class="example-number">1</span><span class="example-title">Penjumlahan Vektor</span></div>
+                        <div class="example-body">
+                            <p class="example-question">Diketahui a = (3, 2) dan b = (-1, 4). Tentukan a + b.</p>
+                            <div class="solution-steps">
+                                <div class="solution-step"><span class="step-marker">1</span><div class="step-content">
+                                    <span class="step-label">Operasi Komponen</span>
+                                    <p class="step-text">Jumlahkan komponen x dan y secara terpisah.</p>
+                                    <span class="step-math">a + b = (3 + (-1), 2 + 4)</span>
+                                </div></div>
+                                <div class="solution-step"><span class="step-marker">2</span><div class="step-content">
+                                    <span class="step-label">Hasil</span>
+                                    <span class="step-math">a + b = (2, 6)</span>
+                                </div></div>
+                            </div>
+                            <div class="example-answer"><svg class="answer-icon">...</svg><span class="answer-text">a + b = (2, 6)</span></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Practice Problems -->
+                <section class="content-section" id="latihan-soal">
+                    <div class="section-header"><h2 class="section-title">Latihan Soal</h2></div>
+                    <div class="practice-grid">
+                        <div class="practice-item"><span class="practice-number">1</span><div class="practice-content"><p class="practice-question">Hitung panjang vektor a = (3, 4).</p></div></div>
+                        <div class="practice-item"><span class="practice-number">2</span><div class="practice-content"><p class="practice-question">Tentukan resultan vektor a = (5, 0) dan b = (0, 5).</p></div></div>
+                        <div class="practice-item"><span class="practice-number">3</span><div class="practice-content"><p class="practice-question">Jika a = (2, -3) dan b = (4, 1), hitung 2a - b.</p></div></div>
+                    </div>
+                </section>
+
+                <!-- Quiz Section -->
+                <section class="content-section" id="kuis">
+                    <div class="section-header"><h2 class="section-title">Kuis</h2></div>
+                    <div id="quizContainer"></div>
+                </section>
+            </div>
+        </main>
+        <footer class="footer">
+            <div class="footer-inner">
+                <div class="footer-brand">
+                    <span class="footer-name">Media Belajar Daffa</span>
+                    <span class="footer-class">Muhammad Daffa Athallah - XII-M4-1</span>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script src="../matematika-wajib/script.js"></script>
+    <script src="../matematika-wajib/quiz-engine.js"></script>
+    <script>
+        const quizQuestions = [
+            { question: "Panjang vektor a = (3, 4) adalah...", options: ["5", "7", "12", "25"], correct: 0, explanation: "√(3² + 4²) = √25 = 5." },
+            { question: "Resultan dari (2, 3) + (4, 1) adalah...", options: ["(6, 4)", "(8, 3)", "(6, 4)", "(6, 2)"], correct: 0, explanation: "Komponen x: 2+4=6, Komponen y: 3+1=4." },
+            { question: "Vektor yang memiliki besar dan arah disebut...", options: ["Vektor", "Skalar", "Resultan", "Komponen"], correct: 0, explanation: "Definisi vektor." },
+            { question: "2 × vektor (1, -2) adalah...", options: ["(2, -4)", "(3, 0)", "(2, -2)", "(1, -4)"], correct: 0, explanation: "Kalikan skalar dengan setiap komponen." },
+            { question: "Jika |a| = 5 dan |b| = 5 dengan sudut 90°, maka |a+b| = ... (gunakan R²=a²+b²+2ab cos θ)", options: ["5√2", "10", "25", "0"], correct: 0, explanation: "R² = 25+25+0 = 50 -> R = √50 = 5√2." }
+        ];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            new QuizEngine('quizContainer', quizQuestions).init();
+            
+            const quickNav = document.getElementById('quickNav');
+            window.addEventListener('scroll', () => quickNav.classList.toggle('scrolled', window.scrollY > 200));
+
+            // Vector Visualization Logic
+            const axSlider = document.getElementById('ax');
+            const aySlider = document.getElementById('ay');
+            const bxSlider = document.getElementById('bx');
+            const bySlider = document.getElementById('by');
+
+            // SVG Elements
+            const vecA = document.getElementById('vecA');
+            const vecB = document.getElementById('vecB');
+            const vecR = document.getElementById('vecR');
+            const helpA = document.getElementById('helpA'); // Vertical dashed line
+            const helpB = document.getElementById('helpB'); // Horizontal dashed line
+            const labelA = document.getElementById('labelA');
+            const labelB = document.getElementById('labelB');
+            const labelR = document.getElementById('labelR');
+
+            // Origin: 200,200. Scale: 20px per unit.
+            const O = {x: 200, y: 200};
+            const scale = 20;
+
+            function updateVector() {
+                // Get values
+                let ax = parseInt(axSlider.value);
+                let ay = parseInt(aySlider.value);
+                let bx = parseInt(bxSlider.value);
+                let by = parseInt(bySlider.value);
+
+                // Update Value Spans
+                document.getElementById('axVal').textContent = ax;
+                document.getElementById('ayVal').textContent = ay;
+                document.getElementById('bxVal').textContent = bx;
+                document.getElementById('byVal').textContent = by;
+
+                // Calculate Endpoints (SVG Y is inverted)
+                // Vector A: Start at O. End at O + a.
+                let endAx = O.x + ax * scale;
+                let endAy = O.y - ay * scale;
+                
+                // Vector B: Start at O. End at O + b.
+                let endBx = O.x + bx * scale;
+                let endBy = O.y - by * scale;
+
+                // Resultant R: Start at O. End at O + a + b.
+                let endRx = O.x + (ax + bx) * scale;
+                let endRy = O.y - (ay + by) * scale;
+
+                // Update Lines
+                vecA.setAttribute('x2', endAx); vecA.setAttribute('y2', endAy);
+                vecB.setAttribute('x2', endBx); vecB.setAttribute('y2', endBy);
+                vecR.setAttribute('x2', endRx); vecR.setAttribute('y2', endRy);
+
+                // Update Helper Lines (for parallelogram method visualization)
+                // Help A (from tip of B to tip of R): vertical/horizontal check
+                // Actually simpler: just draw line from tip of B to tip of R using Red color
+                helpA.setAttribute('x1', endBx); helpA.setAttribute('y1', endBy);
+                helpA.setAttribute('x2', endRx); helpA.setAttribute('y2', endRy);
+                helpA.setAttribute('stroke', '#e74c3c'); // Red line
+
+                // Help B (from tip of A to tip of R) using Blue color
+                helpB.setAttribute('x1', endAx); helpB.setAttribute('y1', endAy);
+                helpB.setAttribute('x2', endRx); helpB.setAttribute('y2', endRy);
+                helpB.setAttribute('stroke', '#3498db'); // Blue line
+
+                // Update Labels position
+                labelA.setAttribute('x', (O.x + endAx)/2);
+                labelA.setAttribute('y', (O.y + endAy)/2 - 10);
+                
+                labelB.setAttribute('x', (O.x + endBx)/2 + 10);
+                labelB.setAttribute('y', (O.y + endBy)/2);
+                
+                labelR.setAttribute('x', endRx + 10);
+                labelR.setAttribute('y', endRy - 10);
+
+                // Update Calculations
+                let lenA = Math.sqrt(ax*ax + ay*ay).toFixed(2);
+                let lenB = Math.sqrt(bx*bx + by*by).toFixed(2);
+                let rx = ax + bx;
+                let ry = ay + by;
+                let lenR = Math.sqrt(rx*rx + ry*ry).toFixed(2);
+
+                document.getElementById('lenA').textContent = lenA;
+                document.getElementById('lenB').textContent = lenB;
+                document.getElementById('resR').textContent = `(${rx}, ${ry})`;
+                document.getElementById('lenR').textContent = lenR;
+            }
+
+            if(axSlider) {
+                [axSlider, aySlider, bxSlider, bySlider].forEach(s => s.oninput = updateVector);
+                updateVector();
+            }
+        });
+    </script>
+</body>
+</html>

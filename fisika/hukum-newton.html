@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Hukum Newton - Fisika">
+    <title>Hukum Newton - Media Belajar Daffa</title>
+    <link rel="stylesheet" href="../matematika-wajib/style.css">
+    <style>
+        /* Custom Styles */
+        .fraction {
+            display: inline-flex; flex-direction: column;
+            align-items: center; vertical-align: middle;
+            margin: 0 4px; font-family: var(--font-display);
+        }
+        .fraction-numerator { padding: 2px 8px; font-size: 1rem; line-height: 1.3; }
+        .fraction-line { width: 100%; height: 2px; background: var(--text-primary); border-radius: 1px; }
+        .fraction-denominator { padding: 2px 8px; font-size: 1rem; line-height: 1.3; }
+        .formula-box .fraction { background: var(--bg-card); padding: 8px 12px; border-radius: var(--radius-sm); margin: 0 8px; }
+
+        /* Simulator Container */
+        .sim-container {
+            background: var(--bg-secondary); border-radius: var(--radius-lg);
+            padding: 20px; margin: 20px 0; border: 1px solid var(--border-color);
+        }
+        
+        .svg-box { background: var(--bg-card); border-radius: var(--radius-md); width: 100%; height: auto; overflow: hidden; }
+        
+        /* Action Buttons */
+        .action-btn {
+            padding: 10px 20px; border: none; border-radius: var(--radius-sm);
+            font-weight: bold; cursor: pointer; font-size: 1rem;
+            display: inline-flex; align-items: center; gap: 8px;
+            transition: all 0.2s;
+        }
+        .action-btn:active { transform: scale(0.96); }
+        .action-btn.start { background: #27ae60; color: white; box-shadow: 0 4px 0 #1e8449; }
+        .action-btn.push { background: #e67e22; color: white; box-shadow: 0 4px 0 #d35400; }
+        .action-btn.reset { background: #95a5a6; color: white; box-shadow: 0 4px 0 #7f8c8d; }
+        
+        /* Data Display Grid */
+        .data-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px;
+            margin-top: 15px;
+        }
+        .data-card {
+            background: var(--bg-card); padding: 10px; border-radius: var(--radius-sm);
+            border-left: 4px solid var(--border-color); text-align: center;
+        }
+        .data-card.active { border-left-color: var(--accent-primary); }
+        .data-label { display: block; font-size: 0.8rem; color: var(--text-muted); }
+        .data-val { font-size: 1.2rem; font-weight: bold; font-family: var(--font-display); }
+        
+        /* Force Table */
+        .force-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.9rem; }
+        .force-table th, .force-table td { border: 1px solid var(--border-light); padding: 8px; text-align: left; }
+        .force-table th { background: var(--bg-secondary); color: var(--text-muted); width: 40%; }
+        
+        /* Vector Colors */
+        .vec-f { stroke: #e74c3c; fill: rgba(231, 76, 60, 0.1); }
+        .vec-w { stroke: #8e44ad; fill: rgba(142, 68, 173, 0.1); }
+        .vec-n { stroke: #3498db; fill: rgba(52, 152, 219, 0.1); }
+        .vec-fric { stroke: #f1c40f; fill: rgba(241, 196, 15, 0.1); }
+    </style>
+</head>
+<body>
+    <div class="page-wrapper">
+        <header class="header">
+            <div class="header-inner">
+                <div class="logo">
+                    <svg class="logo-icon" viewBox="0 0 40 40" fill="none">
+                        <rect x="4" y="8" width="32" height="24" rx="2" stroke="currentColor" stroke-width="2"/>
+                        <path d="M4 14h32" stroke="currentColor" stroke-width="2"/>
+                        <circle cx="10" cy="11" r="2" fill="currentColor"/>
+                        <circle cx="16" cy="11" r="2" fill="currentColor"/>
+                        <rect x="8" y="18" width="24" height="2" rx="1" fill="currentColor" opacity="0.5"/>
+                    </svg>
+                    <span class="logo-text">Media Belajar Daffa</span>
+                </div>
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle tema">
+                    <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+                    <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                </button>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="container">
+                <div class="page-header">
+                    <nav class="breadcrumb">
+                        <a href="../index.html">Beranda</a><span>/</span>
+                        <a href="index.html">Fisika</a><span>/</span>
+                        <span class="current">Hukum Newton</span>
+                    </nav>
+                    <div class="accent-line"></div>
+                    <h1 class="page-title">Hukum Newton</h1>
+                    <p class="page-subtitle">Menganalisis hubungan gaya, massa, dan gerak melalui simulasi dinamis.</p>
+                </div>
+
+                <div class="nav-btn-group">
+                    <a href="index.html" class="nav-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg> Kembali ke Daftar Materi</a>
+                    <a href="../index.html" class="nav-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Beranda</a>
+                </div>
+
+                <nav class="quick-nav" id="quickNav">
+                    <a href="#hukum-2-datar" class="quick-nav-btn">Hukum II (Datar)</a>
+                    <a href="#hukum-2-miring" class="quick-nav-btn">Hukum II (Bidang Miring)</a>
+                    <a href="#hukum-3" class="quick-nav-btn">Hukum III</a>
+                    <a href="#kuis" class="quick-nav-btn">Kuis</a>
+                </nav>
+
+                <!-- Hukum II Simulator (Lantai Datar) -->
+                <section class="content-section" id="hukum-2-datar">
+                    <div class="section-header"><h2 class="section-title">1. Hukum II Newton (Lantai Datar)</h2></div>
+                    <div class="material-content">
+                        <p>Percepatan berbanding lurus dengan gaya total dan berbanding terbalik dengan massa.</p>
+                        <div class="formula-box">
+                            <div class="formula">Σ F = m . a</div>
+                        </div>
+                    </div>
+
+                    <div class="sim-container">
+                        <div class="control-panel" style="background:var(--bg-card); border-radius:var(--radius-md); padding:15px;">
+                            <div style="display:flex; flex-wrap:wrap; gap:20px; align-items:center;">
+                                <div class="ctrl-group" style="flex:1; min-width:150px;">
+                                    <label class="ctrl-label">Gaya Dorong (F)</label>
+                                    <input type="range" class="slider-input" id="flatF" min="0" max="100" step="5" value="50">
+                                    <span class="slider-value"><span id="valFlatF">50</span> N</span>
+                                </div>
+                                <div class="ctrl-group" style="flex:1; min-width:150px;">
+                                    <label class="ctrl-label">Massa Benda (m)</label>
+                                    <input type="range" class="slider-input" id="flatM" min="1" max="20" step="1" value="5">
+                                    <span class="slider-value"><span id="valFlatM">5</span> kg</span>
+                                </div>
+                                <div class="ctrl-group" style="flex:1; min-width:150px;">
+                                    <label class="ctrl-label">Koef. Gesek (μ)</label>
+                                    <input type="range" class="slider-input" id="flatMu" min="0" max="0.8" step="0.05" value="0.2">
+                                    <span class="slider-value"><span id="valFlatMu">0.2</span></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <svg id="flatSvg" class="svg-box" viewBox="0 0 600 200">
+                            <defs>
+                                <marker id="arrowR" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#e74c3c"/></marker>
+                                <marker id="arrowG" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#2ecc71"/></marker>
+                            </defs>
+                            <!-- Floor -->
+                            <line x1="20" y1="150" x2="580" y2="150" stroke="#bdc3c7" stroke-width="3"/>
+                            <!-- Person (Pusher) -->
+                            <g id="flatPusher" transform="translate(80, 100)">
+                                <circle cx="0" cy="0" r="15" fill="#ffeaa7" stroke="#fdcb6e" stroke-width="2"/>
+                                <rect x="-10" y="15" width="20" height="30" fill="#3498db" rx="3"/>
+                                <text x="0" y="32" text-anchor="middle" fill="white" font-size="10">Anda</text>
+                                <!-- Arm -->
+                                <line id="flatArm" x1="10" y1="25" x2="40" y2="25" stroke="#ffeaa7" stroke-width="6" stroke-linecap="round"/>
+                            </g>
+                            <!-- Box -->
+                            <g id="flatBox" transform="translate(150, 110)">
+                                <rect x="0" y="0" width="50" height="40" fill="#e74c3c" stroke="#c0392b" stroke-width="2" rx="3"/>
+                                <text x="25" y="25" text-anchor="middle" fill="white" font-weight="bold">m</text>
+                                <!-- Vectors relative to box center -->
+                                <line id="flatVecF" x1="25" y1="20" x2="75" y2="20" stroke="#e74c3c" stroke-width="3" marker-end="url(#arrowR)"/>
+                                <line id="flatVecFr" x1="25" y1="20" x2="-15" y2="20" stroke="#f1c40f" stroke-width="3" marker-end="url(#arrowR)"/>
+                            </g>
+                            <!-- Velocity Graph placeholder -->
+                        </svg>
+
+                        <div style="display:flex; gap:15px; justify-content:center; margin:15px 0;">
+                            <button class="action-btn start" onclick="startFlatSim()">
+                                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3l6 5-6 5V3z"/></svg> Mulai Dorong
+                            </button>
+                            <button class="action-btn reset" onclick="resetFlatSim()">
+                                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg> Reset
+                            </button>
+                        </div>
+
+                        <div class="data-grid">
+                            <div class="data-card active">
+                                <span class="data-label">Percepatan (a)</span>
+                                <span class="data-val" id="dispFlatA">0 m/s²</span>
+                            </div>
+                            <div class="data-card">
+                                <span class="data-label">Kecepatan (v)</span>
+                                <span class="data-val" id="dispFlatV">0 m/s</span>
+                            </div>
+                            <div class="data-card">
+                                <span class="data-label">Jarak (s)</span>
+                                <span class="data-val" id="dispFlatS">0 m</span>
+                            </div>
+                        </div>
+                        <table class="force-table">
+                            <tr><th>Gaya Dorong (F)</th><td id="tblFlatF" style="color:#e74c3c">0 N</td></tr>
+                            <tr><th>Gaya Gesek (f)</th><td id="tblFlatFr" style="color:#f1c40f">0 N</td></tr>
+                            <tr><th>Resultan (ΣF)</th><td id="tblFlatRes" style="color:#2ecc71; font-weight:bold;">0 N</td></tr>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Hukum II Simulator (Bidang Miring) -->
+                <section class="content-section" id="hukum-2-miring">
+                    <div class="section-header"><h2 class="section-title">2. Hukum II Newton (Bidang Miring)</h2></div>
+                    <div class="sim-container">
+                        <div class="control-panel" style="background:var(--bg-card); border-radius:var(--radius-md); padding:15px;">
+                            <div style="display:flex; flex-wrap:wrap; gap:20px; align-items:center;">
+                                <div class="ctrl-group" style="flex:1; min-width:150px;">
+                                    <label class="ctrl-label">Sudut (θ)</label>
+                                    <input type="range" class="slider-input" id="incAng" min="10" max="60" step="1" value="30">
+                                    <span class="slider-value"><span id="valIncAng">30</span>°</span>
+                                </div>
+                                <div class="ctrl-group" style="flex:1; min-width:150px;">
+                                    <label class="ctrl-label">Massa (m)</label>
+                                    <input type="range" class="slider-input" id="incM" min="1" max="10" step="0.5" value="5">
+                                    <span class="slider-value"><span id="valIncM">5</span> kg</span>
+                                </div>
+                                <div class="ctrl-group" style="flex:1; min-width:150px;">
+                                    <label class="ctrl-label">Gesekan (μ)</label>
+                                    <input type="range" class="slider-input" id="incMu" min="0" max="1" step="0.05" value="0.2">
+                                    <span class="slider-value"><span id="valIncMu">0.2</span></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <svg id="incSvg" class="svg-box" viewBox="0 0 500 300">
+                            <defs>
+                                <marker id="arrowB" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#3498db"/></marker>
+                            </defs>
+                            <!-- Ground -->
+                            <line x1="50" y1="250" x2="450" y2="250" stroke="#7f8c8d" stroke-width="2"/>
+                            <!-- Incline -->
+                            <polygon id="incPoly" points="50,250 400,250 400,250" fill="#ecf0f1" stroke="#bdc3c7" stroke-width="2"/>
+                            
+                            <!-- Block -->
+                            <g id="incBlock" transform="translate(200, 200)">
+                                <rect x="-20" y="-20" width="40" height="40" fill="#e74c3c" stroke="#c0392b" stroke-width="2" rx="2"/>
+                                <!-- Vectors: W points down in global, but we draw in local rotated frame. 
+                                     Easier: Draw vectors fixed to block center but rotated. -->
+                                <!-- Wx (parallel to slope down) -->
+                                <line id="incWx" x1="0" y1="0" x2="40" y2="0" stroke="#8e44ad" stroke-width="2" marker-end="url(#arrowR)"/>
+                                <!-- Wy (perpendicular up) -->
+                                <line id="incWy" x1="0" y1="0" x2="0" y2="-40" stroke="#8e44ad" stroke-width="2" marker-end="url(#arrowB)"/>
+                                <!-- N (perpendicular up) -->
+                                <line id="incN" x1="0" y1="0" x2="0" y2="-40" stroke="#3498db" stroke-width="2" marker-end="url(#arrowB)" stroke-dasharray="3,3"/>
+                                <!-- f (parallel up slope) -->
+                                <line id="incF" x1="0" y1="0" x2="-30" y2="0" stroke="#f1c40f" stroke-width="2" marker-end="url(#arrowR)"/>
+                            </g>
+                        </svg>
+
+                        <div style="display:flex; gap:15px; justify-content:center; margin:15px 0;">
+                            <button class="action-btn start" onclick="startIncSim()">
+                                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3l6 5-6 5V3z"/></svg> Lepas Benda!
+                            </button>
+                            <button class="action-btn reset" onclick="resetIncSim()">Reset</button>
+                        </div>
+
+                        <div class="data-grid">
+                            <div class="data-card active"><span class="data-label">Percepatan (a)</span><span class="data-val" id="dispIncA">0 m/s²</span></div>
+                            <div class="data-card"><span class="data-label">Waktu (t)</span><span class="data-val" id="dispIncT">0.0 s</span></div>
+                            <div class="data-card"><span class="data-label">Kecepatan (v)</span><span class="data-val" id="dispIncV">0 m/s</span></div>
+                            <div class="data-card"><span class="data-label">Jarak (s)</span><span class="data-val" id="dispIncS">0 m</span></div>
+                        </div>
+                        <div class="info-box" style="margin-top:10px;"><strong>Status:</strong> <span id="incStatus">Siap</span></div>
+                    </div>
+                </section>
+
+                <!-- Hukum III Simulator -->
+                <section class="content-section" id="hukum-3">
+                    <div class="section-header"><h2 class="section-title">3. Hukum III Newton</h2></div>
+                    <div class="sim-container">
+                        <div class="control-panel" style="background:var(--bg-card); border-radius:var(--radius-md); padding:15px; justify-content:center;">
+                            <div class="ctrl-group" style="min-width:200px;">
+                                <label class="ctrl-label">Gaya Dorong (F)</label>
+                                <input type="range" class="slider-input" id="n3F" min="10" max="100" step="5" value="50">
+                                <span class="slider-value"><span id="valN3F">50</span> N</span>
+                            </div>
+                        </div>
+
+                        <svg id="n3Svg" class="svg-box" viewBox="0 0 500 250">
+                            <!-- Wall -->
+                            <rect x="380" y="30" width="20" height="170" fill="#7f8c8d"/>
+                            <line x1="390" y1="30" x2="390" y2="200" stroke="#34495e" stroke-width="4"/>
+                            <!-- Floor -->
+                            <line x1="50" y1="200" x2="380" y2="200" stroke="#bdc3c7" stroke-width="2"/>
+                            
+                            <!-- Person (Group) -->
+                            <g id="n3Person" transform="translate(200, 150)">
+                                <!-- Head -->
+                                <circle cx="0" cy="-30" r="15" fill="#ffeaa7" stroke="#fdcb6e" stroke-width="2"/>
+                                <!-- Body -->
+                                <rect x="-15" y="-15" width="30" height="40" fill="#3498db" rx="5"/>
+                                <!-- Legs -->
+                                <line x1="-8" y1="25" x2="-10" y2="50" stroke="#2c3e50" stroke-width="6" stroke-linecap="round"/>
+                                <line x1="8" y1="25" x2="10" y2="50" stroke="#2c3e50" stroke-width="6" stroke-linecap="round"/>
+                                <!-- Arms -->
+                                <line id="n3Arm" x1="15" y1="0" x2="50" y2="0" stroke="#ffeaa7" stroke-width="6" stroke-linecap="round"/>
+                                
+                                <!-- Force Vectors -->
+                                <line id="n3VecF" x1="50" y1="0" x2="80" y2="0" stroke="#e74c3c" stroke-width="3" marker-end="url(#arrowR)"/>
+                                <text x="65" y="-10" fill="#e74c3c" font-size="12">Aksi (Anda ke Tembok)</text>
+                                
+                                <line id="n3VecR" x1="0" y1="-50" x2="-30" y2="-50" stroke="#2ecc71" stroke-width="3" marker-end="url(#arrowG)"/>
+                                <text x="-15" y="-60" fill="#2ecc71" font-size="12">Reaksi (Tembok ke Anda)</text>
+                            </g>
+                        </svg>
+
+                        <div style="display:flex; gap:15px; justify-content:center; margin:15px 0;">
+                            <button class="action-btn push" onclick="startN3Sim()">
+                                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg> Dorong Tembok!
+                            </button>
+                        </div>
+                        <div class="info-box" style="text-align:center;">
+                            Anda mendorong tembok dengan <span id="dispN3F">50 N</span>. Tembok mendorong Anda dengan <span style="color:#2ecc71; font-weight:bold;">50 N</span> ke arah berlawanan (Anda terdorong mundur).
+                        </div>
+                    </div>
+                </section>
+
+                <section class="content-section" id="kuis">
+                    <div class="section-header"><h2 class="section-title">Kuis Hukum Newton</h2></div>
+                    <div id="quizContainer"></div>
+                </section>
+            </div>
+        </main>
+        <footer class="footer">...</footer>
+    </div>
+
+    <script src="../matematika-wajib/script.js"></script>
+    <script src="../matematika-wajib/quiz-engine.js"></script>
+    <script>
+        const quizQuestions = [
+            { question: "Hukum Newton I disebut juga hukum...", options: ["Aksi-Reaksi", "Kelembaman", "Gerak", "Gravitasi"], correct: 1 },
+            { question: "Benda bermassa 2 kg didorong gaya 10 N di lantai licin (tanpa gesekan). Percepatannya...", options: ["20 m/s²", "5 m/s²", "12 m/s²", "0.2 m/s²"], correct: 1 },
+            { question: "Jika Anda mendorong tembok dengan gaya 50 N, maka tembok mendorong Anda dengan gaya...", options: ["0 N", "50 N", "-50 N", "100 N"], correct: 2 }
+        ];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            new QuizEngine('quizContainer', quizQuestions).init();
+            const quickNav = document.getElementById('quickNav');
+            window.addEventListener('scroll', () => quickNav.classList.toggle('scrolled', window.scrollY > 200));
+
+            // --- 1. FLAT SIMULATOR (F=ma) ---
+            let flatState = { x: 0, v: 0, t: 0, running: false };
+            const flatF = document.getElementById('flatF');
+            const flatM = document.getElementById('flatM');
+            const flatMu = document.getElementById('flatMu');
+
+            function updateFlatParams() {
+                document.getElementById('valFlatF').textContent = flatF.value;
+                document.getElementById('valFlatM').textContent = flatM.value;
+                document.getElementById('valFlatMu').textContent = flatMu.value;
+            }
+
+            function drawFlat() {
+                const F = parseFloat(flatF.value);
+                const m = parseFloat(flatM.value);
+                const mu = parseFloat(flatMu.value);
+                const g = 10;
+                const w = m * g;
+                const N = w;
+                const f_kinetic = mu * N;
+                const Fres = F - f_kinetic;
+                const a = Fres / m;
+
+                // Update Table
+                document.getElementById('tblFlatF').textContent = F + " N";
+                document.getElementById('tblFlatFr').textContent = f_kinetic.toFixed(1) + " N";
+                document.getElementById('tblFlatRes').textContent = Fres.toFixed(1) + " N";
+                document.getElementById('dispFlatA').textContent = a.toFixed(2) + " m/s²";
+
+                // Update Vectors
+                const scale = 0.5;
+                const vecF = document.getElementById('flatVecF');
+                const vecFr = document.getElementById('flatVecFr');
+                
+                vecF.setAttribute('x2', 25 + (F * scale));
+                vecFr.setAttribute('x2', 25 - (f_kinetic * scale));
+
+                // Move Box
+                const svgX = 150 + (flatState.x * 5); // Scale 5px per meter
+                document.getElementById('flatBox').setAttribute('transform', `translate(${svgX}, 110)`);
+                
+                // Move Pusher (follows box closely)
+                const pusherX = Math.max(80, svgX - 70); // Stay min 80px
+                document.getElementById('flatPusher').setAttribute('transform', `translate(${pusherX}, 100)`);
+                
+                // Update dynamic data
+                document.getElementById('dispFlatV').textContent = flatState.v.toFixed(2);
+                document.getElementById('dispFlatS').textContent = flatState.x.toFixed(2);
+            }
+
+            function loopFlat() {
+                if(!flatState.running) return;
+                
+                const dt = 0.016;
+                const F = parseFloat(flatF.value);
+                const m = parseFloat(flatM.value);
+                const mu = parseFloat(flatMu.value);
+                const g = 10;
+                const f_kinetic = mu * (m * g);
+                const Fres = F - f_kinetic;
+                
+                // Only move if Resultant > 0
+                if (Fres > 0) {
+                    const a = Fres / m;
+                    flatState.v += a * dt;
+                    flatState.x += flatState.v * dt;
+                    flatState.t += dt;
+                } else {
+                    flatState.running = false; // Stop if friction >= Force
+                    alert("Benda diam! Gaya gesekan terlalu besar atau sama dengan gaya dorong.");
+                }
+
+                drawFlat();
+
+                // Boundary check
+                if (flatState.x > 60) { // Stop at ~300px
+                    flatState.running = false;
+                    alert("Benda sampai di ujung!");
+                } else {
+                    requestAnimationFrame(loopFlat);
+                }
+            }
+
+            window.startFlatSim = function() {
+                if(flatState.running) return;
+                resetFlatSim();
+                flatState.running = true;
+                loopFlat();
+            };
+            
+            window.resetFlatSim = function() {
+                flatState = { x: 0, v: 0, t: 0, running: false };
+                updateFlatParams();
+                drawFlat();
+            };
+
+            flatF.oninput = () => { updateFlatParams(); if(!flatState.running) drawFlat(); };
+            flatM.oninput = () => { updateFlatParams(); if(!flatState.running) drawFlat(); };
+            flatMu.oninput = () => { updateFlatParams(); if(!flatState.running) drawFlat(); };
+
+
+            // --- 2. INCLINED SIMULATOR ---
+            let incState = { s: 0, v: 0, running: false };
+            const incAng = document.getElementById('incAng');
+            const incM = document.getElementById('incM');
+            const incMu = document.getElementById('incMu');
+
+            function updateIncParams() {
+                document.getElementById('valIncAng').textContent = incAng.value;
+                document.getElementById('valIncM').textContent = incM.value;
+                document.getElementById('valIncMu').textContent = incMu.value;
+            }
+
+            function drawInc() {
+                const deg = parseFloat(incAng.value);
+                const m = parseFloat(incM.value);
+                const mu = parseFloat(incMu.value);
+                const g = 10;
+
+                // Physics
+                const rad = deg * Math.PI / 180;
+                const W = m * g;
+                const Wx = W * Math.sin(rad);
+                const Wy = W * Math.cos(rad);
+                const N = Wy;
+                const f_max = mu * N;
+                
+                let fres, a, stat;
+                if (Wx > f_max) {
+                    fres = Wx - f_max; a = fres / m; stat = "BERGERAK (Wx > f)";
+                } else {
+                    fres = 0; a = 0; stat = "DIAM (Wx ≤ f)";
+                }
+
+                document.getElementById('dispIncA').textContent = a.toFixed(2) + " m/s²";
+                document.getElementById('incStatus').textContent = stat + " | a = " + a.toFixed(2) + " m/s²";
+
+                // Draw Geometry
+                const baseX = 50, baseY = 250, len = 300;
+                const topX = baseX + len;
+                const topY = baseY - (len * Math.tan(rad));
+                document.getElementById('incPoly').setAttribute('points', `${baseX},${baseY} ${topX},${baseY} ${topX},${topY}`);
+
+                // Position Block (Distance s along slope)
+                const distPx = incState.s * 5; // Scale 5px per meter
+                const bx = topX - (distPx * Math.cos(rad));
+                const by = topY + (distPx * Math.sin(rad));
+                
+                const incBlock = document.getElementById('incBlock');
+                incBlock.setAttribute('transform', `translate(${bx}, ${by}) rotate(${-deg})`);
+
+                // Vectors (in local frame)
+                const scale = 0.5;
+                // Wx points 'right' (down slope)
+                document.getElementById('incWx').setAttribute('x2', Wx * scale);
+                // Wy points 'up' (into slope)
+                document.getElementById('incWy').setAttribute('y2', -Wy * scale);
+                // N points 'up'
+                document.getElementById('incN').setAttribute('y2', -N * scale);
+                // Friction points 'left' (up slope)
+                const f_vis = Math.min(f_max, Wx);
+                document.getElementById('incF').setAttribute('x2', -f_vis * scale);
+
+                // Update Data
+                document.getElementById('dispIncV').textContent = incState.v.toFixed(2);
+                document.getElementById('dispIncS').textContent = incState.s.toFixed(2);
+                document.getElementById('dispIncT').textContent = incState.t.toFixed(1);
+            }
+
+            function loopInc() {
+                if(!incState.running) return;
+                
+                const dt = 0.016;
+                const deg = parseFloat(incAng.value);
+                const m = parseFloat(incM.value);
+                const mu = parseFloat(incMu.value);
+                const g = 10;
+
+                const rad = deg * Math.PI / 180;
+                const Wx = m * g * Math.sin(rad);
+                const N = m * g * Math.cos(rad);
+                const f_kinetic = mu * N;
+                const fres = Wx - f_kinetic;
+                
+                if (fres > 0) {
+                    const a = fres / m;
+                    incState.v += a * dt;
+                    incState.s += incState.v * dt;
+                    incState.t += dt;
+                } else {
+                    incState.running = false;
+                }
+
+                drawInc();
+
+                if (incState.s > 30) { // Limit
+                    incState.running = false;
+                } else {
+                    requestAnimationFrame(loopInc);
+                }
+            }
+
+            window.startIncSim = function() {
+                if(incState.running) return;
+                resetIncSim();
+                incState.running = true;
+                loopInc();
+            };
+
+            window.resetIncSim = function() {
+                incState = { s: 0, v: 0, t: 0, running: false };
+                updateIncParams();
+                drawInc();
+            };
+
+            incAng.oninput = () => { updateIncParams(); if(!incState.running) drawInc(); };
+            incM.oninput = () => { updateIncParams(); if(!incState.running) drawInc(); };
+            incMu.oninput = () => { updateIncParams(); if(!incState.running) drawInc(); };
+
+
+            // --- 3. NEWTON III SIMULATOR ---
+            let n3State = { x: 200, v: 0, phase: 0 }; // Phase 0: approach, 1: recoil
+            const n3F = document.getElementById('n3F');
+
+            n3F.oninput = function() {
+                document.getElementById('valN3F').textContent = this.value;
+                document.getElementById('dispN3F').textContent = this.value;
+                document.getElementById('n3VecF').setAttribute('x2', 50 + (parseFloat(this.value) * 0.3));
+                document.getElementById('n3VecR').setAttribute('x2', -30 - (parseFloat(this.value) * 0.3));
+            }
+
+            window.startN3Sim = function() {
+                n3State = { x: 200, v: 0, phase: 0 };
+                animateN3();
+            }
+
+            function animateN3() {
+                const F = parseFloat(n3F.value);
+                const mass = 50; // Mass of person
+                const a = F / mass;
+                
+                if (n3State.phase === 0) {
+                    n3State.v += 1; // Move forward speed
+                    n3State.x += n3State.v * 0.05;
+                    if (n3State.x > 300) { // Hit wall
+                        n3State.phase = 1;
+                        n3State.v = 0; // Reset velocity
+                    }
+                } else {
+                    // Recoil phase (F reaction pushes backward)
+                    n3State.v += a * 0.016; // Accelerate backward
+                    n3State.x -= n3State.v;
+                    if (n3State.x < 100) return; // Stop animation
+                }
+
+                document.getElementById('n3Person').setAttribute('transform', `translate(${n3State.x}, 150)`);
+                requestAnimationFrame(animateN3);
+            }
+
+            // Init all
+            resetFlatSim();
+            resetIncSim();
+            n3F.oninput();
+        });
+    </script>
+</body>
+</html>

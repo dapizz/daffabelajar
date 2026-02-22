@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Moderasi Beragama - Pendidikan Agama Islam">
+    <title>Moderasi Beragama - Media Belajar Daffa</title>
+    <link rel="stylesheet" href="../matematika-wajib/style.css">
+    <style>
+        /* Custom Styles for Moderasi Page */
+
+        /* Verse Box Styling (Blue-Peace Theme) */
+        .verse-box {
+            background: linear-gradient(135deg, #0c3547 0%, #1a6985 100%); /* Ocean Blue Gradient */
+            border-left: 5px solid #f1c40f;
+            padding: 25px;
+            margin: 20px 0;
+            border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            color: #ffffff;
+            position: relative;
+            overflow: hidden;
+        }
+        .verse-box::after {
+            content: "﷽";
+            position: absolute; right: -10px; bottom: -20px;
+            font-size: 6rem; opacity: 0.05; font-family: 'Amiri', serif; color: #fff;
+        }
+        .verse-arabic {
+            font-size: 1.6rem; text-align: right; line-height: 2;
+            margin-bottom: 10px; font-family: 'Amiri', serif;
+            color: #ffffff; font-weight: bold;
+        }
+        .verse-translation { font-style: italic; color: #b3e5fc; line-height: 1.6; }
+        .verse-source { font-weight: bold; text-align: right; font-size: 0.9rem; color: #f1c40f; margin-top: 10px; }
+
+        /* Concept Cards */
+        .concept-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px; margin: 20px 0;
+        }
+        .concept-card {
+            background: var(--bg-card); padding: 15px; border-radius: var(--radius-md);
+            border-top: 3px solid var(--border-color); transition: transform 0.2s;
+            text-align: center;
+        }
+        .concept-card:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .concept-icon { font-size: 2rem; margin-bottom: 10px; display: block; }
+        .concept-title { font-weight: bold; margin-bottom: 5px; color: var(--accent-primary); }
+        
+        /* Special styling for Radicalism section */
+        .warning-box {
+            background: rgba(231, 76, 60, 0.1);
+            border-left: 4px solid #e74c3c;
+            padding: 15px; border-radius: 0 var(--radius-md) var(--radius-md) 0;
+            margin-top: 15px;
+        }
+        .warning-title { color: #e74c3c; font-weight: bold; margin-bottom: 5px; }
+
+        /* Game Area */
+        .game-container {
+            background: var(--bg-secondary); border-radius: var(--radius-lg);
+            padding: 20px; border: 1px solid var(--border-color); margin-top: 20px;
+        }
+        .game-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 12px; margin-top: 15px;
+        }
+        .game-card {
+            background: var(--bg-card); border: 2px solid var(--border-color);
+            border-radius: var(--radius-md); padding: 12px; text-align: center;
+            cursor: pointer; transition: all 0.2s ease; font-weight: 600;
+            min-height: 70px; display: flex; align-items: center; justify-content: center;
+            font-size: 0.95rem;
+        }
+        .game-card:hover { transform: translateY(-2px); border-color: var(--accent-secondary); }
+        
+        /* Game States */
+        .game-card.selected { border-color: var(--accent-primary); background: rgba(52, 152, 219, 0.1); color: var(--accent-primary); }
+        .game-card.matched { border-color: var(--success); background: rgba(39, 174, 96, 0.1); color: var(--success); cursor: default; opacity: 0.8; }
+        .game-card.wrong { border-color: var(--error); background: rgba(231, 76, 60, 0.1); animation: shake 0.4s; }
+        
+        @keyframes shake {
+            0% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } 100% { transform: translateX(0); }
+        }
+        .game-status { text-align: center; font-size: 1.1rem; margin-bottom: 10px; font-weight: bold; color: var(--text-secondary); }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="page-wrapper">
+        <header class="header">
+            <div class="header-inner">
+                <div class="logo">
+                    <svg class="logo-icon" viewBox="0 0 40 40" fill="none">
+                        <rect x="4" y="8" width="32" height="24" rx="2" stroke="currentColor" stroke-width="2"/>
+                        <path d="M4 14h32" stroke="currentColor" stroke-width="2"/>
+                        <circle cx="10" cy="11" r="2" fill="currentColor"/>
+                        <circle cx="16" cy="11" r="2" fill="currentColor"/>
+                        <rect x="8" y="18" width="24" height="2" rx="1" fill="currentColor" opacity="0.5"/>
+                    </svg>
+                    <span class="logo-text">Media Belajar Daffa</span>
+                </div>
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle tema">
+                    <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+                    <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                </button>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="container">
+                <div class="page-header">
+                    <nav class="breadcrumb">
+                        <a href="../index.html">Beranda</a><span>/</span>
+                        <a href="index.html">PAI</a><span>/</span>
+                        <span class="current">Moderasi Beragama</span>
+                    </nav>
+                    <div class="accent-line"></div>
+                    <h1 class="page-title">Moderasi Beragama</h1>
+                    <p class="page-subtitle">Membangun sikap toleransi, menghargai perbedaan, dan menjaga kerukunan umat beragama.</p>
+                </div>
+
+                <div class="nav-btn-group">
+                    <a href="index.html" class="nav-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg> Kembali ke Daftar Materi</a>
+                    <a href="../index.html" class="nav-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Beranda</a>
+                </div>
+
+                <nav class="quick-nav" id="quickNav">
+                    <a href="#tasamuh" class="quick-nav-btn">Tasamuh</a>
+                    <a href="#perbedaan" class="quick-nav-btn">Perbedaan</a>
+                    <a href="#rukun" class="quick-nav-btn">Kerukunan</a>
+                    <a href="#radikalisme" class="quick-nav-btn">Anti Radikalisme</a>
+                    <a href="#interaktif" class="quick-nav-btn">Game</a>
+                </nav>
+
+                <!-- 1. Sikap Tasamuh -->
+                <section class="content-section" id="tasamuh">
+                    <div class="section-header"><h2 class="section-title">1. Sikap Tasamuh (Toleransi)</h2></div>
+                    <div class="material-content">
+                        <p>Tasamuh adalah sikap saling menghargai dan menghormati perbedaan yang ada di masyarakat. Islam mengajarkan umatnya untuk tidak memaksakan pendapat kepada orang lain.</p>
+                        <div class="verse-box">
+                            <div class="verse-arabic">لَكُمْ دِينُكُمْ وَلِيَ دِينِ</div>
+                            <div class="verse-translation">“Untukmulah agamamu, dan untukkulah agamaku.”</div>
+                            <div class="verse-source">QS. Al-Kafirun: 6</div>
+                        </div>
+                        <div class="concept-grid">
+                            <div class="concept-card" style="border-color: #3498db;">
+                                <span class="concept-icon">🤝</span>
+                                <span class="concept-title">Toleransi Aktif</span>
+                                <p>Bukan sekadar membiarkan, tapi ikut memelihara hak orang lain untuk beribadah.</p>
+                            </div>
+                            <div class="concept-card" style="border-color: #3498db;">
+                                <span class="concept-icon">🕌</span>
+                                <span class="concept-title">Contoh Nabi</span>
+                                <p>Nabi SAW mempersilakan delegasi Nasrani dari Najran shalat di Masjid Nabawi.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 2. Menghargai Perbedaan -->
+                <section class="content-section" id="perbedaan">
+                    <div class="section-header"><h2 class="section-title">2. Menghargai Perbedaan</h2></div>
+                    <div class="material-content">
+                        <p>Perbedaan adalah sunnatullah (ketetapan Allah). Perbedaan diciptakan agar manusia saling mengenal.</p>
+                        <div class="verse-box">
+                            <div class="verse-arabic">يَا أَيُّهَا النَّاسُ إِنَّا خَلَقْنَاكُم مِّن ذَكَرٍ وَأُنثَىٰ وَجَعَلْنَاكُمْ شُعُوبًا وَقَبَائِلَ لِتَعَارَفُوا</div>
+                            <div class="verse-translation">“Wahai manusia, sesungguhnya Kami telah menciptakan kamu dari seorang laki-laki dan perempuan. Kemudian, Kami menjadikan kamu berbangsa-bangsa dan bersuku-suku agar kamu saling mengenal.”</div>
+                            <div class="verse-source">QS. Al-Hujurat: 13</div>
+                        </div>
+                        <p>Sikap yang harus dikembangkan:</p>
+                        <ul>
+                            <li>Terbuka terhadap perbedaan pendapat (Ikhtilaf).</li>
+                            <li>Tidak merasa paling benar sendiri.</li>
+                            <li>Menghargai tradisi lokal selama tidak bertentangan dengan syariat.</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <!-- 3. Hidup Rukun -->
+                <section class="content-section" id="rukun">
+                    <div class="section-header"><h2 class="section-title">3. Hidup Rukun dalam Masyarakat Majemuk</h2></div>
+                    <div class="material-content">
+                        <p>Indonesia adalah negara majemuk dengan beragam suku, agama, dan budaya. Islam memerintahkan umatnya untuk berbuat baik kepada siapa pun.</p>
+                        <div class="formula-box">
+                            <div class="formula-label">Prinsip Hubungan Sosial</div>
+                            <ul style="text-align:left; margin-top:5px;">
+                                <li><strong>Ukhuwah Insaniyah</strong>: Persaudaraan sesama manusia.</li>
+                                <li><strong>Ukhuwah Wathaniyah</strong>: Persaudaraan sesama bangsa.</li>
+                            </ul>
+                        </div>
+                        <p>Moderasi beragama adalah kunci menjaga NKRI. Semboyan <em>"Bhinneka Tunggal Ika"</em> selaras dengan ajaran Islam tentang persatuan.</p>
+                    </div>
+                </section>
+
+                <!-- 4. Menolak Radikalisme -->
+                <section class="content-section" id="radikalisme">
+                    <div class="section-header"><h2 class="section-title">4. Menolak Radikalisme & Kekerasan</h2></div>
+                    <div class="material-content">
+                        <p>Islam adalah agama rahmatan lil alamin (rahmat bagi semesta alam). Radikalisme dan terorisme bertentangan dengan ajaran Islam yang damai.</p>
+                        
+                        <div class="warning-box">
+                            <span class="warning-title">Apa itu Radikalisme?</span>
+                            <p>Paham yang menginginkan perubahan secara drastis, kerap menggunakan kekerasan, dan menganggap orang lain yang berbeda paham sebagai kafir/sembahyang yang harus dilawan.</p>
+                        </div>
+
+                        <h4>Ciri Paham Radikal:</h4>
+                        <ul>
+                            <li>Menganggap kelompoknya paling benar (eksklusif).</li>
+                            <li>Menolak budaya lokal dan negara (inkonstitusional).</li>
+                            <li>Menghalalkan kekerasan atas nama agama.</li>
+                        </ul>
+
+                        <div class="verse-box">
+                            <div class="verse-arabic">يَٰٓأَهْلَ ٱلْكِتَٰبِ لَا تَغْلُوا۟ فِى دِينِكُمْ وَلَا تَقُولُوا۟ عَلَى ٱللَّهِ إِلَّا ٱلْحَقَّ</div>
+                            <div class="verse-translation">“Wahai Ahli kitab, janganlah kamu berlebih-lebihan dalam (menjalankan) agamamu dan janganlah kamu mengatakan terhadap Allah, kecuali yang benar.”</div>
+                            <div class="verse-source">QS. An-Nisa': 56</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- INTERAKTIF: GAME PASANGAN SIKAP -->
+                <section class="content-section" id="interaktif">
+                    <div class="section-header"><h2 class="section-title">Game Pasangan Sikap Moderasi</h2></div>
+                    <div class="sim-container">
+                        <p style="text-align:center;">Cocokkan istilah di kiri dengan definisi/sikap yang tepat di kanan.</p>
+                        
+                        <div class="game-status">Skor: <span id="score">0</span> / 6</div>
+                        
+                        <div class="game-grid" id="gameGrid">
+                            <!-- Generated by JS -->
+                        </div>
+                        <button class="action-btn start" onclick="initGame()" style="display:block; margin-top:20px; margin-left:auto; margin-right:auto;">Ulangi Game</button>
+                    </div>
+                </section>
+
+                <section class="content-section" id="kuis">
+                    <div class="section-header"><h2 class="section-title">Kuis</h2></div>
+                    <div id="quizContainer"></div>
+                </section>
+            </div>
+        </main>
+        <footer class="footer">
+            <div class="footer-inner">
+                <div class="footer-brand">
+                    <span class="footer-name">Media Belajar Daffa</span>
+                    <span class="footer-class">Muhammad Daffa Athallah - XII-M4-1</span>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script src="../matematika-wajib/script.js"></script>
+    <script src="../matematika-wajib/quiz-engine.js"></script>
+    <script>
+        const quizQuestions = [
+            { question: "Sikap saling menghargai dan menghormati perbedaan disebut...", options: ["Toleransi", "Radikalisme", "Pluralisme", "Fanatisme"], correct: 0, explanation: "Toleransi (Tasamuh) adalah sikap saling menghargai." },
+            { question: "Arti dari Bhinneka Tunggal Ika adalah...", options: ["Bersatu kita teguh", "Berbeda-beda tetapi tetap satu", "Bersama kita bisa", "Merdeka atau mati"], correct: 1, explanation: "Bhinneka Tunggal Ika berarti berbeda-beda tetapi tetap satu jua." },
+            { question: "Islam melarang sikap merasa paling benar dan mengkafirkan orang lain sembarangan. Sikap ini disebut...", options: ["Tasamuh", "Ta'awun", "Takabur & Ghuluw", "Tawadhu"], correct: 2, explanation: "Sikap merasa paling benar (eksklusif) dan berlebihan (ghuluw) adalah ciri radikalisme." },
+            { question: "Moderasi beragama merupakan implementasi dari sifat umat Islam sebagai umat...", options: ["Wathaniyah", "Insaniyah", "Wasathiyyah", "Islamiyah"], correct: 2, explanation: "Umat Islam adalah umat wasathi (moderat/tengah)." }
+        ];
+
+        // ==========================================
+        // MATCHING GAME LOGIC
+        // ==========================================
+        const gameData = [
+            { term: "Tasamuh", match: "Toleransi" },
+            { term: "Radikalisme", match: "Ekstremis" },
+            { term: "Ukhuwah", match: "Persaudaraan" },
+            { term: "Nasrani Najran", match: "Shalat di Masjid" },
+            { term: "Bhinneka Tunggal Ika", match: "Perbedaan" },
+            { term: "Rahmatan Lil Alamin", match: "Semesta Alam" }
+        ];
+
+        let cards = [];
+        let firstCard = null;
+        let secondCard = null;
+        let lockBoard = false;
+        let matches = 0;
+
+        function initGame() {
+            const grid = document.getElementById('gameGrid');
+            grid.innerHTML = '';
+            matches = 0;
+            document.getElementById('score').textContent = matches;
+            firstCard = null;
+            secondCard = null;
+            lockBoard = false;
+
+            cards = [];
+            gameData.forEach((item, index) => {
+                cards.push({ id: index, type: 'term', text: item.term, matchId: index });
+                cards.push({ id: index + 100, type: 'match', text: item.match, matchId: index });
+            });
+
+            cards.sort(() => Math.random() - 0.5);
+
+            cards.forEach(card => {
+                const cardEl = document.createElement('div');
+                cardEl.classList.add('game-card');
+                cardEl.dataset.id = card.id;
+                cardEl.dataset.matchId = card.matchId;
+                cardEl.textContent = card.text;
+                cardEl.addEventListener('click', flipCard);
+                grid.appendChild(cardEl);
+            });
+        }
+
+        function flipCard() {
+            if (lockBoard) return;
+            if (this === firstCard) return;
+            if (this.classList.contains('matched')) return;
+
+            this.classList.add('selected');
+
+            if (!firstCard) {
+                firstCard = this;
+                return;
+            }
+
+            secondCard = this;
+            checkForMatch();
+        }
+
+        function checkForMatch() {
+            let isMatch = firstCard.dataset.matchId === secondCard.dataset.matchId;
+
+            if (isMatch) {
+                disableCards();
+                matches++;
+                document.getElementById('score').textContent = matches;
+                if (matches === gameData.length) {
+                    setTimeout(() => alert("Masya Allah! Pemahamanmu tentang moderasi beragama sangat baik!"), 300);
+                }
+            } else {
+                unflipCards();
+            }
+        }
+
+        function disableCards() {
+            firstCard.classList.remove('selected');
+            secondCard.classList.remove('selected');
+            firstCard.classList.add('matched');
+            secondCard.classList.add('matched');
+            resetBoard();
+        }
+
+        function unflipCards() {
+            lockBoard = true;
+            firstCard.classList.add('wrong');
+            secondCard.classList.add('wrong');
+            
+            setTimeout(() => {
+                firstCard.classList.remove('selected', 'wrong');
+                secondCard.classList.remove('selected', 'wrong');
+                resetBoard();
+            }, 800);
+        }
+
+        function resetBoard() {
+            [firstCard, secondCard, lockBoard] = [null, null, false];
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            new QuizEngine('quizContainer', quizQuestions).init();
+            initGame();
+            
+            const quickNav = document.getElementById('quickNav');
+            window.addEventListener('scroll', () => quickNav.classList.toggle('scrolled', window.scrollY > 200));
+        });
+    </script>
+</body>
+</html>

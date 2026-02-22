@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Sejarah Peradaban Islam - Pendidikan Agama Islam">
+    <title>Sejarah Peradaban Islam - Media Belajar Daffa</title>
+    <link rel="stylesheet" href="../matematika-wajib/style.css">
+    <style>
+        /* Custom Styles for History Page */
+
+        /* Timeline Style */
+        .timeline {
+            position: relative;
+            padding: 20px 0;
+            border-left: 3px solid var(--accent-primary);
+            margin-left: 10px;
+        }
+        .timeline-item {
+            position: relative;
+            margin-bottom: 30px;
+            padding-left: 30px;
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -9px;
+            top: 0;
+            width: 15px;
+            height: 15px;
+            background: var(--accent-primary);
+            border-radius: 50%;
+            border: 3px solid var(--bg-card);
+        }
+        .timeline-year {
+            font-weight: bold;
+            color: var(--accent-primary);
+            font-size: 1.1rem;
+        }
+        .timeline-content {
+            background: var(--bg-card);
+            padding: 15px;
+            border-radius: var(--radius-md);
+            margin-top: 5px;
+            border: 1px solid var(--border-color);
+        }
+
+        /* Verse Box Styling (Dark Golden Theme for History) */
+        .verse-box {
+            background: linear-gradient(135deg, #3e2723 0%, #5d4037 100%); /* Dark Brown/Sepia */
+            border-left: 5px solid #f1c40f;
+            padding: 25px;
+            margin: 20px 0;
+            border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            color: #ffffff;
+            position: relative;
+            overflow: hidden;
+        }
+        .verse-box::after {
+            content: "﷽";
+            position: absolute; right: -10px; bottom: -20px;
+            font-size: 6rem; opacity: 0.05; font-family: 'Amiri', serif; color: #fff;
+        }
+        .verse-arabic {
+            font-size: 1.6rem; text-align: right; line-height: 2;
+            margin-bottom: 10px; font-family: 'Amiri', serif;
+            color: #ffffff; font-weight: bold;
+        }
+        .verse-translation { font-style: italic; color: #d7ccc8; line-height: 1.6; }
+        .verse-source { font-weight: bold; text-align: right; font-size: 0.9rem; color: #f1c40f; margin-top: 10px; }
+
+        /* Figure Card */
+        .figure-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px; margin: 20px 0;
+        }
+        .figure-card {
+            background: var(--bg-card); padding: 15px; border-radius: var(--radius-md);
+            text-align: center; border: 1px solid var(--border-color);
+            transition: transform 0.2s;
+        }
+        .figure-card:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .figure-icon { font-size: 2rem; color: var(--accent-primary); margin-bottom: 10px; display: block; }
+        .figure-name { font-weight: bold; margin-bottom: 5px; color: var(--text-primary); }
+        .figure-role { font-size: 0.9rem; color: var(--text-secondary); }
+
+        /* Game Area */
+        .game-container {
+            background: var(--bg-secondary); border-radius: var(--radius-lg);
+            padding: 20px; border: 1px solid var(--border-color); margin-top: 20px;
+        }
+        .game-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 12px; margin-top: 15px;
+        }
+        .game-card {
+            background: var(--bg-card); border: 2px solid var(--border-color);
+            border-radius: var(--radius-md); padding: 12px; text-align: center;
+            cursor: pointer; transition: all 0.2s ease; font-weight: 600;
+            min-height: 70px; display: flex; align-items: center; justify-content: center;
+            font-size: 0.95rem;
+        }
+        .game-card:hover { transform: translateY(-2px); border-color: var(--accent-secondary); }
+        
+        /* Game States */
+        .game-card.selected { border-color: var(--accent-primary); background: rgba(52, 152, 219, 0.1); color: var(--accent-primary); }
+        .game-card.matched { border-color: var(--success); background: rgba(39, 174, 96, 0.1); color: var(--success); cursor: default; opacity: 0.8; }
+        .game-card.wrong { border-color: var(--error); background: rgba(231, 76, 60, 0.1); animation: shake 0.4s; }
+        
+        @keyframes shake {
+            0% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } 100% { transform: translateX(0); }
+        }
+        .game-status { text-align: center; font-size: 1.1rem; margin-bottom: 10px; font-weight: bold; color: var(--text-secondary); }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="page-wrapper">
+        <header class="header">
+            <div class="header-inner">
+                <div class="logo">
+                    <svg class="logo-icon" viewBox="0 0 40 40" fill="none">
+                        <rect x="4" y="8" width="32" height="24" rx="2" stroke="currentColor" stroke-width="2"/>
+                        <path d="M4 14h32" stroke="currentColor" stroke-width="2"/>
+                        <circle cx="10" cy="11" r="2" fill="currentColor"/>
+                        <circle cx="16" cy="11" r="2" fill="currentColor"/>
+                        <rect x="8" y="18" width="24" height="2" rx="1" fill="currentColor" opacity="0.5"/>
+                    </svg>
+                    <span class="logo-text">Media Belajar Daffa</span>
+                </div>
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle tema">
+                    <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+                    <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                </button>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="container">
+                <div class="page-header">
+                    <nav class="breadcrumb">
+                        <a href="../index.html">Beranda</a><span>/</span>
+                        <a href="index.html">PAI</a><span>/</span>
+                        <span class="current">Sejarah Islam</span>
+                    </nav>
+                    <div class="accent-line"></div>
+                    <h1 class="page-title">Sejarah Peradaban Islam</h1>
+                    <p class="page-subtitle">Menelusuri jejak keemasan Islam dari masa kenabian hingga perkembangan di Nusantara.</p>
+                </div>
+
+                <div class="nav-btn-group">
+                    <a href="index.html" class="nav-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg> Kembali ke Daftar Materi</a>
+                    <a href="../index.html" class="nav-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Beranda</a>
+                </div>
+
+                <nav class="quick-nav" id="quickNav">
+                    <a href="#dakwah" class="quick-nav-btn">Dakwah Nabi</a>
+                    <a href="#khulafa" class="quick-nav-btn">Khulafaur Rasyidin</a>
+                    <a href="#indonesia" class="quick-nav-btn">Islam Indonesia</a>
+                    <a href="#tokoh" class="quick-nav-btn">Tokoh Ilmuwan</a>
+                    <a href="#interaktif" class="quick-nav-btn">Game</a>
+                </nav>
+
+                <!-- 1. Dakwah Nabi Muhammad -->
+                <section class="content-section" id="dakwah">
+                    <div class="section-header"><h2 class="section-title">1. Dakwah Nabi Muhammad SAW</h2></div>
+                    <div class="material-content">
+                        <div class="timeline">
+                            <div class="timeline-item">
+                                <div class="timeline-year">Masa Makkah (610-622 M)</div>
+                                <div class="timeline-content">
+                                    <p>Diangkatnya Nabi Muhammad menjadi Rasul di Gua Hira. Fokus dakwah pada <strong>tauhid</strong> dan akhlak. Menghadapi tekanan keras dari Quraisy. Peristiwa Isra Mi'raj dan Hijrah ke Habasyah.</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-year">Masa Madinah (622-632 M)</div>
+                                <div class="timeline-content">
+                                    <p><strong>Hijrah</strong> ke Madinah. Pembangunan masjid, pasar, dan persatuan umat (Ansar & Muhajirin). Perang Badar, Uhud, Khandaq. Perjanjian Hudaibiyah dan Fathul Makkah (Pembebasan Makkah).</p>
+                                </div>
+                            </div>
+                        </div>
+                </section>
+
+                <!-- 2. Khulafaur Rasyidin -->
+                <section class="content-section" id="khulafa">
+                    <div class="section-header"><h2 class="section-title">2. Khulafaur Rasyidin</h2></div>
+                    <div class="material-content">
+                        <p>Para pengganti Nabi Muhammad SAW yang mendapat petunjuk. Mereka memimpin selama ±30 tahun.</p>
+                        <div class="figure-grid">
+                            <div class="figure-card">
+                                <span class="figure-icon">1</span>
+                                <span class="figure-name">Abu Bakar Ash-Shiddiq</span>
+                                <span class="figure-role">Memerangi orang murtad & mengumpulkan Al-Quran.</span>
+                            </div>
+                            <div class="figure-card">
+                                <span class="figure-icon">2</span>
+                                <span class="figure-name">Umar bin Khattab</span>
+                                <span class="figure-role">Penaklukan besar (Persia, Romawi). Pelopor administrasi negara.</span>
+                            </div>
+                            <div class="figure-card">
+                                <span class="figure-icon">3</span>
+                                <span class="figure-name">Utsman bin Affan</span>
+                                <span class="figure-role">Penyebaran Islam hingga Spanyol. Penghimpunan Mushaf Usmani.</span>
+                            </div>
+                            <div class="figure-card">
+                                <span class="figure-icon">4</span>
+                                <span class="figure-name">Ali bin Abi Thalib</span>
+                                <span class="figure-role">Ahli ilmu dan keberanian. Memindahkan pusat pemerintahan ke Kufah.</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 3. Masuknya Islam ke Indonesia -->
+                <section class="content-section" id="indonesia">
+                    <div class="section-header"><h2 class="section-title">3. Masuknya Islam ke Indonesia</h2></div>
+                    <div class="material-content">
+                        <ul>
+                            <li><strong>Abad ke-7 M</strong>: Islam masuk melalui jalur perdagangan laut. Bukti tertua adalah berita Cina tentang taun 674 M tentang komunitas Arab di pesisir Sumatera (kunjungan utusan Arab ke Kerajaan Holing/Jawa).</li>
+                            <li><strong>Jalur Perdagangan</strong>: Pedagang Gujarat (India) dan Persia membawa Islam sambil berdagang rempah.</li>
+                            <li><strong>Abad ke-13 M</strong>: Berdiri Kesultanan Samudra Pasai (Aceh) sebagai kerajaan Islam pertama.</li>
+                            <li><strong>Abad ke-15 M</strong>: Perkembangan pesat di Jawa melalui Walisongo (Demak).</li>
+                        </ul>
+                        <h4>Teori Masuknya Islam:</h4>
+                        <ol>
+                            <li>Teori Gujarat (India).</li>
+                            <li>Teori Persia (Syiah).</li>
+                            <li>Teori Makkah (Arab).</li>
+                            <li>Teori Cina.</li>
+                        </ol>
+                    </div>
+                </section>
+
+                <!-- 4. Tokoh Ilmuwan Islam -->
+                <section class="content-section" id="tokoh">
+                    <div class="section-header"><h2 class="section-title">4. Tokoh Ilmuwan Islam</h2></div>
+                    <div class="material-content">
+                        <p>Peradaban Islam pernah menjadi pemimpin ilmu pengetahuan dunia (Golden Age).</p>
+                        <div class="figure-grid">
+                            <div class="figure-card">
+                                <span class="figure-icon">📐</span>
+                                <span class="figure-name">Al-Khawarizmi</span>
+                                <span class="figure-role">Bapak Aljabar (Al-Jabr).</span>
+                            </div>
+                            <div class="figure-card">
+                                <span class="figure-icon">💊</span>
+                                <span class="figure-name">Ibnu Sina</span>
+                                <span class="figure-role">Bapak Kedokteran Modern (Canon of Medicine).</span>
+                            </div>
+                            <div class="figure-card">
+                                <span class="figure-icon">🔭</span>
+                                <span class="figure-name">Al-Biruni</span>
+                                <span class="figure-role">Bapak Geodesi & Penemu jari-jari bumi.</span>
+                            </div>
+                            <div class="figure-card">
+                                <span class="figure-icon">👁️</span>
+                                <span class="figure-name">Ibnu Haytham</span>
+                                <span class="figure-role">Bapak Optik modern.</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- INTERAKTIF: GAME PASANGAN SEJARAH -->
+                <section class="content-section" id="interaktif">
+                    <div class="section-header"><h2 class="section-title">Game Pasangan Sejarah</h2></div>
+                    <div class="sim-container">
+                        <p style="text-align:center;">Cocokkan tokoh/istilah di kiri dengan peran/keterangan di kanan.</p>
+                        
+                        <div class="game-status">Skor: <span id="score">0</span> / 6</div>
+                        
+                        <div class="game-grid" id="gameGrid">
+                            <!-- Generated by JS -->
+                        </div>
+                        <button class="action-btn start" onclick="initGame()" style="display:block; margin-top:20px; margin-left:auto; margin-right:auto;">Ulangi Game</button>
+                    </div>
+                </section>
+
+                <section class="content-section" id="kuis">
+                    <div class="section-header"><h2 class="section-title">Kuis</h2></div>
+                    <div id="quizContainer"></div>
+                </section>
+            </div>
+        </main>
+        <footer class="footer">
+            <div class="footer-inner">
+                <div class="footer-brand">
+                    <span class="footer-name">Media Belajar Daffa</span>
+                    <span class="footer-class">Muhammad Daffa Athallah - XII-M4-1</span>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script src="../matematika-wajib/script.js"></script>
+    <script src="../matematika-wajib/quiz-engine.js"></script>
+    <script>
+        const quizQuestions = [
+            { question: "Kerajaan Islam pertama di Indonesia adalah...", options: ["Demak", "Samudra Pasai", "Mataram", "Banten"], correct: 1, explanation: "Samudra Pasai di Aceh." },
+            { question: "Khalifah yang mendapat julukan Al-Faruq (Sang Pemisah) adalah...", options: ["Abu Bakar", "Utsman", "Umar", "Ali"], correct: 2, explanation: "Umar bin Khattab." },
+            { question: "Ilmuwan Islam yang dikenal sebagai Bapak Aljabar adalah...", options: ["Ibnu Sina", "Al-Khawarizmi", "Al-Biruni", "Jabir Ibn Hayyan"], correct: 1, explanation: "Al-Khawarizmi menulis kitab Al-Jabr." },
+            { question: "Peristiwa pembebasan kota Makkah dari kekuasaan Quraisy disebut...", options: ["Isra Mi'raj", "Hijrah", "Fathul Makkah", "Badr"], correct: 2, explanation: "Fathul Makkah terjadi tahun 8 H." }
+        ];
+
+        // ==========================================
+        // MATCHING GAME LOGIC
+        // ==========================================
+        const gameData = [
+            { term: "Walisongo", match: "Penyebar Islam di Jawa" },
+            { term: "Al-Khawarizmi", match: "Tokoh Aljabar" },
+            { term: "Samudra Pasai", match: "Kerajaan Islam I" },
+            { term: "Hijrah", match: "622 M" },
+            { term: "Abu Bakar", match: "Khalifah Pertama" },
+            { term: "Ibnu Sina", match: "Kedokteran" }
+        ];
+
+        let cards = [];
+        let firstCard = null;
+        let secondCard = null;
+        let lockBoard = false;
+        let matches = 0;
+
+        function initGame() {
+            const grid = document.getElementById('gameGrid');
+            grid.innerHTML = '';
+            matches = 0;
+            document.getElementById('score').textContent = matches;
+            firstCard = null;
+            secondCard = null;
+            lockBoard = false;
+
+            cards = [];
+            gameData.forEach((item, index) => {
+                cards.push({ id: index, type: 'term', text: item.term, matchId: index });
+                cards.push({ id: index + 100, type: 'match', text: item.match, matchId: index });
+            });
+
+            cards.sort(() => Math.random() - 0.5);
+
+            cards.forEach(card => {
+                const cardEl = document.createElement('div');
+                cardEl.classList.add('game-card');
+                cardEl.dataset.id = card.id;
+                cardEl.dataset.matchId = card.matchId;
+                cardEl.textContent = card.text;
+                cardEl.addEventListener('click', flipCard);
+                grid.appendChild(cardEl);
+            });
+        }
+
+        function flipCard() {
+            if (lockBoard) return;
+            if (this === firstCard) return;
+            if (this.classList.contains('matched')) return;
+
+            this.classList.add('selected');
+
+            if (!firstCard) {
+                firstCard = this;
+                return;
+            }
+
+            secondCard = this;
+            checkForMatch();
+        }
+
+        function checkForMatch() {
+            let isMatch = firstCard.dataset.matchId === secondCard.dataset.matchId;
+
+            if (isMatch) {
+                disableCards();
+                matches++;
+                document.getElementById('score').textContent = matches;
+                if (matches === gameData.length) {
+                    setTimeout(() => alert("Masya Allah! Sejarahmu bagus sekali!"), 300);
+                }
+            } else {
+                unflipCards();
+            }
+        }
+
+        function disableCards() {
+            firstCard.classList.remove('selected');
+            secondCard.classList.remove('selected');
+            firstCard.classList.add('matched');
+            secondCard.classList.add('matched');
+            resetBoard();
+        }
+
+        function unflipCards() {
+            lockBoard = true;
+            firstCard.classList.add('wrong');
+            secondCard.classList.add('wrong');
+            
+            setTimeout(() => {
+                firstCard.classList.remove('selected', 'wrong');
+                secondCard.classList.remove('selected', 'wrong');
+                resetBoard();
+            }, 800);
+        }
+
+        function resetBoard() {
+            [firstCard, secondCard, lockBoard] = [null, null, false];
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            new QuizEngine('quizContainer', quizQuestions).init();
+            initGame();
+            
+            const quickNav = document.getElementById('quickNav');
+            window.addEventListener('scroll', () => quickNav.classList.toggle('scrolled', window.scrollY > 200));
+        });
+    </script>
+</body>
+</html>

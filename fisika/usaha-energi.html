@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Usaha dan Energi - Fisika">
+    <title>Usaha dan Energi - Media Belajar Daffa</title>
+    <link rel="stylesheet" href="../matematika-wajib/style.css">
+    <style>
+        /* Custom Styles */
+        .fraction {
+            display: inline-flex; flex-direction: column;
+            align-items: center; vertical-align: middle;
+            margin: 0 4px; font-family: var(--font-display);
+        }
+        .fraction-numerator { padding: 2px 8px; font-size: 1rem; line-height: 1.3; }
+        .fraction-line { width: 100%; height: 2px; background: var(--text-primary); border-radius: 1px; }
+        .fraction-denominator { padding: 2px 8px; font-size: 1rem; line-height: 1.3; }
+        .formula-box .fraction { background: var(--bg-card); padding: 8px 12px; border-radius: var(--radius-sm); margin: 0 8px; }
+
+        .sim-container {
+            background: var(--bg-secondary); border-radius: var(--radius-lg);
+            padding: 20px; margin: 20px 0; border: 1px solid var(--border-color);
+        }
+        .svg-box { background: var(--bg-card); border-radius: var(--radius-md); width: 100%; height: auto; overflow: hidden; }
+        
+        /* Action Buttons */
+        .action-btn {
+            padding: 10px 20px; border: none; border-radius: var(--radius-sm);
+            font-weight: bold; cursor: pointer; font-size: 1rem;
+            display: inline-flex; align-items: center; gap: 8px;
+            transition: all 0.2s; color: white;
+        }
+        .action-btn.start { background: #27ae60; box-shadow: 0 4px 0 #1e8449; }
+        .action-btn.push { background: #e67e22; box-shadow: 0 4px 0 #d35400; }
+        .action-btn.reset { background: #95a5a6; box-shadow: 0 4px 0 #7f8c8d; }
+        .action-btn:active { transform: translateY(2px); box-shadow: none; }
+
+        /* Data Cards */
+        .data-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px;
+            margin-top: 15px;
+        }
+        .data-card {
+            background: var(--bg-card); padding: 10px; border-radius: var(--radius-sm);
+            border-left: 4px solid var(--border-color); text-align: center;
+        }
+        .data-card.highlight { border-left-color: var(--accent-primary); }
+        .data-label { display: block; font-size: 0.8rem; color: var(--text-muted); }
+        .data-val { font-size: 1.1rem; font-weight: bold; font-family: var(--font-display); }
+        
+        /* Bar Charts for Energy */
+        .energy-bar-container {
+            display: flex; gap: 10px; height: 150px; align-items: flex-end; justify-content: center;
+            background: var(--bg-card); padding: 15px; border-radius: var(--radius-md); margin-top:10px;
+        }
+        .bar-group { width: 60px; display: flex; flex-direction: column; align-items: center; }
+        .bar {
+            width: 100%; border-radius: 4px 4px 0 0;
+            transition: height 0.1s linear;
+            position: relative;
+        }
+        .bar-ep { background: #3498db; } /* Blue for Potential */
+        .bar-ek { background: #e74c3c; } /* Red for Kinetic */
+        .bar-total { background: #2c3e50; } /* Dark for Total */
+        .bar-label { margin-top: 5px; font-size: 0.8rem; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="page-wrapper">
+        <header class="header">
+            <div class="header-inner">
+                <div class="logo">
+                    <svg class="logo-icon" viewBox="0 0 40 40" fill="none">
+                        <rect x="4" y="8" width="32" height="24" rx="2" stroke="currentColor" stroke-width="2"/>
+                        <path d="M4 14h32" stroke="currentColor" stroke-width="2"/>
+                        <circle cx="10" cy="11" r="2" fill="currentColor"/>
+                        <circle cx="16" cy="11" r="2" fill="currentColor"/>
+                        <rect x="8" y="18" width="24" height="2" rx="1" fill="currentColor" opacity="0.5"/>
+                    </svg>
+                    <span class="logo-text">Media Belajar Daffa</span>
+                </div>
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle tema">
+                    <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+                    <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                </button>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="container">
+                <div class="page-header">
+                    <nav class="breadcrumb">
+                        <a href="../index.html">Beranda</a><span>/</span>
+                        <a href="index.html">Fisika</a><span>/</span>
+                        <span class="current">Usaha dan Energi</span>
+                    </nav>
+                    <div class="accent-line"></div>
+                    <h1 class="page-title">Usaha dan Energi</h1>
+                    <p class="page-subtitle">Mempelajari konsep usaha, energi mekanik, dan hukum kekekalan energi melalui simulasi visual.</p>
+                </div>
+
+                <div class="nav-btn-group">
+                    <a href="index.html" class="nav-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg> Kembali ke Daftar Materi</a>
+                    <a href="../index.html" class="nav-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Beranda</a>
+                </div>
+
+                <nav class="quick-nav" id="quickNav">
+                    <a href="#usaha" class="quick-nav-btn">Usaha</a>
+                    <a href="#kinetik" class="quick-nav-btn">Energi Kinetik</a>
+                    <a href="#kekekalan" class="quick-nav-btn">Hukum Kekekalan</a>
+                    <a href="#daya" class="quick-nav-btn">Daya</a>
+                    <a href="#kuis" class="quick-nav-btn">Kuis</a>
+                </nav>
+
+                <!-- 1. Usaha -->
+                <section class="content-section" id="usaha">
+                    <div class="section-header"><h2 class="section-title">1. Konsep Usaha (Work)</h2></div>
+                    <div class="material-content">
+                        <p>Usaha adalah hasil kali antara gaya dengan perpindahan benda searah dengan arah gaya.</p>
+                        <div class="formula-box">
+                            <div class="formula">W = F . s . cos θ</div>
+                            <p style="font-size:0.9rem;">Keterangan: F = Gaya (N), s = Perpindahan (m), θ = Sudut antara F dan s.</p>
+                        </div>
+                    </div>
+
+                    <div class="sim-container">
+                        <div class="slider-control">
+                            <span class="slider-label">Gaya (F):</span>
+                            <input type="range" class="slider-input" id="workF" min="10" max="100" step="5" value="50">
+                            <span class="slider-value"><span id="valWorkF">50</span> N</span>
+                        </div>
+                        <div class="slider-control">
+                            <span class="slider-label">Sudut (θ):</span>
+                            <input type="range" class="slider-input" id="workTheta" min="0" max="90" step="5" value="0">
+                            <span class="slider-value"><span id="valWorkTheta">0</span>°</span>
+                        </div>
+
+                        <svg id="workSvg" class="svg-box" viewBox="0 0 500 200">
+                            <defs>
+                                <marker id="arrowW" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#e74c3c"/></marker>
+                            </defs>
+                            <!-- Floor -->
+                            <line x1="50" y1="150" x2="450" y2="150" stroke="#bdc3c7" stroke-width="3"/>
+                            <text x="250" y="180" text-anchor="middle" fill="var(--text-muted)">Lantai Licin</text>
+                            
+                            <!-- Box -->
+                            <g id="workBox" transform="translate(100, 110)">
+                                <rect x="0" y="0" width="50" height="40" fill="#3498db" stroke="#2980b9" stroke-width="2" rx="2"/>
+                                <text x="25" y="25" text-anchor="middle" fill="white" font-weight="bold">Balok</text>
+                                
+                                <!-- Force Vector -->
+                                <g id="forceVecGroup">
+                                    <line id="forceLine" x1="25" y1="20" x2="85" y2="20" stroke="#e74c3c" stroke-width="3" marker-end="url(#arrowW)"/>
+                                    <text id="forceLabel" x="60" y="10" fill="#e74c3c" font-size="12">F</text>
+                                </g>
+                            </g>
+                            
+                            <!-- Person Pushing -->
+                            <g id="pusherGroup" transform="translate(50, 100)">
+                                <circle cx="0" cy="-15" r="12" fill="#ffeaa7" stroke="#fdcb6e" stroke-width="2"/>
+                                <line x1="0" y1="-3" x2="0" y2="30" stroke="#3498db" stroke-width="4"/>
+                                <line id="pusherArm" x1="0" y1="10" x2="40" y2="10" stroke="#ffeaa7" stroke-width="4"/>
+                            </g>
+                        </svg>
+
+                        <div style="display:flex; gap:15px; justify-content:center; margin:15px 0;">
+                            <button class="action-btn push" onclick="startWorkSim()">Dorong Balok</button>
+                            <button class="action-btn reset" onclick="resetWorkSim()">Reset</button>
+                        </div>
+
+                        <div class="data-grid">
+                            <div class="data-card highlight">
+                                <span class="data-label">Perpindahan (s)</span>
+                                <span class="data-val" id="dispWorkS">0 m</span>
+                            </div>
+                            <div class="data-card">
+                                <span class="data-label">Komponen F (F cos θ)</span>
+                                <span class="data-val" id="dispWorkFcomp">50 N</span>
+                            </div>
+                            <div class="data-card active">
+                                <span class="data-label">Usaha (W)</span>
+                                <span class="data-val" id="dispWorkW">0 J</span>
+                            </div>
+                        </div>
+                        <div class="info-box" style="margin-top:10px;">
+                            <strong>Catatan:</strong> Jika θ = 90°, maka cos 90° = 0, sehingga Usaha = 0 (Gaya tegak lurus gerak tidak melakukan usaha).
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 2. Energi Kinetik -->
+                <section class="content-section" id="kinetik">
+                    <div class="section-header"><h2 class="section-title">2. Energi Kinetik (Ek)</h2></div>
+                    <div class="material-content">
+                        <p>Energi yang dimiliki benda karena geraknya.</p>
+                        <div class="formula-box">
+                            <div class="formula">E<sub>k</sub> = <span class="fraction"><span class="fraction-numerator">1</span><span class="fraction-line"></span><span class="fraction-denominator">2</span></span> m v²</div>
+                        </div>
+                    </div>
+                    <div class="sim-container">
+                         <div class="slider-control">
+                            <span class="slider-label">Massa (m):</span>
+                            <input type="range" class="slider-input" id="ekM" min="1" max="10" step="1" value="2">
+                            <span class="slider-value"><span id="valEkM">2</span> kg</span>
+                        </div>
+                        <div class="slider-control">
+                            <span class="slider-label">Kecepatan (v):</span>
+                            <input type="range" class="slider-input" id="ekV" min="0" max="20" step="1" value="5">
+                            <span class="slider-value"><span id="valEkV">5</span> m/s</span>
+                        </div>
+                        
+                        <div style="display:flex; align-items:center; justify-content:center; margin:20px 0;">
+                            <svg width="150" height="100">
+                                <rect x="50" y="30" width="40" height="40" fill="#e74c3c" rx="3"/>
+                                <line x1="90" y1="50" x2="130" y2="50" stroke="#95a5a6" stroke-width="2" marker-end="url(#arrowW)"/>
+                                <text x="70" y="90" text-anchor="middle" fill="var(--text-muted)">v m/s</text>
+                            </svg>
+                            <div style="font-size: 2rem; margin: 0 20px;">=</div>
+                            <div style="background:var(--bg-card); padding:15px; border-radius:var(--radius-md); text-align:center;">
+                                <span style="font-size:1.5rem; font-weight:bold; color:#e74c3c" id="dispEkVal">25 J</span><br>
+                                <span style="font-size:0.9rem; color:var(--text-muted)">Energi Kinetik</span>
+                            </div>
+                        </div>
+                        <p style="text-align:center; color:var(--text-secondary);">Benda bermassa <span id="dispEkM">2</span> kg bergerak dengan kecepatan <span id="dispEkV">5</span> m/s.</p>
+                    </div>
+                </section>
+
+                <!-- 3. Hukum Kekekalan Energi -->
+                <section class="content-section" id="kekekalan">
+                    <div class="section-header"><h2 class="section-title">3. Hukum Kekekalan Energi Mekanik</h2></div>
+                    <div class="material-content">
+                        <p>Dalam sistem konservatif (tanpa gaya gesek), energi mekanik total (Ep + Ek) selalu tetap.</p>
+                        <div class="formula-box">
+                            <div class="formula">Ep<sub>1</sub> + Ek<sub>1</sub> = Ep<sub>2</sub> + Ek<sub>2</sub></div>
+                        </div>
+                    </div>
+
+                    <div class="sim-container">
+                        <h4 style="text-align:center; margin-bottom:10px;">Simulasi Skate Park (Gerak Osilasi)</h4>
+                        <div class="slider-control">
+                            <span class="slider-label">Ketinggian Awal (h):</span>
+                            <input type="range" class="slider-input" id="conH" min="1" max="10" step="0.5" value="5">
+                            <span class="slider-value"><span id="valConH">5</span> m</span>
+                        </div>
+                        <div class="slider-control">
+                            <span class="slider-label">Massa (m):</span>
+                            <input type="range" class="slider-input" id="conM" min="1" max="5" step="0.5" value="1">
+                            <span class="slider-value"><span id="valConM">1</span> kg</span>
+                        </div>
+
+                        <svg id="conSvg" class="svg-box" viewBox="0 0 500 300">
+                            <!-- Track (Curve) -->
+                            <path id="trackPath" d="M 50 250 Q 250 50 450 250" fill="none" stroke="#bdc3c7" stroke-width="4"/>
+                            
+                            <!-- Ball -->
+                            <g id="ballGroup" transform="translate(50, 250)">
+                                <circle cx="0" cy="0" r="10" fill="#e74c3c"/>
+                            </g>
+                            
+                            <!-- Height Reference Line -->
+                            <line id="heightLine" x1="50" y1="250" x2="50" y2="150" stroke="#3498db" stroke-width="1" stroke-dasharray="4,4"/>
+                            <text id="heightLabel" x="60" y="200" fill="#3498db" font-size="12">h</text>
+                        </svg>
+
+                        <div style="display:flex; gap:15px; justify-content:center; margin:15px 0;">
+                            <button class="action-btn start" onclick="startConSim()">Lepaskan Bola!</button>
+                            <button class="action-btn reset" onclick="resetConSim()">Reset</button>
+                        </div>
+
+                        <div class="energy-bar-container">
+                            <div class="bar-group">
+                                <div class="bar bar-ep" id="barEp" style="height:0;"><span class="bar-val" id="valBarEp">0 J</span></div>
+                                <div class="bar-label" style="color:#3498db">Ep</div>
+                            </div>
+                            <div class="bar-group">
+                                <div class="bar bar-ek" id="barEk" style="height:0;"><span class="bar-val" id="valBarEk">0 J</span></div>
+                                <div class="bar-label" style="color:#e74c3c">Ek</div>
+                            </div>
+                            <div class="bar-group">
+                                <div class="bar bar-total" id="barTot" style="height:0;"><span class="bar-val" id="valBarTot">0 J</span></div>
+                                <div class="bar-label" style="color:#2c3e50">Total</div>
+                            </div>
+                        </div>
+                        <table class="force-table" style="margin-top:15px;">
+                            <tr><th>Ketinggian (h)</th><td id="tblConH">5 m</td></tr>
+                            <tr><th>Kecepatan (v)</th><td id="tblConV">0 m/s</td></tr>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- 4. Daya -->
+                <section class="content-section" id="daya">
+                    <div class="section-header"><h2 class="section-title">4. Daya (Power)</h2></div>
+                    <div class="material-content">
+                        <p>Laju usaha yang dilakukan per satuan waktu.</p>
+                        <div class="formula-box">
+                            <div class="formula">P = <span class="fraction"><span class="fraction-numerator">W</span><span class="fraction-line"></span><span class="fraction-denominator">t</span></span> (Satuan: Watt/Joule per detik)</div>
+                        </div>
+                    </div>
+
+                    <div class="sim-container">
+                        <div class="slider-control">
+                            <span class="slider-label">Massa Beban:</span>
+                            <input type="range" class="slider-input" id="powM" min="10" max="100" step="5" value="50">
+                            <span class="slider-value"><span id="valPowM">50</span> kg</span>
+                        </div>
+                        <div class="slider-control">
+                            <span class="slider-label">Waktu Angkat:</span>
+                            <input type="range" class="slider-input" id="powT" min="1" max="10" step="0.5" value="2">
+                            <span class="slider-value"><span id="valPowT">2</span> s</span>
+                        </div>
+
+                        <svg id="powSvg" class="svg-box" viewBox="0 0 500 300">
+                            <!-- Crane Structure -->
+                            <rect x="400" y="20" width="20" height="200" fill="#7f8c8d"/>
+                            <rect x="350" y="20" width="70" height="10" fill="#7f8c8d"/>
+                            <circle cx="360" cy="25" r="5" fill="#2c3e50"/>
+                            
+                            <!-- Rope -->
+                            <line id="powRope" x1="360" y1="25" x2="360" y2="250" stroke="#8b4513" stroke-width="2"/>
+                            
+                            <!-- Weight -->
+                            <rect id="powWeight" x="340" y="250" width="40" height="30" fill="#e74c3c" stroke="#c0392b" stroke-width="2" rx="2"/>
+                            <text x="360" y="270" text-anchor="middle" fill="white" font-weight="bold">m</text>
+                            
+                            <!-- Height Indicator -->
+                            <line x1="300" y1="280" x2="300" y2="100" stroke="#95a5a6" stroke-width="1" stroke-dasharray="4,4"/>
+                            <text x="310" y="190" fill="var(--text-muted)" font-size="12">h = 10m</text>
+                        </svg>
+
+                        <div style="display:flex; gap:15px; justify-content:center; margin:15px 0;">
+                            <button class="action-btn start" onclick="startPowSim()">Angkat Beban</button>
+                        </div>
+                        <div class="data-grid">
+                            <div class="data-card">
+                                <span class="data-label">Usaha (W)</span>
+                                <span class="data-val" id="dispPowW">0 J</span>
+                            </div>
+                            <div class="data-card active">
+                                <span class="data-label">Daya (P)</span>
+                                <span class="data-val" id="dispPowP">0 W</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="content-section" id="kuis">
+                    <div class="section-header"><h2 class="section-title">Kuis Usaha & Energi</h2></div>
+                    <div id="quizContainer"></div>
+                </section>
+            </div>
+        </main>
+        <footer class="footer">...</footer>
+    </div>
+
+    <script src="../matematika-wajib/script.js"></script>
+    <script src="../matematika-wajib/quiz-engine.js"></script>
+    <script>
+        const quizQuestions = [
+            { question: "Satuan SI untuk Usaha adalah...", options: ["Newton", "Watt", "Joule", "Pascal"], correct: 2, explanation: "1 Joule = 1 Newton meter." },
+            { question: "Sebuah benda bermassa 2 kg bergerak dengan kecepatan 3 m/s. Energi kinetiknya adalah...", options: ["3 J", "6 J", "9 J", "18 J"], correct: 2, explanation: "Ek = 0.5 * 2 * 3^2 = 9 J." },
+            { question: "Usaha yang dilakukan oleh gaya gesekan terhadap gerak benda selalu bernilai...", options: ["Positif", "Negatif", "Nol", "Tak tentu"], correct: 1, explanation: "Arah gaya gesekan berlawanan dengan arah gerak, sehingga sudut 180° (cos 180 = -1)." },
+            { question: "Benda jatuh bebas. Saat jatuh, energi potensial berubah menjadi...", options: ["Energi kimia", "Energi listrik", "Energi kinetik", "Usaha"], correct: 2, explanation: "Energi mekanik kekal: Ep menurun, Ek meningkat." }
+        ];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            new QuizEngine('quizContainer', quizQuestions).init();
+            const quickNav = document.getElementById('quickNav');
+            window.addEventListener('scroll', () => quickNav.classList.toggle('scrolled', window.scrollY > 200));
+
+            // --- 1. WORK SIMULATOR ---
+            const workF = document.getElementById('workF');
+            const workTheta = document.getElementById('workTheta');
+            let workState = { x: 0, running: false };
+
+            function updateWorkParams() {
+                document.getElementById('valWorkF').textContent = workF.value;
+                document.getElementById('valWorkTheta').textContent = workTheta.value;
+                const rad = parseFloat(workTheta.value) * Math.PI / 180;
+                const Fcomp = parseFloat(workF.value) * Math.cos(rad);
+                document.getElementById('dispWorkFcomp').textContent = Fcomp.toFixed(1) + " N";
+                
+                // Visual update arrow angle
+                const arrowLen = 60;
+                const dx = arrowLen * Math.cos(rad);
+                const dy = arrowLen * Math.sin(rad);
+                // Base point of vector relative to box center (25, 20)
+                const line = document.getElementById('forceLine');
+                line.setAttribute('x2', 25 + dx);
+                line.setAttribute('y2', 20 - dy); // Negative because SVG y is down
+                document.getElementById('forceLabel').setAttribute('x', 25 + dx/2);
+                document.getElementById('forceLabel').setAttribute('y', 20 - dy - 5);
+            }
+
+            window.startWorkSim = function() {
+                if(workState.running) return;
+                resetWorkSim();
+                workState.running = true;
+                loopWork();
+            };
+
+            window.resetWorkSim = function() {
+                workState = { x: 0, running: false };
+                document.getElementById('dispWorkS').textContent = "0 m";
+                document.getElementById('dispWorkW').textContent = "0 J";
+                document.getElementById('workBox').setAttribute('transform', `translate(100, 110)`);
+                document.getElementById('pusherGroup').setAttribute('transform', `translate(50, 100)`);
+                updateWorkParams();
+            };
+
+            function loopWork() {
+                if(!workState.running) return;
+                
+                const F = parseFloat(workF.value);
+                const deg = parseFloat(workTheta.value);
+                const rad = deg * Math.PI / 180;
+                const Fcomp = F * Math.cos(rad);
+                
+                // Only do work if horizontal component exists
+                if(Fcomp > 0) {
+                    const v = 2; // speed
+                    const dt = 0.02;
+                    const ds = v * dt; 
+                    workState.x += ds;
+                    
+                    const W = Fcomp * workState.x;
+                    
+                    document.getElementById('dispWorkS').textContent = workState.x.toFixed(1) + " m";
+                    document.getElementById('dispWorkW').textContent = W.toFixed(1) + " J";
+                    
+                    // Move visuals
+                    const px = 100 + (workState.x * 10); // Scale 10px/m
+                    document.getElementById('workBox').setAttribute('transform', `translate(${px}, 110)`);
+                    document.getElementById('pusherGroup').setAttribute('transform', `translate(${px - 50}, 100)`);
+                }
+
+                if(workState.x > 20) workState.running = false;
+                if(workState.running) requestAnimationFrame(loopWork);
+            }
+
+            workF.oninput = updateWorkParams;
+            workTheta.oninput = updateWorkParams;
+
+            // --- 2. KINETIC ENERGY ---
+            const ekM = document.getElementById('ekM');
+            const ekV = document.getElementById('ekV');
+
+            function updateEk() {
+                const m = parseFloat(ekM.value);
+                const v = parseFloat(ekV.value);
+                const ek = 0.5 * m * v * v;
+                
+                document.getElementById('valEkM').textContent = m;
+                document.getElementById('valEkV').textContent = v;
+                document.getElementById('dispEkM').textContent = m;
+                document.getElementById('dispEkV').textContent = v;
+                document.getElementById('dispEkVal').textContent = ek.toFixed(2) + " J";
+            }
+            ekM.oninput = updateEk;
+            ekV.oninput = updateEk;
+
+            // --- 3. CONSERVATION OF ENERGY ---
+            const conH = document.getElementById('conH');
+            const conM = document.getElementById('conM');
+            let conState = { angle: 0, running: false, direction: 1 };
+            const g = 10;
+
+            function updateConParams() {
+                document.getElementById('valConH').textContent = conH.value;
+                document.getElementById('valConM').textContent = conM.value;
+            }
+
+            window.startConSim = function() {
+                if(conState.running) return;
+                resetConSim();
+                conState.running = true;
+                loopCon();
+            };
+
+            window.resetConSim = function() {
+                conState = { angle: -90, running: false, direction: 1 }; // Start at top left
+                updateConParams();
+                drawCon(0, 0, 0);
+            };
+
+            function drawCon(h, v, t) {
+                const m = parseFloat(conM.value);
+                const ep = m * g * h;
+                const ek = 0.5 * m * v * v;
+                const em = ep + ek;
+
+                // Update Bars
+                const maxE = parseFloat(conH.value) * g * m * 1.2; // Max scale
+                const scale = 130 / maxE;
+                
+                document.getElementById('barEp').style.height = (ep * scale) + "px";
+                document.getElementById('valBarEp').textContent = ep.toFixed(1);
+                
+                document.getElementById('barEk').style.height = (ek * scale) + "px";
+                document.getElementById('valBarEk').textContent = ek.toFixed(1);
+                
+                document.getElementById('barTot').style.height = (em * scale) + "px";
+                document.getElementById('valBarTot').textContent = em.toFixed(1);
+
+                document.getElementById('tblConH').textContent = h.toFixed(2) + " m";
+                document.getElementById('tblConV').textContent = v.toFixed(2) + " m/s";
+
+                // Move Ball on Path (Semi-circle approximation)
+                // Angle determines position on semi-circle
+                // radius 200px approx. Center 250, 250.
+                // param angle: -90 (left top) to 0 (bottom) to 90 (right top)
+                const rad = conState.angle * Math.PI / 180;
+                const cx = 250 + (200 * Math.sin(rad));
+                const cy = 250 - (200 * Math.cos(rad)); // Center of SVG 250,250. Up is -Y.
+
+                document.getElementById('ballGroup').setAttribute('transform', `translate(${cx}, ${cy})`);
+                
+                // Height line
+                // h corresponds to Y position. Max h = radius.
+                // Real Height h_real = (H_max * (1-cos(theta))) -> simplified for visual
+            }
+
+            function loopCon() {
+                if(!conState.running) return;
+                
+                // Oscillate angle
+                conState.angle += (2 * conState.direction); // Speed
+                
+                // Bounce at edges
+                if(conState.angle >= 90) { conState.angle = 90; conState.direction = -1; }
+                if(conState.angle <= -90) { conState.angle = -90; conState.direction = 1; }
+
+                // Calculate physics based on angle
+                // Assuming H_max = 5m corresponds to radius 200px.
+                // Actual height relative to bottom (0): h = H_max * (1 - cos(theta)) -> No, bottom is h=0.
+                // Let's use Energy conservation.
+                const H_max = parseFloat(conH.value);
+                const m = parseFloat(conM.value);
+                
+                // Angle 0 = bottom (h=0). Angle 90 = top (h=H_max).
+                // h = H_max * sin^2(angle)? No, h = H_max * (1 - cos(angle_from_top)).
+                // angle -90 is top.
+                const angleFromTop = conState.angle + 90; // 0 to 180
+                const rad = angleFromTop * Math.PI / 180;
+                
+                // Height = H_max * sin^2(rad_from_top) if moving along curve.
+                // Let's simplify: h = H_max * cos(currentAngleFromHorizontal)
+                // If angle=0 (bottom), h=0. If angle=90 (top), h=H_max.
+                // My SVG logic: angle 0 is bottom. angle 90 is top right.
+                
+                // Let's use simple pendulum logic relative to bottom (0 potential at bottom)
+                // The SVG path is a semi-circle.
+                // Height relative to bottom: h = Radius - (Radius * cos(angle_from_bottom))
+                // If angle=0 (bottom), cos(0)=1, h=0. Correct.
+                // If angle=90 (side), cos(90)=0, h=Radius.
+                const radFromBottom = conState.angle * Math.PI / 180;
+                const h_ratio = 1 - Math.cos(radFromBottom); // 0 to 2
+                const h = H_max * (h_ratio / 2); // Normalized to 0 to H_max
+                
+                // v = sqrt(2g(Hmax - h))
+                const v = Math.sqrt(2 * g * (H_max - h));
+                const t = 0; // not needed
+
+                drawCon(h, v, t);
+
+                if(conState.running) requestAnimationFrame(loopCon);
+            }
+
+            conH.oninput = () => { if(!conState.running) resetConSim(); };
+            conM.oninput = () => { if(!conState.running) resetConSim(); };
+
+            // --- 4. POWER SIMULATOR ---
+            const powM = document.getElementById('powM');
+            const powT = document.getElementById('powT');
+            let powState = { y: 0, running: false };
+
+            function updatePowParams() {
+                document.getElementById('valPowM').textContent = powM.value;
+                document.getElementById('valPowT').textContent = powT.value;
+            }
+
+            window.startPowSim = function() {
+                if(powState.running) return;
+                updatePowParams();
+                
+                const m = parseFloat(powM.value);
+                const t = parseFloat(powT.value);
+                const h = 10; // Fixed height 10m
+                const W = m * 10 * h;
+                const P = W / t;
+
+                document.getElementById('dispPowW').textContent = W.toFixed(1) + " J";
+                document.getElementById('dispPowP').textContent = P.toFixed(1) + " W";
+
+                powState.running = true;
+                powState.y = 0;
+                
+                const startTime = performance.now();
+                const duration = t * 1000; // ms
+
+                function animatePow(now) {
+                    const elapsed = now - startTime;
+                    const progress = Math.min(elapsed / duration, 1);
+                    
+                    const currentY = 250 - (150 * progress); // Move up 150px
+                    document.getElementById('powWeight').setAttribute('y', currentY);
+                    document.getElementById('powRope').setAttribute('y2', currentY);
+                    
+                    if(progress < 1) {
+                        requestAnimationFrame(animatePow);
+                    } else {
+                        powState.running = false;
+                    }
+                }
+                requestAnimationFrame(animatePow);
+            };
+
+            powM.oninput = updatePowParams;
+            powT.oninput = updatePowParams;
+
+            // Init
+            updateWorkParams();
+            updateEk();
+            resetConSim();
+            updatePowParams();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Turunan (Diferensial) - Matematika Tingkat Lanjut">
+    <title>Turunan - Media Belajar Daffa</title>
+    <link rel="stylesheet" href="../matematika-wajib/style.css">
+    <style>
+        /* Fraction Styles */
+        .fraction {
+            display: inline-flex; flex-direction: column;
+            align-items: center; vertical-align: middle;
+            margin: 0 4px; font-family: var(--font-display);
+        }
+        .fraction-numerator { padding: 2px 8px; font-size: 1rem; line-height: 1.3; }
+        .fraction-line { width: 100%; height: 2px; background: var(--text-primary); border-radius: 1px; }
+        .fraction-denominator { padding: 2px 8px; font-size: 1rem; line-height: 1.3; }
+        .formula-box .fraction { background: var(--bg-card); padding: 8px 12px; border-radius: var(--radius-sm); margin: 0 8px; }
+        .formula-box .fraction-line { background: var(--accent-primary); }
+
+        /* Graph Styles */
+        .graph-stage {
+            background: var(--bg-secondary); border-radius: var(--radius-lg);
+            padding: 20px; margin: 20px 0; position: relative;
+        }
+        .graph-svg { width: 100%; height: auto; min-height: 300px; background: var(--bg-card); border-radius: var(--radius-md); }
+        .grid-line { stroke: var(--border-light); stroke-width: 0.5; }
+        .axis { stroke: var(--text-muted); stroke-width: 1.5; }
+        .func-line { fill: none; stroke: var(--accent-primary); stroke-width: 2.5; }
+        .tangent-line { fill: none; stroke: var(--error); stroke-width: 2; stroke-dasharray: 5,5; }
+        .point-dot { fill: var(--success); stroke: white; stroke-width: 2; }
+        
+        .calc-box {
+            background: var(--bg-card);
+            border-left: 4px solid var(--accent-primary);
+            padding: 15px;
+            margin-top: 15px;
+            border-radius: 0 var(--radius-md) var(--radius-md) 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="page-wrapper">
+        <header class="header">
+            <div class="header-inner">
+                <div class="logo">
+                    <svg class="logo-icon" viewBox="0 0 40 40" fill="none">
+                        <rect x="4" y="8" width="32" height="24" rx="2" stroke="currentColor" stroke-width="2"/>
+                        <path d="M4 14h32" stroke="currentColor" stroke-width="2"/>
+                        <circle cx="10" cy="11" r="2" fill="currentColor"/>
+                        <circle cx="16" cy="11" r="2" fill="currentColor"/>
+                        <rect x="8" y="18" width="24" height="2" rx="1" fill="currentColor" opacity="0.5"/>
+                    </svg>
+                    <span class="logo-text">Media Belajar Daffa</span>
+                </div>
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle tema">
+                    <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+                    <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                </button>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="container">
+                <div class="page-header">
+                    <nav class="breadcrumb">
+                        <a href="../index.html">Beranda</a><span>/</span>
+                        <a href="index.html">Matematika Lanjut</a><span>/</span>
+                        <span class="current">Turunan</span>
+                    </nav>
+                    <div class="accent-line"></div>
+                    <h1 class="page-title">Turunan (Diferensial)</h1>
+                    <p class="page-subtitle">Mempelajari laju perubahan fungsi, aturan-aturan dasar, dan aplikasinya.</p>
+                </div>
+
+                <div class="nav-btn-group">
+                    <a href="index.html" class="nav-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg> Kembali ke Daftar Materi</a>
+                    <a href="../index.html" class="nav-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Beranda</a>
+                </div>
+
+                <nav class="quick-nav" id="quickNav">
+                    <a href="#materi-inti" class="quick-nav-btn">Materi</a>
+                    <a href="#animasi-interaktif" class="quick-nav-btn">Animasi</a>
+                    <a href="#contoh-soal" class="quick-nav-btn">Contoh Soal</a>
+                    <a href="#latihan-soal" class="quick-nav-btn">Latihan</a>
+                    <a href="#kuis" class="quick-nav-btn">Kuis</a>
+                </nav>
+
+                <!-- Material Content -->
+                <section class="content-section" id="materi-inti">
+                    <div class="section-header"><h2 class="section-title">Materi Inti</h2></div>
+                    <div class="material-content">
+                        <h3>1. Definisi Turunan</h3>
+                        <p>Turunan fungsi f(x) mendefinisikan laju perubahan sesaat. Secara geometris, turunan adalah gradien garis singgung kurva di titik tertentu.</p>
+                        <div class="formula-box">
+                            <div class="formula-label">Definisi Limit</div>
+                            <div class="formula">f'(x) = lim <sub>h→0</sub> <span class="fraction"><span class="fraction-numerator">f(x + h) - f(x)</span><span class="fraction-line"></span><span class="fraction-denominator">h</span></span></div>
+                        </div>
+
+                        <h3>2. Aturan Dasar Turunan</h3>
+                        <h4>a. Fungsi Konstanta & Pangkat</h4>
+                        <div class="formula-box">
+                            <div class="formula">f(x) = c → f'(x) = 0</div>
+                            <div class="formula" style="margin-top:5px;">f(x) = x<sup>n</sup> → f'(x) = n . x<sup>n-1</sup></div>
+                        </div>
+
+                        <h4>b. Aturan Penjumlahan, Pengurangan, Perkalian, Pembagian</h4>
+                        <p>Misalkan u = u(x) dan v = v(x).</p>
+                        <div class="formula-box">
+                            <div class="formula">(u ± v)' = u' ± v'</div>
+                            <div class="formula" style="margin-top:5px;">(u . v)' = u'.v + u.v'</div>
+                            <div class="formula" style="margin-top:5px;">(u / v)' = <span class="fraction"><span class="fraction-numerator">u'.v - u.v'</span><span class="fraction-line"></span><span class="fraction-denominator">v²</span></span></div>
+                        </div>
+
+                        <h3>3. Aturan Rantai (Chain Rule)</h3>
+                        <p>Digunakan untuk fungsi komposisi y = f(g(x)).</p>
+                        <div class="formula-box">
+                            <div class="formula">dy/dx = f'(g(x)) . g'(x)</div>
+                            <div style="margin-top:5px;">Atau: (f(u))' = f'(u) . u'</div>
+                        </div>
+
+                        <h3>4. Turunan Fungsi Implisit</h3>
+                        <p>Digunakan jika fungsi tidak dinyatakan secara eksplisit y = f(x), melainkan F(x, y) = 0.</p>
+                        <p>Langkah: Turunkan kedua ruas terhadap x, gunakan aturan rantai untuk suku mengandung y (y' = dy/dx), lalu selesaikan untuk y'.</p>
+
+                        <h3>5. Turunan Fungsi Trigonometri</h3>
+                        <div class="formula-box">
+                            <div class="formula">y = sin x → y' = cos x</div>
+                            <div class="formula" style="margin-top:5px;">y = cos x → y' = - sin x</div>
+                            <div class="formula" style="margin-top:5px;">y = tan x → y' = sec² x</div>
+                        </div>
+
+                        <h3>6. Turunan Eksponen dan Logaritma</h3>
+                        <div class="formula-box">
+                            <div class="formula">y = a<sup>x</sup> → y' = a<sup>x</sup> ln a</div>
+                            <div class="formula" style="margin-top:5px;">y = e<sup>x</sup> → y' = e<sup>x</sup></div>
+                            <div class="formula" style="margin-top:5px;">y = <sup>a</sup>log x → y' = <span class="fraction"><span class="fraction-numerator">1</span><span class="fraction-line"></span><span class="fraction-denominator">x ln a</span></span></div>
+                            <div class="formula" style="margin-top:5px;">y = ln x → y' = <span class="fraction"><span class="fraction-numerator">1</span><span class="fraction-line"></span><span class="fraction-denominator">x</span></span></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Interactive Animations -->
+                <section class="content-section" id="animasi-interaktif">
+                    <div class="section-header"><h2 class="section-title">Visualisator Gradien</h2></div>
+
+                    <div class="animation-container">
+                        <div class="animation-header"><span class="animation-title">Grafik Garis Singgung (Turunan)</span></div>
+                        <p style="font-size:0.9rem; color:var(--text-muted); text-align:center; margin-bottom:10px;">
+                            Geser titik hijau pada kurva untuk melihat gradien garis singgung (garis putus-putus merah).
+                        </p>
+                        
+                        <div class="graph-stage">
+                            <div class="slider-control">
+                                <span class="slider-label">Posisi x:</span>
+                                <input type="range" class="slider-input" id="tangentX" min="-3" max="3" step="0.1" value="1">
+                                <span class="slider-value" id="tangentXVal">1</span>
+                            </div>
+                            <svg id="graphSvg" class="graph-svg" viewBox="0 0 400 300">
+                                <defs><pattern id="gridDiff" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M 20 0 L 0 0 0 20" fill="none" class="grid-line"/></pattern></defs>
+                                <rect width="100%" height="100%" fill="url(#gridDiff)"/>
+                                
+                                <!-- Axes -->
+                                <line x1="200" y1="0" x2="200" y2="300" class="axis"/>
+                                <line x1="0" y1="150" x2="400" y2="150" class="axis"/>
+                                
+                                <!-- Function Curve -->
+                                <path id="funcPath" class="func-line" d=""/>
+                                
+                                <!-- Tangent Line -->
+                                <line id="tangentLine" x1="0" y1="0" x2="400" y2="300" class="tangent-line"/>
+                                
+                                <!-- Point -->
+                                <circle id="pointDot" cx="220" cy="110" r="6" class="point-dot"/>
+                            </svg>
+                        </div>
+
+                        <div class="calc-box">
+                            <p>Fungsi: <strong>f(x) = x² - 1</strong></p>
+                            <p>Turunan: <strong>f'(x) = 2x</strong></p>
+                            <p>Gradien di x = <span id="dispX">1</span> adalah <strong style="color:var(--error)">m = <span id="dispM">2</span></strong>.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Example Problems -->
+                <section class="content-section" id="contoh-soal">
+                    <div class="section-header"><h2 class="section-title">Contoh Soal</h2></div>
+
+                    <div class="example-card">
+                        <div class="example-header"><span class="example-number">1</span><span class="example-title">Aturan Rantai</span></div>
+                        <div class="example-body">
+                            <p class="example-question">Tentukan turunan dari y = (3x² + 2x)<sup>5</sup>.</p>
+                            <div class="solution-steps">
+                                <div class="solution-step"><span class="step-marker">1</span><div class="step-content">
+                                    <span class="step-label">Identifikasi</span>
+                                    <p class="step-text">u = 3x² + 2x, n = 5.</p>
+                                </div></div>
+                                <div class="solution-step"><span class="step-marker">2</span><div class="step-content">
+                                    <span class="step-label">Hitung u'</span>
+                                    <span class="step-math">u' = 6x + 2</span>
+                                </div></div>
+                                <div class="solution-step"><span class="step-marker">3</span><div class="step-content">
+                                    <span class="step-label">Terapkan Rantai</span>
+                                    <span class="step-math">y' = 5(u)<sup>4</sup> . u'</span>
+                                    <span class="step-math">y' = 5(3x² + 2x)<sup>4</sup> (6x + 2)</span>
+                                </div></div>
+                            </div>
+                            <div class="example-answer"><svg class="answer-icon">...</svg><span class="answer-text">y' = 5(3x² + 2x)⁴ (6x + 2)</span></div>
+                        </div>
+                    </div>
+                    
+                    <div class="example-card">
+                        <div class="example-header"><span class="example-number">2</span><span class="example-title">Turunan Implisit</span></div>
+                        <div class="example-body">
+                            <p class="example-question">Tentukan dy/dx dari x² + y² = 25.</p>
+                            <div class="solution-steps">
+                                <div class="solution-step"><span class="step-marker">1</span><div class="step-content">
+                                    <span class="step-label">Turunkan kedua ruas</span>
+                                    <span class="step-math">2x + 2y . y' = 0</span>
+                                </div></div>
+                                <div class="solution-step"><span class="step-marker">2</span><div class="step-content">
+                                    <span class="step-label">Solve for y'</span>
+                                    <span class="step-math">2y . y' = -2x</span>
+                                    <span class="step-math">y' = -x/y</span>
+                                </div></div>
+                            </div>
+                            <div class="example-answer"><svg class="answer-icon">...</svg><span class="answer-text">dy/dx = -x/y</span></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Practice Problems -->
+                <section class="content-section" id="latihan-soal">
+                    <div class="section-header"><h2 class="section-title">Latihan Soal</h2></div>
+                    <div class="practice-grid">
+                        <div class="practice-item"><span class="practice-number">1</span><div class="practice-content"><p class="practice-question">Tentukan turunan dari f(x) = 4x³ - 2x + 7.</p></div></div>
+                        <div class="practice-item"><span class="practice-number">2</span><div class="practice-content"><p class="practice-question">Gunakan aturan rantai untuk y = sin(2x).</p></div></div>
+                        <div class="practice-item"><span class="practice-number">3</span><div class="practice-content"><p class="practice-question">Tentukan dy/dx dari y² + xy = 3.</p></div></div>
+                    </div>
+                </section>
+
+                <!-- Quiz Section -->
+                <section class="content-section" id="kuis">
+                    <div class="section-header"><h2 class="section-title">Kuis</h2></div>
+                    <div id="quizContainer"></div>
+                </section>
+            </div>
+        </main>
+        <footer class="footer">...</footer>
+    </div>
+
+    <script src="../matematika-wajib/script.js"></script>
+    <script src="../matematika-wajib/quiz-engine.js"></script>
+    <script>
+        const quizQuestions = [
+            { question: "Turunan dari f(x) = x⁵ adalah...", options: ["5x⁴", "x⁴", "5x", "x⁵"], correct: 0, explanation: "Aturan pangkat: n.x^(n-1)." },
+            { question: "Turunan dari y = e³x adalah...", options: ["e³x", "3e³x", "3x", "e"], correct: 1, explanation: "Chain rule: turunan e^u = u'.e^u." },
+            { question: "Jika y = ln x, maka y' = ...", options: ["x", "1/x", "ln x", "eˣ"], correct: 1, explanation: "Turunan ln x adalah 1/x." },
+            { question: "Turunan dari y = sin x adalah...", options: ["-sin x", "-cos x", "cos x", "tan x"], correct: 2, explanation: "Turunan sinus adalah kosinus." }
+        ];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            new QuizEngine('quizContainer', quizQuestions).init();
+            
+            const quickNav = document.getElementById('quickNav');
+            window.addEventListener('scroll', () => quickNav.classList.toggle('scrolled', window.scrollY > 200));
+
+            // --- Derivative Graph Logic ---
+            const tangentSlider = document.getElementById('tangentX');
+            const funcPath = document.getElementById('funcPath');
+            const tangentLine = document.getElementById('tangentLine');
+            const pointDot = document.getElementById('pointDot');
+            
+            // Func: y = x^2 - 1. Center (200, 150). Scale 20px/unit.
+            const O = {x: 200, y: 150};
+            const S = 20;
+
+            function updateDerivative() {
+                const x = parseFloat(tangentSlider.value);
+                document.getElementById('tangentXVal').textContent = x;
+
+                // Draw Curve y = x^2 - 1
+                let d = "";
+                for(let px = -10; px <= 10; px += 0.2) {
+                    const py = px*px - 1;
+                    const svgX = O.x + px * S;
+                    const svgY = O.y - py * S;
+                    d += (px === -10 ? "M" : "L") + ` ${svgX} ${svgY}`;
+                }
+                funcPath.setAttribute('d', d);
+
+                // Calculate Derivative f'(x) = 2x
+                const m = 2 * x;
+                const y_val = x*x - 1;
+
+                // Draw Tangent Line
+                // Equation: y - y1 = m(x - x1)
+                // We need two points for SVG line. Let's use x-2 and x+2 range for drawing the line
+                const x1_t = x - 2;
+                const y1_t = m * (x1_t - x) + y_val;
+                const x2_t = x + 2;
+                const y2_t = m * (x2_t - x) + y_val;
+
+                tangentLine.setAttribute('x1', O.x + x1_t * S);
+                tangentLine.setAttribute('y1', O.y - y1_t * S);
+                tangentLine.setAttribute('x2', O.x + x2_t * S);
+                tangentLine.setAttribute('y2', O.y - y2_t * S);
+
+                // Draw Point
+                pointDot.setAttribute('cx', O.x + x * S);
+                pointDot.setAttribute('cy', O.y - y_val * S);
+
+                // Update Text
+                document.getElementById('dispX').textContent = x.toFixed(1);
+                document.getElementById('dispM').textContent = m.toFixed(1);
+            }
+
+            if(tangentSlider) { tangentSlider.oninput = updateDerivative; updateDerivative(); }
+        });
+    </script>
+</body>
+</html>

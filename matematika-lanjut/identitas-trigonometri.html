@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Identitas Trigonometri - Matematika Tingkat Lanjut">
+    <title>Identitas Trigonometri - Media Belajar Daffa</title>
+    <link rel="stylesheet" href="../matematika-wajib/style.css">
+    <style>
+        /* Fraction Styles */
+        .fraction {
+            display: inline-flex; flex-direction: column;
+            align-items: center; vertical-align: middle;
+            margin: 0 4px; font-family: var(--font-display);
+        }
+        .fraction-numerator { padding: 2px 8px; font-size: 1rem; line-height: 1.3; }
+        .fraction-line { width: 100%; height: 2px; background: var(--text-primary); border-radius: 1px; }
+        .fraction-denominator { padding: 2px 8px; font-size: 1rem; line-height: 1.3; }
+        .formula-box .fraction { background: var(--bg-card); padding: 8px 12px; border-radius: var(--radius-sm); margin: 0 8px; }
+        .formula-box .fraction-line { background: var(--accent-primary); }
+
+        /* Unit Circle Styles */
+        .circle-container {
+            background: var(--bg-secondary); border-radius: var(--radius-lg);
+            padding: 20px; margin: 20px 0; position: relative;
+        }
+        .circle-svg { width: 100%; height: auto; min-height: 300px; }
+        .axis { stroke: var(--text-muted); stroke-width: 1.5; }
+        .circle-line { fill: none; stroke: var(--accent-primary); stroke-width: 2; }
+        .proj-line { stroke-width: 1.5; stroke-dasharray: 4,4; opacity: 0.7; }
+        .drag-point { cursor: grab; fill: var(--accent-secondary); stroke: white; stroke-width: 2; transition: r 0.1s; }
+        .drag-point:active { cursor: grabbing; }
+
+        /* Identity Proof Box */
+        .proof-box {
+            background: var(--bg-card);
+            border-left: 4px solid var(--success);
+            padding: 15px;
+            margin-top: 15px;
+            border-radius: 0 var(--radius-md) var(--radius-md) 0;
+        }
+        .proof-title { font-weight: 700; color: var(--text-primary); margin-bottom: 5px; }
+        .proof-math { font-family: var(--font-display); font-size: 1.1rem; color: var(--accent-primary); }
+    </style>
+</head>
+<body>
+    <div class="page-wrapper">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-inner">
+                <div class="logo">
+                    <svg class="logo-icon" viewBox="0 0 40 40" fill="none">
+                        <rect x="4" y="8" width="32" height="24" rx="2" stroke="currentColor" stroke-width="2"/>
+                        <path d="M4 14h32" stroke="currentColor" stroke-width="2"/>
+                        <circle cx="10" cy="11" r="2" fill="currentColor"/>
+                        <circle cx="16" cy="11" r="2" fill="currentColor"/>
+                        <rect x="8" y="18" width="24" height="2" rx="1" fill="currentColor" opacity="0.5"/>
+                    </svg>
+                    <span class="logo-text">Media Belajar Daffa</span>
+                </div>
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle tema">
+                    <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+                    <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                </button>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="container">
+                <div class="page-header">
+                    <nav class="breadcrumb">
+                        <a href="../index.html">Beranda</a><span>/</span>
+                        <a href="index.html">Matematika Lanjut</a><span>/</span>
+                        <span class="current">Identitas Trigonometri</span>
+                    </nav>
+                    <div class="accent-line"></div>
+                    <h1 class="page-title">Identitas Trigonometri</h1>
+                    <p class="page-subtitle">Membuktikan dan menggunakan identitas Pythagoras, sudut rangkap, dan jumlah-selisih sudut.</p>
+                </div>
+
+                <div class="nav-btn-group">
+                    <a href="index.html" class="nav-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg> Kembali ke Daftar Materi</a>
+                    <a href="../index.html" class="nav-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Beranda</a>
+                </div>
+
+                <nav class="quick-nav" id="quickNav">
+                    <a href="#materi-inti" class="quick-nav-btn">Materi</a>
+                    <a href="#animasi-interaktif" class="quick-nav-btn">Animasi</a>
+                    <a href="#contoh-soal" class="quick-nav-btn">Contoh Soal</a>
+                    <a href="#latihan-soal" class="quick-nav-btn">Latihan</a>
+                    <a href="#kuis" class="quick-nav-btn">Kuis</a>
+                </nav>
+
+                <!-- Learning Objectives -->
+                <section class="content-section">
+                    <div class="section-header"><h2 class="section-title">Tujuan Pembelajaran</h2></div>
+                    <div class="objectives-list">
+                        <div class="objective-item"><span class="objective-number">1</span><span class="objective-text">Memahami dan membuktikan Identitas Pythagoras</span></div>
+                        <div class="objective-item"><span class="objective-number">2</span><span class="objective-text">Menurunkan identitas tangen dan identitas sekawan</span></div>
+                        <div class="objective-item"><span class="objective-number">3</span><span class="objective-text">Menggunakan rumus sudut rangkap dan sudut setengah</span></div>
+                        <div class="objective-item"><span class="objective-number">4</span><span class="objective-text">Menggunakan rumus jumlah dan selisih sudut</span></div>
+                    </div>
+                </section>
+
+                <!-- Material Content -->
+                <section class="content-section" id="materi-inti">
+                    <div class="section-header"><h2 class="section-title">Materi Inti</h2></div>
+                    <div class="material-content">
+                        <h3>1. Identitas Pythagoras</h3>
+                        <p>Identitas trigonometri paling dasar yang berasal dari persamaan lingkaran satuan x² + y² = 1.</p>
+                        <div class="formula-box">
+                            <div class="formula-label">Identitas Dasar</div>
+                            <div class="formula">sin² x + cos² x = 1</div>
+                        </div>
+
+                        <h4>Turunan Identitas Pythagoras:</h4>
+                        <p>Dengan membagi ruas kiri dan kanan identitas dasar dengan cos² x (untuk turunan pertama) dan sin² x (untuk turunan kedua), diperoleh:</p>
+                        <div class="formula-box">
+                            <div class="formula">1 + tan² x = sec² x</div>
+                            <div class="formula" style="margin-top:5px;">1 + cot² x = cosec² x</div>
+                        </div>
+
+                        <h3>2. Identitas Sudut Rangkap (Sudut Ganda)</h3>
+                        <p>Rumus untuk trigonometri sudut 2x.</p>
+                        <div class="formula-box">
+                            <div class="formula-label">Sinus Ganda</div>
+                            <div class="formula">sin 2x = 2 sin x cos x</div>
+                        </div>
+                        <div class="formula-box">
+                            <div class="formula-label">Cosinus Ganda</div>
+                            <div class="formula">cos 2x = cos² x - sin² x</div>
+                            <div style="margin-top:5px;">= 2 cos² x - 1</div>
+                            <div style="margin-top:5px;">= 1 - 2 sin² x</div>
+                        </div>
+                        <div class="formula-box">
+                            <div class="formula-label">Tangen Ganda</div>
+                            <div class="formula">tan 2x = <span class="fraction"><span class="fraction-numerator">2 tan x</span><span class="fraction-line"></span><span class="fraction-denominator">1 - tan² x</span></span></div>
+                        </div>
+
+                        <h3>3. Identitas Jumlah dan Selisih Sudut</h3>
+                        <div class="formula-box">
+                            <div class="formula">sin (α ± β) = sin α cos β ± cos α sin β</div>
+                            <div class="formula" style="margin-top:10px;">cos (α ± β) = cos α cos β ∓ sin α sin β</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Interactive Animations -->
+                <section class="content-section" id="animasi-interaktif">
+                    <div class="section-header"><h2 class="section-title">Visualisasi Identitas Pythagoras</h2></div>
+
+                    <div class="animation-container">
+                        <div class="animation-header"><span class="animation-title">Buktikan sin² x + cos² x = 1</span></div>
+                        
+                        <div class="slider-control">
+                            <span class="slider-label">Sudut x:</span>
+                            <input type="range" class="slider-input" id="angleX" min="0" max="360" value="30">
+                            <span class="slider-value" id="angleXVal">30°</span>
+                        </div>
+
+                        <div class="circle-container">
+                            <svg id="circleSvg" class="circle-svg" viewBox="0 0 300 300">
+                                <!-- Axes -->
+                                <line x1="0" y1="150" x2="300" y2="150" class="axis"/>
+                                <line x1="150" y1="0" x2="150" y2="300" class="axis"/>
+                                
+                                <!-- Unit Circle -->
+                                <circle cx="150" cy="150" r="100" class="circle-line"/>
+                                
+                                <!-- Projections -->
+                                <line id="lineSin" x1="150" y1="150" x2="150" y2="150" class="proj-line" stroke="#e74c3c"/>
+                                <line id="lineCos" x1="150" y1="150" x2="150" y2="150" class="proj-line" stroke="#3498db"/>
+                                
+                                <!-- Radius -->
+                                <line id="lineRadius" x1="150" y1="150" x2="250" y2="150" stroke="var(--text-muted)" stroke-width="1.5"/>
+                                
+                                <!-- Point -->
+                                <circle id="pointUnit" cx="250" cy="150" r="8" class="drag-point"/>
+                            </svg>
+                        </div>
+
+                        <div class="proof-box">
+                            <div class="proof-title">Perhitungan Dinamis:</div>
+                            <p id="proofCalc" style="margin: 10px 0;">
+                                sin(30°)² + cos(30°)² = <span style="color:#e74c3c">0.25</span> + <span style="color:#3498db">0.75</span> = <strong>1.00</strong>
+                            </p>
+                            <p style="font-size:0.9rem; color:var(--text-muted);">Perhatikan bahwa bagaimanapun Anda mengubah sudut, hasilnya selalu 1.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Example Problems -->
+                <section class="content-section" id="contoh-soal">
+                    <div class="section-header"><h2 class="section-title">Contoh Soal</h2></div>
+
+                    <div class="example-card">
+                        <div class="example-header"><span class="example-number">1</span><span class="example-title">Pembuktian</span></div>
+                        <div class="example-body">
+                            <p class="example-question">Buktikan bahwa tan x cot x = 1.</p>
+                            <div class="solution-steps">
+                                <div class="solution-step"><span class="step-marker">1</span><div class="step-content">
+                                    <span class="step-label">Definisi</span>
+                                    <p class="step-text">tan x = sin x / cos x dan cot x = cos x / sin x.</p>
+                                    <span class="step-math">tan x . cot x = (<span class="fraction"><span class="fraction-numerator">sin x</span><span class="fraction-line"></span><span class="fraction-denominator">cos x</span></span>) . (<span class="fraction"><span class="fraction-numerator">cos x</span><span class="fraction-line"></span><span class="fraction-denominator">sin x</span></span>)</span>
+                                </div></div>
+                                <div class="solution-step"><span class="step-marker">2</span><div class="step-content">
+                                    <span class="step-label">Inti</span>
+                                    <span class="step-math">= <span class="fraction"><span class="fraction-numerator">sin x cos x</span><span class="fraction-line"></span><span class="fraction-denominator">cos x sin x</span></span> = 1</span>
+                                </div></div>
+                            </div>
+                            <div class="example-answer"><svg class="answer-icon">...</svg><span class="answer-text">Terbukti.</span></div>
+                        </div>
+                    </div>
+
+                    <div class="example-card">
+                        <div class="example-header"><span class="example-number">2</span><span class="example-title">Sudut Rangkap</span></div>
+                        <div class="example-body">
+                            <p class="example-question">Jika diketahui sin x = 3/5 dan x sudut lancip, tentukan sin 2x.</p>
+                            <div class="solution-steps">
+                                <div class="solution-step"><span class="step-marker">1</span><div class="step-content">
+                                    <span class="step-label">Cari cos x</span>
+                                    <p class="step-text">sin²x + cos²x = 1</p>
+                                    <span class="step-math">(3/5)² + cos²x = 1 → cos²x = 16/25 → cos x = 4/5</span>
+                                </div></div>
+                                <div class="solution-step"><span class="step-marker">2</span><div class="step-content">
+                                    <span class="step-label">Rumus</span>
+                                    <p class="step-text">sin 2x = 2 sin x cos x</p>
+                                    <span class="step-math">= 2 (3/5) (4/5) = 24/25</span>
+                                </div></div>
+                            </div>
+                            <div class="example-answer"><svg class="answer-icon">...</svg><span class="answer-text">sin 2x = 24/25</span></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Practice Problems -->
+                <section class="content-section" id="latihan-soal">
+                    <div class="section-header"><h2 class="section-title">Latihan Soal</h2></div>
+                    <div class="practice-grid">
+                        <div class="practice-item"><span class="practice-number">1</span><div class="practice-content"><p class="practice-question">Buktikan: 1 - cos² x = sin² x.</p></div></div>
+                        <div class="practice-item"><span class="practice-number">2</span><div class="practice-content"><p class="practice-question">Tentukan nilai cos 2x jika diketahui sin x = 12/13 (x tumpul).</p></div></div>
+                        <div class="practice-item"><span class="practice-number">3</span><div class="practice-content"><p class="practice-question">Sederhanakan: cos (x + y) + cos (x - y).</p></div></div>
+                    </div>
+                </section>
+
+                <!-- Quiz Section -->
+                <section class="content-section" id="kuis">
+                    <div class="section-header"><h2 class="section-title">Kuis</h2></div>
+                    <div id="quizContainer"></div>
+                </section>
+            </div>
+        </main>
+        <footer class="footer">
+            <div class="footer-inner">
+                <div class="footer-brand">
+                    <span class="footer-name">Media Belajar Daffa</span>
+                    <span class="footer-class">Muhammad Daffa Athallah - XII-M4-1</span>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script src="../matematika-wajib/script.js"></script>
+    <script src="../matematika-wajib/quiz-engine.js"></script>
+    <script>
+        const quizQuestions = [
+            { question: "Bentuk lain dari sin² x adalah...", options: ["1 + cos² x", "1 - cos² x", "cos² x - 1", "tan² x"], correct: 1, explanation: "Berdasarkan identitas pythagoras." },
+            { question: "Rumus sin 2x adalah...", options: ["2 sin x", "sin² x", "2 sin x cos x", "cos² x - sin² x"], correct: 2, explanation: "Rumus sudut ganda sinus." },
+            { question: "cos (α - β) = ...", options: ["cos α cos β + sin α sin β", "cos α cos β - sin α sin β", "sin α cos β - cos α sin β", "sin α cos β + cos α sin β"], correct: 0, explanation: "Rumus selisih sudut cosinus." },
+            { question: "Jika tan x = 1, maka tan 2x = ...", options: ["2", "Tak Terdefinisi", "1", "0.5"], correct: 1, explanation: "tan 2x = 2(1)/(1-1) = 2/0 (Tak Terdefinisi)." },
+            { question: "1 + cot² x = ...", options: ["sec² x", "cosec² x", "tan² x", "sin² x"], correct: 1, explanation: "Turunan identitas pythagoras." }
+        ];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            new QuizEngine('quizContainer', quizQuestions).init();
+            
+            const quickNav = document.getElementById('quickNav');
+            window.addEventListener('scroll', () => quickNav.classList.toggle('scrolled', window.scrollY > 200));
+
+            // --- Unit Circle Animation ---
+            const angleSlider = document.getElementById('angleX');
+            const angleVal = document.getElementById('angleXVal');
+            const proofCalc = document.getElementById('proofCalc');
+            
+            // SVG Elements
+            const point = document.getElementById('pointUnit');
+            const lineSin = document.getElementById('lineSin');
+            const lineCos = document.getElementById('lineCos');
+            const lineRadius = document.getElementById('lineRadius');
+
+            // Center (150,150), Radius 100
+            const O = {x: 150, y: 150}; 
+            const R = 100;
+
+            function updateCircle() {
+                const deg = parseFloat(angleSlider.value);
+                const rad = (deg - 90) * Math.PI / 180; // -90 to start from top (standard unit circle usually starts right, but let's stick to standard math coordinate for clarity, or adjust as needed. Let's use standard math: 0 is right, counter-clockwise. SVG Y is down.
+                // In SVG: 0 deg is Right (150, 50). 90 deg is Top (50, 150).
+                // Let's map: 0 deg -> (250, 150). 90 deg -> (150, 50).
+                
+                const mathRad = deg * Math.PI / 180;
+                
+                // SVG coordinates
+                const endX = O.x + R * Math.cos(mathRad); 
+                const endY = O.y - R * Math.sin(mathRad); // Y inverted
+                
+                // Update Point
+                point.setAttribute('cx', endX);
+                point.setAttribute('cy', endY);
+                
+                // Update Lines
+                // Cos: Horizontal line from Y-axis (x=150) to point
+                lineCos.setAttribute('x1', O.x);
+                lineCos.setAttribute('y1', endY);
+                lineCos.setAttribute('x2', endX);
+                lineCos.setAttribute('y2', endY);
+                
+                // Sin: Vertical line from X-axis (y=150) to point
+                lineSin.setAttribute('x1', endX);
+                lineSin.setAttribute('y1', O.y);
+                lineSin.setAttribute('x2', endX);
+                lineSin.setAttribute('y2', endY);
+                
+                // Radius
+                lineRadius.setAttribute('x2', endX);
+                lineRadius.setAttribute('y2', endY);
+                
+                // Calculations
+                const sinVal = Math.sin(mathRad);
+                const cosVal = Math.cos(mathRad);
+                const sinSq = sinVal * sinVal;
+                const cosSq = cosVal * cosVal;
+                
+                angleVal.textContent = `${deg}°`;
+                proofCalc.innerHTML = `
+                    sin(${deg}°)² + cos(${deg}°)² = <span style="color:#e74c3c">${sinSq.toFixed(3)}</span> + <span style="color:#3498db">${cosSq.toFixed(3)}</span> = <strong>${(sinSq+cosSq).toFixed(3)}</strong>
+                `;
+            }
+
+            if(angleSlider) { angleSlider.oninput = updateCircle; updateCircle(); }
+        });
+    </script>
+</body>
+</html>

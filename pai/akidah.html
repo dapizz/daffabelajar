@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Akidah - Pendidikan Agama Islam">
+    <title>Akidah - Media Belajar Daffa</title>
+    <link rel="stylesheet" href="../matematika-wajib/style.css">
+    <style>
+        /* Custom Styles for Akidah Page */
+        
+        /* Verse Box Styling (Dark Theme) - Consistent with previous request */
+        .verse-box {
+            background: linear-gradient(135deg, #1a2a6c 0%, #2a4858 100%); /* Deep Blue/Teal Gradient */
+            border-left: 5px solid #f1c40f;
+            padding: 25px;
+            margin: 20px 0;
+            border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            color: #ffffff;
+            position: relative;
+            overflow: hidden;
+        }
+        .verse-box::after {
+            content: "﷽";
+            position: absolute; right: -10px; bottom: -20px;
+            font-size: 6rem; opacity: 0.05; font-family: 'Amiri', serif; color: #fff;
+        }
+        .verse-arabic {
+            font-size: 1.6rem; text-align: right; line-height: 2;
+            margin-bottom: 10px; font-family: 'Amiri', serif;
+            color: #ffffff; font-weight: bold;
+        }
+        .verse-translation { font-style: italic; color: #d1ecf1; line-height: 1.6; }
+        .verse-source { font-weight: bold; text-align: right; font-size: 0.9rem; color: #f1c40f; margin-top: 10px; }
+
+        /* Info Card Grid for Angels/Prophets */
+        .info-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px; margin: 20px 0;
+        }
+        .info-item {
+            background: var(--bg-card); padding: 15px; border-radius: var(--radius-md);
+            border-left: 3px solid var(--accent-primary);
+            transition: transform 0.2s;
+        }
+        .info-item:hover { transform: translateY(-2px); box-shadow: 0 5px 10px rgba(0,0,0,0.05); }
+        .info-title { font-weight: bold; color: var(--accent-primary); margin-bottom: 5px; display: block; }
+
+        /* Game Area */
+        .game-container {
+            background: var(--bg-secondary); border-radius: var(--radius-lg);
+            padding: 20px; border: 1px solid var(--border-color); margin-top: 20px;
+        }
+        .game-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 12px; margin-top: 15px;
+        }
+        .game-card {
+            background: var(--bg-card); border: 2px solid var(--border-color);
+            border-radius: var(--radius-md); padding: 12px; text-align: center;
+            cursor: pointer; transition: all 0.2s ease; font-weight: 600;
+            min-height: 70px; display: flex; align-items: center; justify-content: center;
+            font-size: 0.95rem;
+        }
+        .game-card:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.08); border-color: var(--accent-secondary); }
+        
+        /* Game States */
+        .game-card.selected { border-color: var(--accent-primary); background: rgba(52, 152, 219, 0.1); color: var(--accent-primary); }
+        .game-card.matched { border-color: var(--success); background: rgba(39, 174, 96, 0.1); color: var(--success); cursor: default; }
+        .game-card.wrong { border-color: var(--error); background: rgba(231, 76, 60, 0.1); animation: shake 0.4s; }
+        
+        @keyframes shake {
+            0% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } 100% { transform: translateX(0); }
+        }
+        .game-status { text-align: center; font-size: 1.1rem; margin-bottom: 10px; font-weight: bold; color: var(--text-secondary); }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="page-wrapper">
+        <header class="header">
+            <div class="header-inner">
+                <div class="logo">
+                    <svg class="logo-icon" viewBox="0 0 40 40" fill="none">
+                        <rect x="4" y="8" width="32" height="24" rx="2" stroke="currentColor" stroke-width="2"/>
+                        <path d="M4 14h32" stroke="currentColor" stroke-width="2"/>
+                        <circle cx="10" cy="11" r="2" fill="currentColor"/>
+                        <circle cx="16" cy="11" r="2" fill="currentColor"/>
+                        <rect x="8" y="18" width="24" height="2" rx="1" fill="currentColor" opacity="0.5"/>
+                    </svg>
+                    <span class="logo-text">Media Belajar Daffa</span>
+                </div>
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle tema">
+                    <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+                    <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                </button>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="container">
+                <div class="page-header">
+                    <nav class="breadcrumb">
+                        <a href="../index.html">Beranda</a><span>/</span>
+                        <a href="index.html">PAI</a><span>/</span>
+                        <span class="current">Akidah</span>
+                    </nav>
+                    <div class="accent-line"></div>
+                    <h1 class="page-title">Akidah (Rukun Iman)</h1>
+                    <p class="page-subtitle">Memperkokoh keyakinan hati terhadap enam rukun iman yang wajib diyakini.</p>
+                </div>
+
+                <div class="nav-btn-group">
+                    <a href="index.html" class="nav-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg> Kembali ke Daftar Materi</a>
+                    <a href="../index.html" class="nav-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Beranda</a>
+                </div>
+
+                <nav class="quick-nav" id="quickNav">
+                    <a href="#allah" class="quick-nav-btn">Allah SWT</a>
+                    <a href="#malaikat" class="quick-nav-btn">Malaikat</a>
+                    <a href="#kitab" class="quick-nav-btn">Kitab</a>
+                    <a href="#rasul" class="quick-nav-btn">Rasul</a>
+                    <a href="#hari-akhir" class="quick-nav-btn">Hari Akhir</a>
+                    <a href="#qada" class="quick-nav-btn">Qada & Qadar</a>
+                    <a href="#interaktif" class="quick-nav-btn">Game</a>
+                </nav>
+
+                <!-- 1. Iman Kepada Allah -->
+                <section class="content-section" id="allah">
+                    <div class="section-header"><h2 class="section-title">1. Iman Kepada Allah SWT</h2></div>
+                    <div class="material-content">
+                        <p>Iman kepada Allah adalah mempercayai dengan sepenuh hati bahwa Allah itu ada, Esa, dan memiliki sifat kesempurnaan.</p>
+                        <div class="formula-box">
+                            <div class="formula-label">Tauhid (Mengesakan Allah)</div>
+                            <ul style="text-align:left; margin-top:5px;">
+                                <li><strong>Tauhid Rububiyah</strong>: Meyakini Allah sebagai Pencipta, Pemilik, dan Pengatur alam.</li>
+                                <li><strong>Tauhid Uluhiyah</strong>: Menyembah hanya kepada Allah (Ibadah).</li>
+                                <li><strong>Tauhid Asma wa Sifat</strong>: Menetapkan nama dan sifat Allah sesuai Al-Quran dan Sunnah.</li>
+                            </ul>
+                        </div>
+                        <div class="verse-box">
+                            <div class="verse-arabic">قُلْ هُوَ اللَّهُ أَحَدٌ ۝ اللَّهُ الصَّمَدُ ۝ لَمْ يَلِدْ وَلَمْ يُولَدْ ۝ وَلَمْ يَكُن لَّهُ كُفُوًا أَحَدٌ</div>
+                            <div class="verse-translation">“Katakanlah: 'Dia-lah Allah, Yang Maha Esa. Allah tempat meminta segala sesuatu. (Allah) tidak beranak dan tidak pula diperanakkan, dan tidak ada seorangpun yang setara dengan Dia'.”</div>
+                            <div class="verse-source">QS. Al-Ikhlas: 1-4</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 2. Iman Kepada Malaikat -->
+                <section class="content-section" id="malaikat">
+                    <div class="section-header"><h2 class="section-title">2. Iman Kepada Malaikat</h2></div>
+                    <div class="material-content">
+                        <p>Malaikat adalah makhluk gaib yang diciptakan dari nur (cahaya). Mereka taat kepada Allah dan tidak memiliki nafsu.</p>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <span class="info-title">Jibril</span>
+                                <span>Menyampaikan wahyu.</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-title">Mikail</span>
+                                <span>Mengatur rezeki & cuaca.</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-title">Israfil</span>
+                                <span>Meniup sangkakala.</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-title">Izrail</span>
+                                <span>Mencabut nyawa.</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-title">Munkar & Nakir</span>
+                                <span>Menanyai di alam kubur.</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-title">Malik & Ridwan</span>
+                                <span>Penjaga neraka & surga.</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 3. Iman Kepada Kitab -->
+                <section class="content-section" id="kitab">
+                    <div class="section-header"><h2 class="section-title">3. Iman Kepada Kitab-Kitab Allah</h2></div>
+                    <div class="material-content">
+                        <p>Allah menurunkan kitab kepada para rasul sebagai pedoman hidup. Kitab yang wajib diketahui ada 4:</p>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <span class="info-title">Taurat</span>
+                                <span>Dititurunkan kepada Nabi Musa AS.</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-title">Zabur</span>
+                                <span>Dititurunkan kepada Nabi Daud AS.</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-title">Injil</span>
+                                <span>Dititurunkan kepada Nabi Isa AS.</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-title">Al-Quran</span>
+                                <span>Dititurunkan kepada Nabi Muhammad SAW.</span>
+                            </div>
+                        </div>
+                        <p style="margin-top:10px;">Selain itu juga ada <strong>Suhuf</strong> (lembaran-lembaran) yang diberikan kepada Nabi Ibrahim dan Musa.</p>
+                    </div>
+                </section>
+
+                <!-- 4. Iman Kepada Rasul -->
+                <section class="content-section" id="rasul">
+                    <div class="section-header"><h2 class="section-title">4. Iman Kepada Rasul</h2></div>
+                    <div class="material-content">
+                        <p>Rasul adalah manusia pilihan Allah yang diberi wahyu untuk disampaikan kepada umatnya. Jumlah rasul yang wajib diketahui ada 25.</p>
+                        <div class="verse-box">
+                            <div class="verse-arabic">يٰٓاَيُّهَا الَّذِيْنَ اٰمَنُوْٓا اٰمِنُوْا بِاللّٰهِ وَرَسُوْلِهٖ وَالْكِتٰبِ الَّذِيْ نَزَّلَ عَلٰى رَسُوْلِهٖ وَالْكِتٰبِ الَّذِيْٓ اَنْزَلَ مِنْ قَبْلُۗ وَمَنْ يَّكْفُرْ بِاللّٰهِ وَمَلٰۤىِٕكَتِهٖ وَكُتُبِهٖ وَرُسُلِهٖ وَالْيَوْمِ الْاٰخِرِ فَقَدْ ضَلَّ ضَلٰلًا ۢ بَعِيْدًا</div>
+                            <div class="verse-translation">“Wahai orang-orang yang beriman, tetaplah beriman kepada Allah, Rasul-Nya (Nabi Muhammad), Kitab (Al-Qur’an) yang diturunkan kepada Rasul-Nya, dan kitab yang Dia turunkan sebelumnya. Siapa yang kufur kepada Allah, para malaikat-Nya, kitab-kitab-Nya, para rasul-Nya, dan hari Akhir sungguh dia telah tersesat sangat jauh.”</div>
+                            <div class="verse-source">QS. An-Nisa': 136</div>
+                        </div>
+                        <h4>Sifat Wajib Rasul:</h4>
+                        <p><strong>Siddiq</strong> (Benar), <strong>Amanah</strong> (Dapat Dipercaya), <strong>Tabligh</strong> (Menyampaikan), <strong>Fatanah</strong> (Cerdas).</p>
+                    </div>
+                </section>
+
+                <!-- 5. Iman Kepada Hari Akhir -->
+                <section class="content-section" id="hari-akhir">
+                    <div class="section-header"><h2 class="section-title">5. Iman Kepada Hari Akhir</h2></div>
+                    <div class="material-content">
+                        <p>Meyakini bahwa alam ini akan musnah dan diganti dengan alam akhirat. Manusia akan dibangkitkan, dihisab, dan menerima balasan.</p>
+                        <p>Alam-alam setelah kematian: <strong>Alam Kubur (Barzakh)</strong> → <strong>Padang Mahsyar</strong> → <strong>Surga/Neraka</strong>.</p>
+                    </div>
+                </section>
+
+                <!-- 6. Iman Kepada Qada dan Qadar -->
+                <section class="content-section" id="qada">
+                    <div class="section-header"><h2 class="section-title">6. Iman Kepada Qada dan Qadar</h2></div>
+                    <div class="material-content">
+                        <ul>
+                            <li><strong>Qada</strong>: Ketetapan Allah sejak azali.</li>
+                            <li><strong>Qadar</strong>: Perwujudan ketetapan Allah terhadap makhluk-Nya.</li>
+                        </ul>
+                        <div class="verse-box">
+                            <div class="verse-arabic">إِنَّا كُلَّ شَيْءٍ خَلَقْنَاهُ بِقَدَرٍ</div>
+                            <div class="verse-translation">“Sesungguhnya Kami menciptakan segala sesuatu menurut ukuran (takdir).”</div>
+                            <div class="verse-source">QS. Al-Qamar: 49</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- INTERAKTIF: PASANGAN KATA -->
+                <section class="content-section" id="interaktif">
+                    <div class="section-header"><h2 class="section-title">Game Pasangan Kata (Tugas Malaikat & Kitab)</h2></div>
+                    <div class="sim-container">
+                        <p style="text-align:center;">Cocokkan nama di kiri dengan tugas/kenabi di kanan. Klik dua kartu untuk mencocokkan.</p>
+                        
+                        <div class="game-status">Skor: <span id="score">0</span> / 8</div>
+                        
+                        <div class="game-grid" id="gameGrid">
+                            <!-- Generated by JS -->
+                        </div>
+                        <button class="action-btn start" onclick="initGame()" style="display:block; margin-top:20px; margin-left:auto; margin-right:auto;">Ulangi Game</button>
+                    </div>
+                </section>
+
+                <section class="content-section" id="kuis">
+                    <div class="section-header"><h2 class="section-title">Kuis Akidah</h2></div>
+                    <div id="quizContainer"></div>
+                </section>
+            </div>
+        </main>
+        <footer class="footer">
+            <div class="footer-inner">
+                <div class="footer-brand">
+                    <span class="footer-name">Media Belajar Daffa</span>
+                    <span class="footer-class">Muhammad Daffa Athallah - XII-M4-1</span>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script src="../matematika-wajib/script.js"></script>
+    <script src="../matematika-wajib/quiz-engine.js"></script>
+    <script>
+        const quizQuestions = [
+            { question: "Malaikat yang bertugas mencabut nyawa adalah...", options: ["Jibril", "Mikail", "Izrail", "Israfil"], correct: 2, explanation: "Izrail adalah malaikat pencabut nyawa." },
+            { question: "Kitab Zabur diturunkan kepada Nabi...", options: ["Musa AS", "Daud AS", "Isa AS", "Ibrahim AS"], correct: 1, explanation: "Zabur diturunkan kepada Nabi Daud AS." },
+            { question: "Tauhid Uluhiyah artinya...", options: ["Mengesakan Allah sebagai Pencipta", "Menyembah hanya kepada Allah", "Meyakini sifat Allah", "Beriman kepada malaikat"], correct: 1, explanation: "Uluhiyah berkaitan dengan ibadah." },
+            { question: "Hari pembalasan atas seluruh amal manusia disebut...", options: ["Hari Kiamat", "Hari Hisab", "Hari Akhir", "Semua benar"], correct: 3, explanation: "Hari Akhir mencakup seluruh proses akhir zaman." }
+        ];
+
+        // ==========================================
+        // MATCHING GAME LOGIC
+        // ==========================================
+        const gameData = [
+            { term: "Jibril", match: "Wahyu" },
+            { term: "Mikail", match: "Rezeki" },
+            { term: "Israfil", match: "Sangkakala" },
+            { term: "Izrail", match: "Maut" },
+            { term: "Taurat", match: "Nabi Musa" },
+            { term: "Zabur", match: "Nabi Daud" },
+            { term: "Injil", match: "Nabi Isa" },
+            { term: "Al-Quran", match: "Nabi Muhammad" }
+        ];
+
+        let cards = [];
+        let firstCard = null;
+        let secondCard = null;
+        let lockBoard = false;
+        let matches = 0;
+
+        function initGame() {
+            const grid = document.getElementById('gameGrid');
+            grid.innerHTML = '';
+            matches = 0;
+            document.getElementById('score').textContent = matches;
+            firstCard = null;
+            secondCard = null;
+            lockBoard = false;
+
+            // Create card array
+            cards = [];
+            gameData.forEach((item, index) => {
+                cards.push({ id: index, type: 'term', text: item.term, matchId: index });
+                cards.push({ id: index + 100, type: 'match', text: item.match, matchId: index });
+            });
+
+            // Shuffle
+            cards.sort(() => Math.random() - 0.5);
+
+            // Render
+            cards.forEach(card => {
+                const cardEl = document.createElement('div');
+                cardEl.classList.add('game-card');
+                cardEl.dataset.id = card.id;
+                cardEl.dataset.matchId = card.matchId;
+                cardEl.textContent = card.text;
+                cardEl.addEventListener('click', flipCard);
+                grid.appendChild(cardEl);
+            });
+        }
+
+        function flipCard() {
+            if (lockBoard) return;
+            if (this === firstCard) return;
+            if (this.classList.contains('matched')) return;
+
+            this.classList.add('selected');
+
+            if (!firstCard) {
+                firstCard = this;
+                return;
+            }
+
+            secondCard = this;
+            checkForMatch();
+        }
+
+        function checkForMatch() {
+            let isMatch = firstCard.dataset.matchId === secondCard.dataset.matchId;
+
+            if (isMatch) {
+                disableCards();
+                matches++;
+                document.getElementById('score').textContent = matches;
+                if (matches === gameData.length) {
+                    setTimeout(() => alert("Masya Allah! Kamu berhasil mencocokkan semua!"), 300);
+                }
+            } else {
+                unflipCards();
+            }
+        }
+
+        function disableCards() {
+            firstCard.classList.remove('selected');
+            secondCard.classList.remove('selected');
+            firstCard.classList.add('matched');
+            secondCard.classList.add('matched');
+            resetBoard();
+        }
+
+        function unflipCards() {
+            lockBoard = true;
+            firstCard.classList.add('wrong');
+            secondCard.classList.add('wrong');
+            
+            setTimeout(() => {
+                firstCard.classList.remove('selected', 'wrong');
+                secondCard.classList.remove('selected', 'wrong');
+                resetBoard();
+            }, 800);
+        }
+
+        function resetBoard() {
+            [firstCard, secondCard, lockBoard] = [null, null, false];
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            new QuizEngine('quizContainer', quizQuestions).init();
+            initGame();
+            
+            const quickNav = document.getElementById('quickNav');
+            window.addEventListener('scroll', () => quickNav.classList.toggle('scrolled', window.scrollY > 200));
+        });
+    </script>
+</body>
+</html>

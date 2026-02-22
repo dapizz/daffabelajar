@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Aplikasi Turunan - Matematika Tingkat Lanjut">
+    <title>Aplikasi Turunan - Media Belajar Daffa</title>
+    <link rel="stylesheet" href="../matematika-wajib/style.css">
+    <style>
+        /* Fraction Styles */
+        .fraction {
+            display: inline-flex; flex-direction: column;
+            align-items: center; vertical-align: middle;
+            margin: 0 4px; font-family: var(--font-display);
+        }
+        .fraction-numerator { padding: 2px 8px; font-size: 1rem; line-height: 1.3; }
+        .fraction-line { width: 100%; height: 2px; background: var(--text-primary); border-radius: 1px; }
+        .fraction-denominator { padding: 2px 8px; font-size: 1rem; line-height: 1.3; }
+        .formula-box .fraction { background: var(--bg-card); padding: 8px 12px; border-radius: var(--radius-sm); margin: 0 8px; }
+        .formula-box .fraction-line { background: var(--accent-primary); }
+
+        /* Graph Styles */
+        .graph-stage {
+            background: var(--bg-secondary); border-radius: var(--radius-lg);
+            padding: 20px; margin: 20px 0; position: relative;
+        }
+        .graph-svg { width: 100%; height: auto; min-height: 300px; background: var(--bg-card); border-radius: var(--radius-md); }
+        .grid-line { stroke: var(--border-light); stroke-width: 0.5; }
+        .axis { stroke: var(--text-muted); stroke-width: 1.5; }
+        .func-line { fill: none; stroke-width: 3; stroke-linecap: round; }
+        .line-inc { stroke: #27ae60; } /* Green for increasing */
+        .line-dec { stroke: #e74c3c; } /* Red for decreasing */
+        .crit-point { fill: var(--accent-secondary); stroke: white; stroke-width: 2; }
+        .inflec-point { fill: #9b59b6; stroke: white; stroke-width: 2; }
+        
+        .info-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+            margin-top: 15px; font-size: 0.9rem;
+        }
+        .info-card {
+            background: var(--bg-card); padding: 10px; border-radius: var(--radius-sm);
+            border-left: 4px solid var(--accent-primary);
+        }
+        .info-label { display: block; font-weight: bold; color: var(--text-muted); }
+        .info-val { font-size: 1.1rem; font-weight: bold; color: var(--text-primary); }
+    </style>
+</head>
+<body>
+    <div class="page-wrapper">
+        <header class="header">
+            <div class="header-inner">
+                <div class="logo">
+                    <svg class="logo-icon" viewBox="0 0 40 40" fill="none">
+                        <rect x="4" y="8" width="32" height="24" rx="2" stroke="currentColor" stroke-width="2"/>
+                        <path d="M4 14h32" stroke="currentColor" stroke-width="2"/>
+                        <circle cx="10" cy="11" r="2" fill="currentColor"/>
+                        <circle cx="16" cy="11" r="2" fill="currentColor"/>
+                        <rect x="8" y="18" width="24" height="2" rx="1" fill="currentColor" opacity="0.5"/>
+                    </svg>
+                    <span class="logo-text">Media Belajar Daffa</span>
+                </div>
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle tema">
+                    <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+                    <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                </button>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="container">
+                <div class="page-header">
+                    <nav class="breadcrumb">
+                        <a href="../index.html">Beranda</a><span>/</span>
+                        <a href="index.html">Matematika Lanjut</a><span>/</span>
+                        <span class="current">Aplikasi Turunan</span>
+                    </nav>
+                    <div class="accent-line"></div>
+                    <h1 class="page-title">Aplikasi Turunan</h1>
+                    <p class="page-subtitle">Mengaplikasikan turunan untuk menyelesaikan masalah laju perubahan, nilai ekstrem, dan sketsa grafik.</p>
+                </div>
+
+                <div class="nav-btn-group">
+                    <a href="index.html" class="nav-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg> Kembali ke Daftar Materi</a>
+                    <a href="../index.html" class="nav-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Beranda</a>
+                </div>
+
+                <nav class="quick-nav" id="quickNav">
+                    <a href="#materi-inti" class="quick-nav-btn">Materi</a>
+                    <a href="#animasi-interaktif" class="quick-nav-btn">Animasi</a>
+                    <a href="#contoh-soal" class="quick-nav-btn">Contoh Soal</a>
+                    <a href="#latihan-soal" class="quick-nav-btn">Latihan</a>
+                    <a href="#kuis" class="quick-nav-btn">Kuis</a>
+                </nav>
+
+                <!-- Material Content -->
+                <section class="content-section" id="materi-inti">
+                    <div class="section-header"><h2 class="section-title">Materi Inti</h2></div>
+                    <div class="material-content">
+                        <h3>1. Gradien Garis Singgung</h3>
+                        <p>Garis singgung kurva y = f(x) di titik (x₁, y₁) memiliki gradien m = f'(x₁).</p>
+                        <div class="formula-box">
+                            <div class="formula">Persamaan Garis Singgung: y - y₁ = m(x - x₁)</div>
+                        </div>
+
+                        <h3>2. Kecepatan dan Laju Perubahan</h3>
+                        <p>Jika s(t) adalah fungsi posisi terhadap waktu t:</p>
+                        <ul>
+                            <li><strong>Kecepatan (v)</strong>: Turunan pertama posisi, v(t) = s'(t).</li>
+                            <li><strong>Percepatan (a)</strong>: Turunan pertama kecepatan atau turunan kedua posisi, a(t) = v'(t) = s''(t).</li>
+                        </ul>
+
+                        <h3>3. Nilai Maksimum dan Minimum</h3>
+                        <p>Titik ekstrem (maksimum/minimum lokal) terjadi jika f'(x) = 0.</p>
+                        <h4>Uji Turunan Kedua:</h4>
+                        <ul>
+                            <li>Jika f''(x) < 0 → Nilai Maksimum Lokal.</li>
+                            <li>Jika f''(x) > 0 → Nilai Minimum Lokal.</li>
+                        </ul>
+
+                        <h3>4. Uji Fungsi Naik dan Turun</h3>
+                        <ul>
+                            <li>Fungsi <strong>Naik</strong> jika f'(x) > 0.</li>
+                            <li>Fungsi <strong>Turun</strong> jika f'(x) < 0.</li>
+                        </ul>
+
+                        <h3>5. Titik Belok</h3>
+                        <p>Titik di mana kecekungan kurva berubah.</p>
+                        <p>Syarat: f''(x) = 0 dan tanda f''(x) berubah di sekitar titik tersebut.</p>
+
+                        <h3>6. Sketsa Grafik Fungsi</h3>
+                        <p>Langkah-langkah membuat sketsa:</p>
+                        <ol>
+                            <li>Cari titik potong sumbu koordinat.</li>
+                            <li>Cari titik stasioner (f'(x) = 0) dan uji jenisnya.</li>
+                            <li>Cari interval naik/turun.</li>
+                            <li>Cari titik belok (f''(x) = 0).</li>
+                            <li>Lukis grafik.</li>
+                        </ol>
+                    </div>
+                </section>
+
+                <!-- Interactive Animations -->
+                <section class="content-section" id="animasi-interaktif">
+                    <div class="section-header"><h2 class="section-title">Curve Analyzer</h2></div>
+
+                    <div class="animation-container">
+                        <div class="animation-header"><span class="animation-title">Analisis Grafik f(x) = x³ + ax² + bx + c</span></div>
+                        <p style="font-size:0.9rem; color:var(--text-muted); text-align:center; margin-bottom:10px;">
+                            Geser slider untuk mengubah parameter fungsi. Perhatikan perubahan warna grafik (Hijau=Naik, Merah=Turun).
+                        </p>
+                        
+                        <div class="graph-stage">
+                            <div class="slider-control">
+                                <span class="slider-label">Koefisien a:</span>
+                                <input type="range" class="slider-input" id="coeffA" min="-5" max="5" step="0.5" value="-3">
+                                <span class="slider-value" id="valA">-3</span>
+                            </div>
+                            <div class="slider-control">
+                                <span class="slider-label">Koefisien b:</span>
+                                <input type="range" class="slider-input" id="coeffB" min="-5" max="5" step="0.5" value="0">
+                                <span class="slider-value" id="valB">0</span>
+                            </div>
+                            
+                            <svg id="analyzerSvg" class="graph-svg" viewBox="0 0 400 300">
+                                <defs><pattern id="gridApp" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M 20 0 L 0 0 0 20" fill="none" class="grid-line"/></pattern></defs>
+                                <rect width="100%" height="100%" fill="url(#gridApp)"/>
+                                
+                                <!-- Axes -->
+                                <line x1="200" y1="0" x2="200" y2="300" class="axis"/>
+                                <line x1="0" y1="150" x2="400" y2="150" class="axis"/>
+                                
+                                <!-- Function Curve Segments -->
+                                <path id="curveSeg1" class="func-line line-dec" d=""/>
+                                <path id="curveSeg2" class="func-line line-inc" d=""/>
+                                <path id="curveSeg3" class="func-line line-dec" d=""/>
+                                <path id="curveSeg4" class="func-line line-inc" d=""/>
+                                
+                                <!-- Critical Points -->
+                                <circle id="ptMax" cx="0" cy="0" r="5" class="crit-point" style="display:none;"/>
+                                <text id="txtMax" x="0" y="0" font-size="10" fill="#e74c3c" text-anchor="middle"></text>
+                                
+                                <circle id="ptMin" cx="0" cy="0" r="5" class="crit-point" style="display:none;"/>
+                                <text id="txtMin" x="0" y="0" font-size="10" fill="#e74c3c" text-anchor="middle"></text>
+                                
+                                <!-- Inflection Point -->
+                                <circle id="ptInf" cx="200" cy="150" r="5" class="inflec-point"/>
+                                <text id="txtInf" x="200" y="140" font-size="10" fill="#9b59b6" text-anchor="middle">Titik Belok</text>
+                            </svg>
+                        </div>
+
+                        <div class="info-grid">
+                            <div class="info-card">
+                                <span class="info-label">Titik Stasioner (f'(x)=0)</span>
+                                <span class="info-val" id="infoStat">x = ...</span>
+                            </div>
+                            <div class="info-card">
+                                <span class="info-label">Jenis Titik</span>
+                                <span class="info-val" id="infoType">Max/Min</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Example Problems -->
+                <section class="content-section" id="contoh-soal">
+                    <div class="section-header"><h2 class="section-title">Contoh Soal</h2></div>
+
+                    <div class="example-card">
+                        <div class="example-header"><span class="example-number">1</span><span class="example-title">Nilai Ekstrem</span></div>
+                        <div class="example-body">
+                            <p class="example-question">Tentukan nilai maksimum lokal dari f(x) = -x³ + 6x² - 9x + 1.</p>
+                            <div class="solution-steps">
+                                <div class="solution-step"><span class="step-marker">1</span><div class="step-content">
+                                    <span class="step-label">Turunan Pertama</span>
+                                    <span class="step-math">f'(x) = -3x² + 12x - 9</span>
+                                </div></div>
+                                <div class="solution-step"><span class="step-marker">2</span><div class="step-content">
+                                    <span class="step-label">Titik Kritis (f'=0)</span>
+                                    <span class="step-math">-3(x² - 4x + 3) = 0 → (x-1)(x-3) = 0 → x = 1 atau x = 3.</span>
+                                </div></div>
+                                <div class="solution-step"><span class="step-marker">3</span><div class="step-content">
+                                    <span class="step-label">Uji Turunan Kedua</span>
+                                    <span class="step-math">f''(x) = -6x + 12</span>
+                                    <p>f''(1) = 6 (>0) → Min. Lokal.</p>
+                                    <p>f''(3) = -6 (<0) → <strong>Maks. Lokal</strong>.</p>
+                                </div></div>
+                                <div class="solution-step"><span class="step-marker">4</span><div class="step-content">
+                                    <span class="step-label">Hitung Nilai y</span>
+                                    <span class="step-math">f(3) = -27 + 54 - 27 + 1 = 1</span>
+                                </div></div>
+                            </div>
+                            <div class="example-answer"><svg class="answer-icon">...</svg><span class="answer-text">Nilai maksimum lokal adalah 1 saat x = 3.</span></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Practice Problems -->
+                <section class="content-section" id="latihan-soal">
+                    <div class="section-header"><h2 class="section-title">Latihan Soal</h2></div>
+                    <div class="practice-grid">
+                        <div class="practice-item"><span class="practice-number">1</span><div class="practice-content"><p class="practice-question">Tentukan persamaan garis singgung kurva y = x² - 4x di titik (1, -3).</p></div></div>
+                        <div class="practice-item"><span class="practice-number">2</span><div class="practice-content"><p class="practice-question">Tentukan interval di mana f(x) = x³ - 3x naik.</p></div></div>
+                        <div class="practice-item"><span class="practice-number">3</span><div="practice-content"><p class="practice-question">Tentukan titik belok dari f(x) = x³ - 3x² + 2.</p></div></div>
+                    </div>
+                </section>
+
+                <!-- Quiz Section -->
+                <section class="content-section" id="kuis">
+                    <div class="section-header"><h2 class="section-title">Kuis</h2></div>
+                    <div id="quizContainer"></div>
+                </section>
+            </div>
+        </main>
+        <footer class="footer">...</footer>
+    </div>
+
+    <script src="../matematika-wajib/script.js"></script>
+    <script src="../matematika-wajib/quiz-engine.js"></script>
+    <script>
+        const quizQuestions = [
+            { question: "Jika f'(x) > 0 pada interval tertentu, maka grafik fungsi pada interval tersebut...", options: ["Naik", "Turun", "Konstan", "Maksimum"], correct: 0, explanation: "Turunan positif menandakan fungsi naik." },
+            { question: "Syarat suatu titik adalah titik belok adalah...", options: ["f'(x) = 0", "f''(x) = 0 dan berubah tanda", "f(x) = 0", "f''(x) > 0"], correct: 1, explanation: "Titik belok terjadi saat kecekungan berubah." },
+            { question: "Jika s(t) adalah posisi, maka kecepatan sesaat adalah...", options: ["s(t)", "s'(t)", "s''(t)", "∫s(t)dt"], correct: 1, explanation: "Kecepatan adalah turunan pertama posisi." },
+            { question: "Jika f''(x_kritis) < 0, maka titik tersebut adalah...", options: ["Minimum Lokal", "Maksimum Lokal", "Titik Belok", "Titik Singgung"], correct: 1, explanation: "Uji turunan kedua: negatif berarti cekung ke bawah (maks)." }
+        ];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            new QuizEngine('quizContainer', quizQuestions).init();
+            
+            const quickNav = document.getElementById('quickNav');
+            window.addEventListener('scroll', () => quickNav.classList.toggle('scrolled', window.scrollY > 200));
+
+            // --- Curve Analyzer Logic ---
+            // Func: f(x) = x^3 + a*x^2 + b*x
+            // f'(x) = 3x^2 + 2ax + b
+            // f''(x) = 6x + 2a
+            
+            const coeffA = document.getElementById('coeffA');
+            const coeffB = document.getElementById('coeffB');
+            const ptMax = document.getElementById('ptMax');
+            const ptMin = document.getElementById('ptMin');
+            const ptInf = document.getElementById('ptInf');
+            const txtMax = document.getElementById('txtMax');
+            const txtMin = document.getElementById('txtMin');
+            const txtInf = document.getElementById('txtInf');
+            const infoStat = document.getElementById('infoStat');
+            const infoType = document.getElementById('infoType');
+
+            const O = {x: 200, y: 150};
+            const Scale = 10; // 10px per unit
+            
+            function updateAnalysis() {
+                const a = parseFloat(coeffA.value);
+                const b = parseFloat(coeffB.value);
+                document.getElementById('valA').textContent = a;
+                document.getElementById('valB').textContent = b;
+
+                // 1. Find Roots of Derivative (Critical Points)
+                // 3x^2 + 2ax + b = 0
+                // D = (2a)^2 - 4*3*b = 4a^2 - 12b
+                const D = 4*a*a - 12*b;
+                
+                let critPoints = [];
+                
+                if (D >= 0) {
+                    const x1 = (-2*a + Math.sqrt(D)) / 6;
+                    const x2 = (-2*a - Math.sqrt(D)) / 6;
+                    critPoints.push(x1);
+                    if(D > 0) critPoints.push(x2);
+                    critPoints.sort((x,y) => x-y);
+                }
+
+                // 2. Classify Critical Points using f''(x)
+                // f''(x) = 6x + 2a.
+                // If f'' < 0 -> Max. If > 0 -> Min.
+                
+                infoStat.textContent = "";
+                infoType.textContent = "";
+                ptMax.style.display = "none";
+                ptMin.style.display = "none";
+
+                if (critPoints.length === 2) {
+                    infoStat.innerHTML = `x₁ = ${critPoints[0].toFixed(2)}, x₂ = ${critPoints[1].toFixed(2)}`;
+                    
+                    // Check x1 (will be Max because f'' starts negative for smaller x if a>0? No. Check f'')
+                    // Let's just check f'' value
+                    let type1 = (6*critPoints[0] + 2*a) > 0 ? "Min Lokal" : "Maks Lokal";
+                    let type2 = (6*critPoints[1] + 2*a) > 0 ? "Min Lokal" : "Maks Lokal";
+                    infoType.innerHTML = `x₁: ${type1}<br>x₂: ${type2}`;
+                    
+                    // Position Points
+                    let xMax = type1.includes("Maks") ? critPoints[0] : critPoints[1];
+                    let xMin = type1.includes("Min") ? critPoints[0] : critPoints[1];
+                    
+                    let yMax = Math.pow(xMax, 3) + a*xMax*xMax + b*xMax;
+                    let yMin = Math.pow(xMin, 3) + a*xMin*xMin + b*xMin;
+
+                    ptMax.style.display = "block";
+                    ptMax.setAttribute('cx', O.x + xMax*Scale);
+                    ptMax.setAttribute('cy', O.y - yMax*Scale);
+                    txtMax.setAttribute('x', O.x + xMax*Scale); txtMax.setAttribute('y', O.y - yMax*Scale - 10);
+                    txtMax.textContent = `Max(${xMax.toFixed(1)})`;
+                    txtMax.style.display = "block";
+
+                    ptMin.style.display = "block";
+                    ptMin.setAttribute('cx', O.x + xMin*Scale);
+                    ptMin.setAttribute('cy', O.y - yMin*Scale);
+                    txtMin.setAttribute('x', O.x + xMin*Scale); txtMin.setAttribute('y', O.y - yMin*Scale + 20);
+                    txtMin.textContent = `Min(${xMin.toFixed(1)})`;
+                    txtMin.style.display = "block";
+
+                } else if (critPoints.length === 1) {
+                    infoStat.textContent = `x = ${critPoints[0].toFixed(2)}`;
+                    infoType.textContent = "Titik Belok (D=0)";
+                } else {
+                    infoStat.textContent = "Tidak ada titik stasioner real.";
+                    infoType.textContent = "Fungsi monoton";
+                }
+
+                // 3. Inflection Point (f'' = 0)
+                // 6x + 2a = 0 -> x = -a/3
+                const xInf = -a/3;
+                const yInf = Math.pow(xInf, 3) + a*xInf*xInf + b*xInf;
+                ptInf.setAttribute('cx', O.x + xInf*Scale);
+                ptInf.setAttribute('cy', O.y - yInf*Scale);
+                txtInf.setAttribute('x', O.x + xInf*Scale); txtInf.setAttribute('y', O.y - yInf*Scale - 10);
+
+                // 4. Draw Curve Segments
+                // We need to split the path at critical points to color them
+                // Default: No crit points -> one path.
+                // 2 crit points: split into 3 segments (-10 to x1), (x1 to x2), (x2 to 10)
+                
+                let boundaries = [-15, 15]; // Draw range
+                if (critPoints.length > 0) boundaries.splice(1, 0, ...critPoints);
+                boundaries.sort((a,b) => a-b);
+
+                const paths = [document.getElementById('curveSeg1'), document.getElementById('curveSeg2'), document.getElementById('curveSeg3'), document.getElementById('curveSeg4')];
+                paths.forEach(p => p.setAttribute('d', "")); // Clear
+
+                for(let i=0; i<boundaries.length-1; i++) {
+                    let start = boundaries[i];
+                    let end = boundaries[i+1];
+                    let mid = start + (end-start)/2;
+                    
+                    // Determine slope at mid -> color
+                    let slope = 3*mid*mid + 2*a*mid + b;
+                    let isInc = slope >= 0;
+                    
+                    let dPath = "M ";
+                    for(let x=start; x<=end; x+=0.2) {
+                        let y = Math.pow(x,3) + a*x*x + b*x;
+                        let sx = O.x + x*Scale;
+                        let sy = O.y - y*Scale;
+                        dPath += `${sx} ${sy} L `;
+                    }
+                    
+                    // Assign to path element based on index
+                    if(paths[i]) {
+                        paths[i].setAttribute('d', dPath.substring(0, dPath.length-2));
+                        paths[i].classList.remove('line-inc', 'line-dec');
+                        paths[i].classList.add(isInc ? 'line-inc' : 'line-dec');
+                    }
+                }
+            }
+
+            if(coeffA) { coeffA.oninput = updateAnalysis; coeffB.oninput = updateAnalysis; updateAnalysis(); }
+        });
+    </script>
+</body>
+</html>

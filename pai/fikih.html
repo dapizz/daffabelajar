@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Fikih - Pendidikan Agama Islam">
+    <title>Fikih - Media Belajar Daffa</title>
+    <link rel="stylesheet" href="../matematika-wajib/style.css">
+    <style>
+        /* Custom Styles for Fikih Page */
+
+        /* Verse Box Styling (Dark Green/Islamic Theme) */
+        .verse-box {
+            background: linear-gradient(135deg, #134e5e 0%, #71b280 100%); /* Green Gradient */
+            border-left: 5px solid #f1c40f;
+            padding: 25px;
+            margin: 20px 0;
+            border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            color: #ffffff;
+            position: relative;
+            overflow: hidden;
+        }
+        .verse-box::after {
+            content: "﷽";
+            position: absolute; right: -10px; bottom: -20px;
+            font-size: 6rem; opacity: 0.05; font-family: 'Amiri', serif; color: #fff;
+        }
+        .verse-arabic {
+            font-size: 1.6rem; text-align: right; line-height: 2;
+            margin-bottom: 10px; font-family: 'Amiri', serif;
+            color: #ffffff; font-weight: bold;
+        }
+        .verse-translation { font-style: italic; color: #e8f5e9; line-height: 1.6; }
+        .verse-source { font-weight: bold; text-align: right; font-size: 0.9rem; color: #f1c40f; margin-top: 10px; }
+
+        /* Info Cards Grid */
+        .info-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px; margin: 20px 0;
+        }
+        .info-card {
+            background: var(--bg-card); padding: 15px; border-radius: var(--radius-md);
+            border-top: 3px solid var(--accent-primary);
+            transition: transform 0.2s;
+        }
+        .info-card:hover { transform: translateY(-2px); box-shadow: 0 5px 10px rgba(0,0,0,0.05); }
+        .info-title { font-weight: bold; color: var(--accent-primary); margin-bottom: 8px; display: block; }
+        
+        /* Pillars List */
+        .pillars-list {
+            list-style: none; padding: 0; margin: 10px 0;
+        }
+        .pillars-list li {
+            background: var(--bg-secondary); margin-bottom: 5px; padding: 8px 15px;
+            border-radius: 20px; font-weight: 500; display: inline-block; margin-right: 5px;
+            border: 1px solid var(--border-color);
+        }
+
+        /* Game Area */
+        .game-container {
+            background: var(--bg-secondary); border-radius: var(--radius-lg);
+            padding: 20px; border: 1px solid var(--border-color); margin-top: 20px;
+        }
+        .game-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 12px; margin-top: 15px;
+        }
+        .game-card {
+            background: var(--bg-card); border: 2px solid var(--border-color);
+            border-radius: var(--radius-md); padding: 12px; text-align: center;
+            cursor: pointer; transition: all 0.2s ease; font-weight: 600;
+            min-height: 70px; display: flex; align-items: center; justify-content: center;
+            font-size: 0.95rem;
+        }
+        .game-card:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.08); border-color: var(--accent-secondary); }
+        
+        /* Game States */
+        .game-card.selected { border-color: var(--accent-primary); background: rgba(52, 152, 219, 0.1); color: var(--accent-primary); }
+        .game-card.matched { border-color: var(--success); background: rgba(39, 174, 96, 0.1); color: var(--success); cursor: default; opacity: 0.8; }
+        .game-card.wrong { border-color: var(--error); background: rgba(231, 76, 60, 0.1); animation: shake 0.4s; }
+        
+        @keyframes shake {
+            0% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } 100% { transform: translateX(0); }
+        }
+        .game-status { text-align: center; font-size: 1.1rem; margin-bottom: 10px; font-weight: bold; color: var(--text-secondary); }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="page-wrapper">
+        <header class="header">
+            <div class="header-inner">
+                <div class="logo">
+                    <svg class="logo-icon" viewBox="0 0 40 40" fill="none">
+                        <rect x="4" y="8" width="32" height="24" rx="2" stroke="currentColor" stroke-width="2"/>
+                        <path d="M4 14h32" stroke="currentColor" stroke-width="2"/>
+                        <circle cx="10" cy="11" r="2" fill="currentColor"/>
+                        <circle cx="16" cy="11" r="2" fill="currentColor"/>
+                        <rect x="8" y="18" width="24" height="2" rx="1" fill="currentColor" opacity="0.5"/>
+                    </svg>
+                    <span class="logo-text">Media Belajar Daffa</span>
+                </div>
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle tema">
+                    <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+                    <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                </button>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="container">
+                <div class="page-header">
+                    <nav class="breadcrumb">
+                        <a href="../index.html">Beranda</a><span>/</span>
+                        <a href="index.html">PAI</a><span>/</span>
+                        <span class="current">Fikih</span>
+                    </nav>
+                    <div class="accent-line"></div>
+                    <h1 class="page-title">Fikih</h1>
+                    <p class="page-subtitle">Mempelajari hukum Islam mengenai ibadah dan muamalah (pergaulan sosial).</p>
+                </div>
+
+                <div class="nav-btn-group">
+                    <a href="index.html" class="nav-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg> Kembali ke Daftar Materi</a>
+                    <a href="../index.html" class="nav-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Beranda</a>
+                </div>
+
+                <nav class="quick-nav" id="quickNav">
+                    <a href="#thaharah" class="quick-nav-btn">Thaharah</a>
+                    <a href="#shalat" class="quick-nav-btn">Shalat</a>
+                    <a href="#zakat" class="quick-nav-btn">Zakat</a>
+                    <a href="#puasa" class="quick-nav-btn">Puasa</a>
+                    <a href="#haji" class="quick-nav-btn">Haji</a>
+                    <a href="#muamalah" class="quick-nav-btn">Muamalah</a>
+                    <a href="#interaktif" class="quick-nav-btn">Game</a>
+                </nav>
+
+                <!-- 1. Thaharah -->
+                <section class="content-section" id="thaharah">
+                    <div class="section-header"><h2 class="section-title">1. Thaharah (Bersuci)</h2></div>
+                    <div class="material-content">
+                        <p>Thaharah adalah mensucikan diri dari hadas dan najis. Merupakan syarat sah shalat.</p>
+                        <div class="verse-box">
+                            <div class="verse-arabic">إِنَّ اللَّهَ يُحِبُّ التَّوَّابِينَ وَيُحِبُّ الْمُتَطَهِّرِينَ</div>
+                            <div class="verse-translation">“Sesungguhnya Allah menyukai orang-orang yang tobat dan menyukai orang-orang yang mensucikan diri.”</div>
+                            <div class="verse-source">QS. Al-Baqarah: 222</div>
+                        </div>
+                        <div class="info-grid">
+                            <div class="info-card">
+                                <span class="info-title">Wudu</span>
+                                <p>Menggunakan air suci untuk membasuh wajah, tangan, kepala, dan kaki.</p>
+                            </div>
+                            <div class="info-card">
+                                <span class="info-title">Tayamum</span>
+                                <p>Menggunakan debu (tanah suci) sebagai pengganti wudu ketika tidak ada air atau sakit.</p>
+                            </div>
+                            <div class="info-card">
+                                <span class="info-title">Mandi (Janabah)</span>
+                                <p>Mensucikan hadas besar dengan mengalirkan air ke seluruh badan.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 2. Shalat -->
+                <section class="content-section" id="shalat">
+                    <div class="section-header"><h2 class="section-title">2. Shalat</h2></div>
+                    <div class="material-content">
+                        <p>Shalat adalah tiang agama. Hukum shalat 5 waktu adalah <strong>Fardu Ain</strong> (wajib setiap muslim).</p>
+                        <h4>Rukun Islam:</h4>
+                        <ul class="pillars-list">
+                            <li>1. Syahadat</li>
+                            <li>2. Shalat</li>
+                            <li>3. Puasa</li>
+                            <li>4. Zakat</li>
+                            <li>5. Haji</li>
+                        </ul>
+                        <h4>Jenis Shalat:</h4>
+                        <ul>
+                            <li><strong>Fardu</strong>: 5 waktu (Subuh, Dzuhur, Ashar, Maghrib, Isya).</li>
+                            <li><strong>Sunnah</strong>: Rawatib, Dhuha, Tahajud, Istikharah, Witir.</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <!-- 3. Zakat -->
+                <section class="content-section" id="zakat">
+                    <div class="section-header"><h2 class="section-title">3. Zakat, Infak, Sedekah</h2></div>
+                    <div class="material-content">
+                        <div class="info-grid">
+                            <div class="info-card">
+                                <span class="info-title">Zakat Mal</span>
+                                <p>Harta yang wajib dikeluarkan jika mencapai nisab & haul (setahun). 2.5% untuk emas/uang.</p>
+                            </div>
+                            <div class="info-card">
+                                <span class="info-title">Zakat Fitrah</span>
+                                <p>Wajib di bulan Ramadhan. Berupa makanan pokok (beras) untuk diri sendiri dan keluarga.</p>
+                            </div>
+                            <div class="info-card">
+                                <span class="info-title">Infak & Sedekah</span>
+                                <p>Pemberian sukarela (tidak terikat nisab/waktu) untuk kebaikan.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 4. Puasa -->
+                <section class="content-section" id="puasa">
+                    <div class="section-header"><h2 class="section-title">4. Puasa</h2></div>
+                    <div class="material-content">
+                        <p>Menahan diri dari makan, minum, dan hal yang membatalkan dari terbit fajar sampai terbenam matahari.</p>
+                        <div class="verse-box">
+                            <div class="verse-arabic">يَا أَيُّهَا الَّذِينَ آمَنُوا كُتِبَ عَلَيْكُمُ الصِّيَامُ كَمَا كُتِبَ عَلَى الَّذِينَ مِن قَبْلِكُمْ لَعَلَّكُمْ تَتَّقُونَ</div>
+                            <div class="verse-translation">“Wahai orang-orang yang beriman, diwajibkan atas kamu berpuasa sebagaimana diwajibkan atas orang-orang sebelum kamu agar kamu bertakwa.”</div>
+                            <div class="verse-source">QS. Al-Baqarah: 183</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 5. Haji & Umrah -->
+                <section class="content-section" id="haji">
+                    <div class="section-header"><h2 class="section-title">5. Haji dan Umrah</h2></div>
+                    <div class="material-content">
+                        <p><strong>Haji</strong> adalah berkunjung ke Baitullah (Ka'bah) untuk melaksanakan ibadah tertentu pada bulan Dzulhijjah. Hukumnya wajib sekali seumur hidup bagi yang mampu.</p>
+                        <p><strong>Rukun Haji:</strong> Ihram, Wukuf di Arafah, Tawaf Ifadah, Sa'i, Tahallul, Tartib.</p>
+                        <p><strong>Umrah</strong> adalah haji kecil (dilakukan kapan saja selain hari-hari haji), rukunnya: Ihram, Tawaf, Sa'i, Tahallul.</p>
+                    </div>
+                </section>
+
+                <!-- 6. Muamalah -->
+                <section class="content-section" id="muamalah">
+                    <div class="section-header"><h2 class="section-title">6. Jual Beli dan Muamalah</h2></div>
+                    <div class="material-content">
+                        <p>Jual beli adalah tukar-menukar barang dengan cara yang dihalalkan.</p>
+                        <h4>Rukun Jual Beli:</h4>
+                        <ol>
+                            <li>Penjual dan Pembeli (Balig, Berakal, Tidak dipaksa).</li>
+                            <li>Barang (Suci, bermanfaat, milik sendiri).</li>
+                            <li>Ijab Qabul (Aqad).</li>
+                        </ol>
+                        <h4>Dilarang dalam Jual Beli:</h4>
+                        <p>Jual beli yang mengandung riba, curang (tadlis), menipu (ghisy), atau menjual barang haram.</p>
+                    </div>
+                </section>
+
+                <!-- INTERAKTIF: GAME PASANGAN ISTILAH -->
+                <section class="content-section" id="interaktif">
+                    <div class="section-header"><h2 class="section-title">Game Pasangan Istilah Fikih</h2></div>
+                    <div class="sim-container">
+                        <p style="text-align:center;">Cocokkan istilah ibadah di kiri dengan definisi/rincian di kanan.</p>
+                        
+                        <div class="game-status">Skor: <span id="score">0</span> / 6</div>
+                        
+                        <div class="game-grid" id="gameGrid">
+                            <!-- Generated by JS -->
+                        </div>
+                        <button class="action-btn start" onclick="initGame()" style="display:block; margin-top:20px; margin-left:auto; margin-right:auto;">Ulangi Game</button>
+                    </div>
+                </section>
+
+                <section class="content-section" id="kuis">
+                    <div class="section-header"><h2 class="section-title">Kuis Fikih</h2></div>
+                    <div id="quizContainer"></div>
+                </section>
+            </div>
+        </main>
+        <footer class="footer">
+            <div class="footer-inner">
+                <div class="footer-brand">
+                    <span class="footer-name">Media Belajar Daffa</span>
+                    <span class="footer-class">Muhammad Daffa Athallah - XII-M4-1</span>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script src="../matematika-wajib/script.js"></script>
+    <script src="../matematika-wajib/quiz-engine.js"></script>
+    <script>
+        const quizQuestions = [
+            { question: "Syarat sah shalat yang berhubungan dengan kebersihan adalah...", options: ["Menghadap Kiblat", "Thaharah", "Menutup Aurat", "Berdiri"], correct: 1, explanation: "Thaharah (bersuci) dari hadas dan najis adalah syarat sah." },
+            { question: "Menggunakan debu sebagai pengganti air wudu disebut...", options: ["Ghusl", "Tayamum", "Istinja", "Istihalah"], correct: 1, explanation: "Tayamum adalah bersuci dengan debu." },
+            { question: "Rukun Islam ke-5 adalah...", options: ["Shalat", "Puasa", "Zakat", "Haji"], correct: 3, explanation: "Haji adalah rukun Islam ke-5." },
+            { question: "Jumlah rakaat shalat Maghrib adalah...", options: ["2 Rakaat", "3 Rakaat", "4 Rakaat", "4 Rakaat 2 Salam"], correct: 1, explanation: "Shalat Maghrib berjumlah 3 rakaat." }
+        ];
+
+        // ==========================================
+        // MATCHING GAME LOGIC
+        // ==========================================
+        const gameData = [
+            { term: "Wudu", match: "Membasuh Wajah" },
+            { term: "Tayamum", match: "Menggunakan Debu" },
+            { term: "Zakat Mal", match: "Harta Benda" },
+            { term: "Wukuf", match: "Di Padang Arafah" },
+            { term: "Thawaf", match: "Mengelilingi Ka'bah" },
+            { term: "Sa'i", match: "Safa & Marwa" }
+        ];
+
+        let cards = [];
+        let firstCard = null;
+        let secondCard = null;
+        let lockBoard = false;
+        let matches = 0;
+
+        function initGame() {
+            const grid = document.getElementById('gameGrid');
+            grid.innerHTML = '';
+            matches = 0;
+            document.getElementById('score').textContent = matches;
+            firstCard = null;
+            secondCard = null;
+            lockBoard = false;
+
+            cards = [];
+            gameData.forEach((item, index) => {
+                cards.push({ id: index, type: 'term', text: item.term, matchId: index });
+                cards.push({ id: index + 100, type: 'match', text: item.match, matchId: index });
+            });
+
+            cards.sort(() => Math.random() - 0.5);
+
+            cards.forEach(card => {
+                const cardEl = document.createElement('div');
+                cardEl.classList.add('game-card');
+                cardEl.dataset.id = card.id;
+                cardEl.dataset.matchId = card.matchId;
+                cardEl.textContent = card.text;
+                cardEl.addEventListener('click', flipCard);
+                grid.appendChild(cardEl);
+            });
+        }
+
+        function flipCard() {
+            if (lockBoard) return;
+            if (this === firstCard) return;
+            if (this.classList.contains('matched')) return;
+
+            this.classList.add('selected');
+
+            if (!firstCard) {
+                firstCard = this;
+                return;
+            }
+
+            secondCard = this;
+            checkForMatch();
+        }
+
+        function checkForMatch() {
+            let isMatch = firstCard.dataset.matchId === secondCard.dataset.matchId;
+
+            if (isMatch) {
+                disableCards();
+                matches++;
+                document.getElementById('score').textContent = matches;
+                if (matches === gameData.length) {
+                    setTimeout(() => alert("Masya Allah! Kamu hafal istilah fikih dengan baik!"), 300);
+                }
+            } else {
+                unflipCards();
+            }
+        }
+
+        function disableCards() {
+            firstCard.classList.remove('selected');
+            secondCard.classList.remove('selected');
+            firstCard.classList.add('matched');
+            secondCard.classList.add('matched');
+            resetBoard();
+        }
+
+        function unflipCards() {
+            lockBoard = true;
+            firstCard.classList.add('wrong');
+            secondCard.classList.add('wrong');
+            
+            setTimeout(() => {
+                firstCard.classList.remove('selected', 'wrong');
+                secondCard.classList.remove('selected', 'wrong');
+                resetBoard();
+            }, 800);
+        }
+
+        function resetBoard() {
+            [firstCard, secondCard, lockBoard] = [null, null, false];
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            new QuizEngine('quizContainer', quizQuestions).init();
+            initGame();
+            
+            const quickNav = document.getElementById('quickNav');
+            window.addEventListener('scroll', () => quickNav.classList.toggle('scrolled', window.scrollY > 200));
+        });
+    </script>
+</body>
+</html>

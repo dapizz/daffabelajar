@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Gerak Lurus - Fisika">
+    <title>Gerak Lurus - Media Belajar Daffa</title>
+    <link rel="stylesheet" href="../matematika-wajib/style.css">
+    <style>
+        /* Fraction Styles */
+        .fraction {
+            display: inline-flex; flex-direction: column;
+            align-items: center; vertical-align: middle;
+            margin: 0 4px; font-family: var(--font-display);
+        }
+        .fraction-numerator { padding: 2px 8px; font-size: 1rem; line-height: 1.3; }
+        .fraction-line { width: 100%; height: 2px; background: var(--text-primary); border-radius: 1px; }
+        .fraction-denominator { padding: 2px 8px; font-size: 1rem; line-height: 1.3; }
+        .formula-box .fraction { background: var(--bg-card); padding: 8px 12px; border-radius: var(--radius-sm); margin: 0 8px; }
+        .formula-box .fraction-line { background: var(--accent-primary); }
+
+        /* Simulator Styles */
+        .sim-container {
+            background: var(--bg-secondary); border-radius: var(--radius-lg);
+            padding: 20px; margin: 20px 0;
+            border: 1px solid var(--border-color);
+        }
+        
+        /* Track Visual */
+        .track-stage {
+            position: relative;
+            height: 120px;
+            background: #ecf0f1;
+            border-radius: var(--radius-md);
+            margin: 20px 0;
+            overflow: hidden;
+            border-bottom: 4px solid #95a5a6;
+        }
+        .track-road {
+            position: absolute; bottom: 0; left: 0; right: 0; height: 40px;
+            background: #bdc3c7; 
+            background-image: repeating-linear-gradient(90deg, #fff 0, #fff 20px, transparent 20px, transparent 40px);
+            background-position: 0 15px;
+        }
+        .car-obj {
+            position: absolute; bottom: 10px; left: 0;
+            width: 60px; height: 30px;
+            background: #e74c3c;
+            border-radius: 5px 15px 5px 5px;
+            box-shadow: 0 5px 0 #c0392b;
+            transition: left 0.05s linear;
+            z-index: 10;
+        }
+        .car-obj::before { content: ''; position: absolute; top: -15px; left: 10px; width: 35px; height: 15px; background: #c0392b; border-radius: 5px 5px 0 0; }
+        .wheel { position: absolute; bottom: -8px; width: 15px; height: 15px; background: #2c3e50; border-radius: 50%; border: 3px solid #7f8c8d; }
+        .wheel-front { right: 5px; }
+        .wheel-back { left: 5px; }
+
+        .ruler {
+            position: absolute; bottom: 45px; left: 0; right: 0; height: 20px;
+            display: flex; justify-content: space-between; padding: 0 10px;
+            font-size: 10px; color: var(--text-muted);
+        }
+
+        /* Data Display */
+        .data-panel {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+            background: var(--bg-card); padding: 15px; border-radius: var(--radius-md);
+            margin-bottom: 15px; text-align: center;
+        }
+        .data-item label { display: block; font-size: 0.8rem; color: var(--text-muted); }
+        .data-item span { font-size: 1.4rem; font-weight: bold; color: var(--accent-primary); font-family: var(--font-display); }
+
+        /* Graph Styles */
+        .graph-grid {
+            display: grid; grid-template-columns: 1fr; gap: 20px;
+        }
+        @media(min-width: 768px) { .graph-grid { grid-template-columns: repeat(3, 1fr); } }
+        
+        .graph-box { background: var(--bg-card); border-radius: var(--radius-md); padding: 10px; }
+        .graph-svg { width: 100%; height: 150px; }
+        .axis-line { stroke: var(--text-muted); stroke-width: 1; }
+        .plot-line { fill: none; stroke-width: 2; stroke-linecap: round; }
+        .plot-pos { stroke: #27ae60; }
+        .plot-vel { stroke: #e74c3c; }
+        .plot-acc { stroke: #3498db; }
+        .current-dot { fill: var(--text-primary); stroke: white; stroke-width: 2; }
+    </style>
+</head>
+<body>
+    <div class="page-wrapper">
+        <header class="header">
+            <div class="header-inner">
+                <div class="logo">
+                    <svg class="logo-icon" viewBox="0 0 40 40" fill="none">
+                        <rect x="4" y="8" width="32" height="24" rx="2" stroke="currentColor" stroke-width="2"/>
+                        <path d="M4 14h32" stroke="currentColor" stroke-width="2"/>
+                        <circle cx="10" cy="11" r="2" fill="currentColor"/>
+                        <circle cx="16" cy="11" r="2" fill="currentColor"/>
+                        <rect x="8" y="18" width="24" height="2" rx="1" fill="currentColor" opacity="0.5"/>
+                    </svg>
+                    <span class="logo-text">Media Belajar Daffa</span>
+                </div>
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle tema">
+                    <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+                    <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                </button>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="container">
+                <div class="page-header">
+                    <nav class="breadcrumb">
+                        <a href="../index.html">Beranda</a><span>/</span>
+                        <a href="index.html">Fisika</a><span>/</span>
+                        <span class="current">Gerak Lurus</span>
+                    </nav>
+                    <div class="accent-line"></div>
+                    <h1 class="page-title">Gerak Lurus</h1>
+                    <p class="page-subtitle">Menganalisis gerak benda pada lintasan lurus: Jarak, Perpindahan, GLB, dan GLBB.</p>
+                </div>
+
+                <div class="nav-btn-group">
+                    <a href="index.html" class="nav-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg> Kembali ke Daftar Materi</a>
+                    <a href="../index.html" class="nav-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Beranda</a>
+                </div>
+
+                <nav class="quick-nav" id="quickNav">
+                    <a href="#materi-inti" class="quick-nav-btn">Materi</a>
+                    <a href="#simulator" class="quick-nav-btn">Simulator</a>
+                    <a href="#contoh-soal" class="quick-nav-btn">Contoh Soal</a>
+                    <a href="#kuis" class="quick-nav-btn">Kuis</a>
+                </nav>
+
+                <!-- Material Content -->
+                <section class="content-section" id="materi-inti">
+                    <div class="section-header"><h2 class="section-title">Materi Inti</h2></div>
+                    <div class="material-content">
+                        <h3>1. Jarak dan Perpindahan</h3>
+                        <ul>
+                            <li><strong>Jarak (d)</strong>: Panjang lintasan yang ditempuh benda. Merupakan besaran skalar (punya besar saja).</li>
+                            <li><strong>Perpindahan (s)</strong>: Perubahan posisi benda dari titik awal ke titik akhir. Merupakan besaran vektor (punya besar dan arah).</li>
+                        </ul>
+
+                        <h3>2. Kecepatan dan Percepatan</h3>
+                        <div class="formula-box">
+                            <div class="formula-label">Kecepatan Rata-rata (v)</div>
+                            <div class="formula">v = <span class="fraction"><span class="fraction-numerator">Δs</span><span class="fraction-line"></span><span class="fraction-denominator">Δt</span></span></div>
+                        </div>
+                        <div class="formula-box">
+                            <div class="formula-label">Percepatan (a)</div>
+                            <div class="formula">a = <span class="fraction"><span class="fraction-numerator">Δv</span><span class="fraction-line"></span><span class="fraction-denominator">Δt</span></span></div>
+                        </div>
+
+                        <h3>3. Gerak Lurus Beraturan (GLB)</h3>
+                        <p>Gerak benda pada lintasan lurus dengan <strong>kecepatan tetap (a = 0)</strong>.</p>
+                        <div class="formula-box">
+                            <div class="formula">s = v . t</div>
+                        </div>
+                        <p>Grafik s-t berupa garis lurus miring, grafik v-t berupa garis horizontal.</p>
+
+                        <h3>4. Gerak Lurus Berubah Beraturan (GLBB)</h3>
+                        <p>Gerak benda pada lintasan lurus dengan <strong>percepatan tetap (a = konstan)</strong>.</p>
+                        <div class="formula-box">
+                            <div class="formula">v = v₀ + a . t</div>
+                            <div class="formula" style="margin-top:5px;">s = v₀ . t + <span class="fraction"><span class="fraction-numerator">1</span><span class="fraction-line"></span><span class="fraction-denominator">2</span></span> a . t²</div>
+                            <div class="formula" style="margin-top:5px;">v² = v₀² + 2 . a . s</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Interactive Simulator -->
+                <section class="content-section" id="simulator">
+                    <div class="section-header"><h2 class="section-title">Simulator Gerak Mobil</h2></div>
+                    
+                    <div class="sim-container">
+                        <div class="slider-control">
+                            <span class="slider-label">Kecepatan Awal (v₀):</span>
+                            <input type="range" class="slider-input" id="setV0" min="0" max="50" step="1" value="10">
+                            <span class="slider-value"><span id="valV0">10</span> m/s</span>
+                        </div>
+                        <div class="slider-control">
+                            <span class="slider-label">Percepatan (a):</span>
+                            <input type="range" class="slider-input" id="setAcc" min="-5" max="5" step="0.5" value="0">
+                            <span class="slider-value"><span id="valAcc">0</span> m/s²</span>
+                        </div>
+
+                        <div class="data-panel">
+                            <div class="data-item">
+                                <label>Waktu (t)</label>
+                                <span id="dispTime">0.0 s</span>
+                            </div>
+                            <div class="data-item">
+                                <label>Kecepatan (v)</label>
+                                <span id="dispVel">0.0 m/s</span>
+                            </div>
+                            <div class="data-item">
+                                <label>Posisi (s)</label>
+                                <span id="dispPos">0.0 m</span>
+                            </div>
+                        </div>
+
+                        <!-- Realistic Track -->
+                        <div class="track-stage">
+                            <div class="ruler">
+                                <span>0 m</span><span>50 m</span><span>100 m</span><span>150 m</span><span>200 m</span>
+                            </div>
+                            <div class="track-road"></div>
+                            <div class="car-obj" id="carObj">
+                                <div class="wheel wheel-back"></div>
+                                <div class="wheel wheel-front"></div>
+                            </div>
+                        </div>
+
+                        <div style="display:flex; gap:10px; justify-content:center;">
+                            <button class="control-btn active" onclick="startSim()">▶ Mulai</button>
+                            <button class="control-btn" onclick="resetSim()">⟲ Reset</button>
+                        </div>
+
+                        <!-- Graphs -->
+                        <div class="graph-grid" style="margin-top:20px;">
+                            <div class="graph-box">
+                                <h4 style="text-align:center; font-size:0.9rem; margin-bottom:5px;">Grafik Posisi (s-t)</h4>
+                                <svg class="graph-svg" id="graphST" viewBox="0 0 200 100">
+                                    <line x1="20" y1="80" x2="190" y2="80" class="axis-line"/>
+                                    <line x1="20" y1="10" x2="20" y2="80" class="axis-line"/>
+                                    <path id="pathST" class="plot-line plot-pos" d=""/>
+                                    <circle id="dotST" cx="20" cy="80" r="3" class="current-dot"/>
+                                </svg>
+                            </div>
+                            <div class="graph-box">
+                                <h4 style="text-align:center; font-size:0.9rem; margin-bottom:5px;">Grafik Kecepatan (v-t)</h4>
+                                <svg class="graph-svg" id="graphVT" viewBox="0 0 200 100">
+                                    <line x1="20" y1="80" x2="190" y2="80" class="axis-line"/>
+                                    <line x1="20" y1="10" x2="20" y2="80" class="axis-line"/>
+                                    <path id="pathVT" class="plot-line plot-vel" d=""/>
+                                    <circle id="dotVT" cx="20" cy="80" r="3" class="current-dot"/>
+                                </svg>
+                            </div>
+                            <div class="graph-box">
+                                <h4 style="text-align:center; font-size:0.9rem; margin-bottom:5px;">Grafik Percepatan (a-t)</h4>
+                                <svg class="graph-svg" id="graphAT" viewBox="0 0 200 100">
+                                    <line x1="20" y1="80" x2="190" y2="80" class="axis-line"/>
+                                    <line x1="20" y1="10" x2="20" y2="80" class="axis-line"/>
+                                    <path id="pathAT" class="plot-line plot-acc" d=""/>
+                                    <circle id="dotAT" cx="20" cy="80" r="3" class="current-dot"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Example Problems -->
+                <section class="content-section" id="contoh-soal">
+                    <div class="section-header"><h2 class="section-title">Contoh Soal</h2></div>
+
+                    <div class="example-card">
+                        <div class="example-header"><span class="example-number">1</span><span class="example-title">GLBB</span></div>
+                        <div class="example-body">
+                            <p class="example-question">Sebuah mobil bergerak dengan kecepatan awal 10 m/s dan percepatan 2 m/s². Tentukan kecepatan mobil setelah 5 detik!</p>
+                            <div class="solution-steps">
+                                <div class="solution-step"><span class="step-marker">1</span><div class="step-content">
+                                    <span class="step-label">Diketahui</span>
+                                    <span class="step-math">v₀ = 10 m/s, a = 2 m/s², t = 5 s</span>
+                                </div></div>
+                                <div class="solution-step"><span class="step-marker">2</span><div class="step-content">
+                                    <span class="step-label">Rumus</span>
+                                    <span class="step-math">v = v₀ + a . t</span>
+                                </div></div>
+                                <div class="solution-step"><span class="step-marker">3</span><div class="step-content">
+                                    <span class="step-label">Hitung</span>
+                                    <span class="step-math">v = 10 + (2 . 5) = 20 m/s</span>
+                                </div></div>
+                            </div>
+                            <div class="example-answer"><svg class="answer-icon">...</svg><span class="answer-text">20 m/s</span></div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="content-section" id="kuis">
+                    <div class="section-header"><h2 class="section-title">Kuis Gerak Lurus</h2></div>
+                    <div id="quizContainer"></div>
+                </section>
+            </div>
+        </main>
+        <footer class="footer">...</footer>
+    </div>
+
+    <script src="../matematika-wajib/script.js"></script>
+    <script src="../matematika-wajib/quiz-engine.js"></script>
+    <script>
+        const quizQuestions = [
+            { question: "Besaran yang hanya memiliki nilai besar tanpa arah disebut...", options: ["Vektor", "Skalar", "Resultan", "Komponen"], correct: 1, explanation: "Contoh skalar: Jarak, Kelajuan, Massa, Waktu." },
+            { question: "Gerak lurus dengan kecepatan konstan disebut...", options: ["GLBB", "GLB", "GMB", "GJB"], correct: 1, explanation: "GLB memiliki a = 0." },
+            { question: "Grafik hubungan v-t pada GLB berbentuk...", options: ["Garisme miring ke atas", "Garisme miring ke bawah", "Garis horizontal", "Parabola"], correct: 2, explanation: "Kecepatan konstan, sehingga grafik lurus sejajar sumbu x." },
+            { question: "Mobil melaju 72 km/jam. Berapa m/s kecepatannya?", options: ["20 m/s", "72 m/s", "36 m/s", "10 m/s"], correct: 0, explanation: "72 km/jam dibagi 3.6 = 20 m/s." }
+        ];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            new QuizEngine('quizContainer', quizQuestions).init();
+            
+            const quickNav = document.getElementById('quickNav');
+            window.addEventListener('scroll', () => quickNav.classList.toggle('scrolled', window.scrollY > 200));
+
+            // --- Physics Engine ---
+            const v0Slider = document.getElementById('setV0');
+            const accSlider = document.getElementById('setAcc');
+            const carObj = document.getElementById('carObj');
+            
+            let isRunning = false;
+            let animFrame = null;
+            let state = { t: 0, s: 0, v: 0, a: 0, v0: 0 };
+            const maxTrack = 400; // Pixel width of track div roughly
+            
+            function updateParams() {
+                document.getElementById('valV0').textContent = v0Slider.value;
+                document.getElementById('valAcc').textContent = accSlider.value;
+            }
+
+            function resetSim() {
+                isRunning = false;
+                cancelAnimationFrame(animFrame);
+                state = { t: 0, s: 0, v: parseFloat(v0Slider.value), a: parseFloat(accSlider.value), v0: parseFloat(v0Slider.value) };
+                updateParams();
+                render();
+            }
+
+            window.startSim = function() {
+                if(isRunning) return;
+                resetSim(); // reset dulu sebelum mulai
+                isRunning = true;
+                state.v0 = parseFloat(v0Slider.value);
+                state.v = state.v0;
+                state.a = parseFloat(accSlider.value);
+                state.t = 0;
+                loop();
+            };
+            
+            window.resetSim = resetSim;
+
+            function loop() {
+                if(!isRunning) return;
+                
+                const dt = 0.05; // Time step in seconds
+                state.t += dt;
+                
+                // Physics Kinematics Equations
+                // v = v0 + at
+                state.v = state.v0 + (state.a * state.t);
+                
+                // s = v0*t + 0.5*a*t^2
+                state.s = (state.v0 * state.t) + (0.5 * state.a * state.t * state.t);
+
+                // Boundary check (reverse or stop)
+                if(state.s < 0 || state.v < 0) {
+                    state.s = Math.max(0, state.s);
+                    state.v = Math.max(0, state.v);
+                    if(state.a < 0) isRunning = false; // Stop if decelerating to 0
+                }
+                if(state.s > 200) isRunning = false; // Batas lintasan 200m
+
+                render();
+                if(isRunning) animFrame = requestAnimationFrame(loop);
+            }
+
+            function render() {
+                // Update Data Panel
+                document.getElementById('dispTime').textContent = state.t.toFixed(2) + " s";
+                document.getElementById('dispVel').textContent = state.v.toFixed(2) + " m/s";
+                document.getElementById('dispPos').textContent = state.s.toFixed(2) + " m";
+
+                // Update Car Position
+                // Map 0-200m to 0-350px (approx track width inside padding)
+                const pixelPos = Math.min(350, (state.s / 200) * 350);
+                carObj.style.left = pixelPos + "px";
+
+                // Update Graphs
+                drawGraphs();
+            }
+
+            function drawGraphs() {
+                // We draw the predicted full path or the current progress path
+                // Let's draw the current progress path
+
+                const tMax = 20; // Max time for graph x-axis
+                const sMax = 200; // Max position for graph y-axis
+                const vMax = 60;  // Max velocity for graph y-axis
+                
+                // Helper to map val to SVG coords
+                // SVG W=200, H=100. Plot area: x(20 to 190), y(10 to 80)
+                // xScale: t -> 170px range. yScale: val -> 70px range.
+                
+                const mapX = (t) => 20 + (t/tMax)*170;
+                const mapY = (val, maxVal) => 80 - (val/maxVal)*70; // Inverted Y
+
+                let dST = "M 20 80"; // Start at origin
+                let dVT = "M 20 " + mapY(state.v0, vMax);
+                
+                // Draw line up to current t
+                // We approximate with segments
+                for(let i=0; i<=state.t; i+=0.2) {
+                    let currV = state.v0 + state.a*i;
+                    let currS = (state.v0*i) + 0.5*state.a*i*i;
+                    
+                    dST += ` L ${mapX(i)} ${mapY(currS, sMax)}`;
+                    dVT += ` L ${mapX(i)} ${mapY(currV, vMax)}`;
+                }
+
+                document.getElementById('pathST').setAttribute('d', dST);
+                document.getElementById('pathVT').setAttribute('d', dVT);
+                
+                // Current Dots
+                document.getElementById('dotST').setAttribute('cx', mapX(state.t));
+                document.getElementById('dotST').setAttribute('cy', mapY(state.s, sMax));
+                
+                document.getElementById('dotVT').setAttribute('cx', mapX(state.t));
+                document.getElementById('dotVT').setAttribute('cy', mapY(state.v, vMax));
+
+                // Acc line (horizontal line)
+                let dAT = `M 20 ${mapY(state.a, 10)} L ${mapX(state.t)} ${mapY(state.a, 10)}`; // a max +-5
+                document.getElementById('pathAT').setAttribute('d', dAT);
+                document.getElementById('dotAT').setAttribute('cx', mapX(state.t));
+                document.getElementById('dotAT').setAttribute('cy', mapY(state.a, 10));
+            }
+
+            v0Slider.oninput = updateParams;
+            accSlider.oninput = updateParams;
+            resetSim();
+        });
+    </script>
+</body>
+</html>

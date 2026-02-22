@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Geometri Analitik - Matematika Tingkat Lanjut">
+    <title>Geometri Analitik - Media Belajar Daffa</title>
+    <link rel="stylesheet" href="../matematika-wajib/style.css">
+    <style>
+        /* Fraction Styles */
+        .fraction {
+            display: inline-flex; flex-direction: column;
+            align-items: center; vertical-align: middle;
+            margin: 0 4px; font-family: var(--font-display);
+        }
+        .fraction-numerator { padding: 2px 8px; font-size: 1rem; line-height: 1.3; }
+        .fraction-line { width: 100%; height: 2px; background: var(--text-primary); border-radius: 1px; }
+        .fraction-denominator { padding: 2px 8px; font-size: 1rem; line-height: 1.3; }
+        .formula-box .fraction { background: var(--bg-card); padding: 8px 12px; border-radius: var(--radius-sm); margin: 0 8px; }
+        .formula-box .fraction-line { background: var(--accent-primary); }
+
+        /* SVG Graph Styles */
+        .graph-container {
+            background: var(--bg-secondary); border-radius: var(--radius-lg);
+            padding: 20px; margin: 20px 0; position: relative;
+        }
+        .graph-svg {
+            width: 100%; height: auto; min-height: 300px;
+            background: var(--bg-card); border-radius: var(--radius-md);
+        }
+        .grid-line { stroke: var(--border-light); stroke-width: 0.5; }
+        .axis { stroke: var(--text-muted); stroke-width: 1.5; }
+        .graph-line { fill: none; stroke: var(--accent-primary); stroke-width: 3; stroke-linecap: round; }
+        .graph-shape { fill: rgba(52, 152, 219, 0.1); stroke: var(--accent-primary); stroke-width: 2; }
+        .graph-point { fill: var(--success); stroke: white; stroke-width: 2; }
+        .asymptote { stroke: var(--error); stroke-width: 1.5; stroke-dasharray: 5,5; }
+        
+        /* Section Subtitle */
+        .sub-section {
+            border-top: 1px solid var(--border-color);
+            padding-top: 30px;
+            margin-top: 40px;
+        }
+        .sub-section h3 {
+            color: var(--accent-primary);
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="page-wrapper">
+        <header class="header">
+            <div class="header-inner">
+                <div class="logo">
+                    <svg class="logo-icon" viewBox="0 0 40 40" fill="none">
+                        <rect x="4" y="8" width="32" height="24" rx="2" stroke="currentColor" stroke-width="2"/>
+                        <path d="M4 14h32" stroke="currentColor" stroke-width="2"/>
+                        <circle cx="10" cy="11" r="2" fill="currentColor"/>
+                        <circle cx="16" cy="11" r="2" fill="currentColor"/>
+                        <rect x="8" y="18" width="24" height="2" rx="1" fill="currentColor" opacity="0.5"/>
+                    </svg>
+                    <span class="logo-text">Media Belajar Daffa</span>
+                </div>
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle tema">
+                    <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+                    <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                </button>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="container">
+                <div class="page-header">
+                    <nav class="breadcrumb">
+                        <a href="../index.html">Beranda</a><span>/</span>
+                        <a href="index.html">Matematika Lanjut</a><span>/</span>
+                        <span class="current">Geometri Analitik</span>
+                    </nav>
+                    <div class="accent-line"></div>
+                    <h1 class="page-title">Geometri Analitik</h1>
+                    <p class="page-subtitle">Mempelajari hubungan antara aljabar dan geometri melalui sistem koordinat (Garis, Lingkaran, Parabola, Elips, Hiperbola).</p>
+                </div>
+
+                <div class="nav-btn-group">
+                    <a href="index.html" class="nav-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg> Kembali ke Daftar Materi</a>
+                    <a href="../index.html" class="nav-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Beranda</a>
+                </div>
+
+                <nav class="quick-nav" id="quickNav">
+                    <a href="#garis" class="quick-nav-btn">Garis</a>
+                    <a href="#lingkaran" class="quick-nav-btn">Lingkaran</a>
+                    <a href="#parabola" class="quick-nav-btn">Parabola</a>
+                    <a href="#elips" class="quick-nav-btn">Elips</a>
+                    <a href="#hiperbola" class="quick-nav-btn">Hiperbola</a>
+                    <a href="#kuis" class="quick-nav-btn">Kuis</a>
+                </nav>
+
+                <!-- Section 1: Garis -->
+                <section class="content-section" id="garis">
+                    <div class="section-header"><h2 class="section-title">1. Persamaan Garis</h2></div>
+                    <div class="material-content">
+                        <h3>Bentuk-bentuk Persamaan Garis:</h3>
+                        <ul>
+                            <li><strong>Umum:</strong> ax + by + c = 0</li>
+                            <li><strong>Gradien (m) dan Intercept (c):</strong> y = mx + c</li>
+                            <li><strong>Titik dan Gradien:</strong> y - y₁ = m(x - x₁)</li>
+                            <li><strong>Dua Titik:</strong> <span class="fraction"><span class="fraction-numerator">y - y₁</span><span class="fraction-line"></span><span class="fraction-denominator">y₂ - y₁</span></span> = <span class="fraction"><span class="fraction-numerator">x - x₁</span><span class="fraction-line"></span><span class="fraction-denominator">x₂ - x₁</span></span></li>
+                        </ul>
+                    </div>
+
+                    <div class="graph-container">
+                        <h4 style="text-align:center; margin-bottom:15px;">Simulator Garis y = mx + c</h4>
+                        <div class="slider-control">
+                            <span class="slider-label">Gradien (m):</span>
+                            <input type="range" class="slider-input" id="garisM" min="-3" max="3" step="0.1" value="1">
+                            <span class="slider-value" id="valM">1</span>
+                        </div>
+                        <div class="slider-control">
+                            <span class="slider-label">Intercept (c):</span>
+                            <input type="range" class="slider-input" id="garisC" min="-5" max="5" step="0.5" value="0">
+                            <span class="slider-value" id="valC">0</span>
+                        </div>
+                        <svg id="svgGaris" class="graph-svg" viewBox="0 0 400 300">
+                            <defs><pattern id="grid1" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M 20 0 L 0 0 0 20" fill="none" class="grid-line"/></pattern></defs>
+                            <rect width="100%" height="100%" fill="url(#grid1)"/>
+                            <line x1="200" y1="0" x2="200" y2="300" class="axis"/>
+                            <line x1="0" y1="150" x2="400" y2="150" class="axis"/>
+                            <line id="garisLine" x1="0" y1="150" x2="400" y2="150" class="graph-line"/>
+                        </svg>
+                        <div class="info-box" style="text-align:center;">Persamaan: <strong id="eqGaris">y = 1x + 0</strong></div>
+                    </div>
+                </section>
+
+                <!-- Section 2: Lingkaran -->
+                <section class="content-section sub-section" id="lingkaran">
+                    <div class="section-header"><h2 class="section-title">2. Persamaan Lingkaran</h2></div>
+                    <div class="material-content">
+                        <h3>Pusat (a, b) dan Jari-jari r:</h3>
+                        <div class="formula-box">
+                            <div class="formula">(x - a)² + (y - b)² = r²</div>
+                        </div>
+                        <h3>Bentuk Umum:</h3>
+                        <div class="formula-box">
+                            <div class="formula">x² + y² + Ax + By + C = 0</div>
+                        </div>
+                    </div>
+
+                    <div class="graph-container">
+                        <h4 style="text-align:center; margin-bottom:15px;">Simulator Lingkaran</h4>
+                        <div class="slider-control">
+                            <span class="slider-label">Pusat x (a):</span>
+                            <input type="range" class="slider-input" id="lingX" min="-5" max="5" step="1" value="0">
+                            <span class="slider-value" id="valLingX">0</span>
+                        </div>
+                        <div class="slider-control">
+                            <span class="slider-label">Jari-jari (r):</span>
+                            <input type="range" class="slider-input" id="lingR" min="1" max="6" step="0.5" value="3">
+                            <span class="slider-value" id="valLingR">3</span>
+                        </div>
+                        <svg id="svgLing" class="graph-svg" viewBox="0 0 400 300">
+                            <defs><pattern id="grid2" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M 20 0 L 0 0 0 20" fill="none" class="grid-line"/></pattern></defs>
+                            <rect width="100%" height="100%" fill="url(#grid2)"/>
+                            <line x1="200" y1="0" x2="200" y2="300" class="axis"/>
+                            <line x1="0" y1="150" x2="400" y2="150" class="axis"/>
+                            <circle id="lingCircle" cx="200" cy="150" r="60" class="graph-shape"/>
+                            <circle id="lingCenter" cx="200" cy="150" r="3" class="graph-point"/>
+                        </svg>
+                    </div>
+                </section>
+
+                <!-- Section 3: Parabola -->
+                <section class="content-section sub-section" id="parabola">
+                    <div class="section-header"><h2 class="section-title">3. Parabola</h2></div>
+                    <div class="material-content">
+                        <h3>Definisi:</h3>
+                        <p>Tempat kedudukan titik yang jaraknya ke fokus sama dengan jaraknya ke direktris (garis arah).</p>
+                        <h3>Persamaan (Pusat (0,0)):</h3>
+                        <ul>
+                            <li>Sumbu simetri vertikal: <strong>x² = 4py</strong> (p = jarak fokus ke pusat)</li>
+                            <li>Sumbu simetri horizontal: <strong>y² = 4px</strong></li>
+                        </ul>
+                    </div>
+
+                    <div class="graph-container">
+                        <h4 style="text-align:center; margin-bottom:15px;">Simulator Parabola x² = 4py</h4>
+                        <div class="slider-control">
+                            <span class="slider-label">Parameter p:</span>
+                            <input type="range" class="slider-input" id="paraP" min="-4" max="4" step="0.5" value="1">
+                            <span class="slider-value" id="valParaP">1</span>
+                        </div>
+                        <svg id="svgPara" class="graph-svg" viewBox="0 0 400 300">
+                            <defs><pattern id="grid3" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M 20 0 L 0 0 0 20" fill="none" class="grid-line"/></pattern></defs>
+                            <rect width="100%" height="100%" fill="url(#grid3)"/>
+                            <line x1="200" y1="0" x2="200" y2="300" class="axis"/>
+                            <line x1="0" y1="150" x2="400" y2="150" class="axis"/>
+                            <!-- Direktris -->
+                            <line id="paraDir" x1="0" y1="150" x2="400" y2="150" stroke="#95a5a6" stroke-width="1" stroke-dasharray="5,5"/>
+                            <!-- Focus -->
+                            <circle id="paraFocus" cx="200" cy="150" r="4" fill="#e74c3c"/>
+                            <!-- Parabola Path -->
+                            <path id="paraPath" class="graph-line" d=""/>
+                        </svg>
+                        <div class="info-box" style="text-align:center;">Fokus: (0, <span id="focusPara">1</span>), Direktris: y = <span id="dirPara">-1</span></div>
+                    </div>
+                </section>
+
+                <!-- Section 4: Elips -->
+                <section class="content-section sub-section" id="elips">
+                    <div class="section-header"><h2 class="section-title">4. Elips</h2></div>
+                    <div class="material-content">
+                        <h3>Definisi:</h3>
+                        <p>Tempat kedudukan titik yang jumlah jaraknya ke dua fokus selalu tetap.</p>
+                        <h3>Persamaan (Pusat (0,0)):</h3>
+                        <div class="formula-box">
+                            <div class="formula"><span class="fraction"><span class="fraction-numerator">x²</span><span class="fraction-line"></span><span class="fraction-denominator">a²</span></span> + <span class="fraction"><span class="fraction-numerator">y²</span><span class="fraction-line"></span><span class="fraction-denominator">b²</span></span> = 1</div>
+                        </div>
+                        <p>Jika a > b, sumbu mayor horizontal. Jika b > a, sumbu mayor vertikal.</p>
+                    </div>
+
+                    <div class="graph-container">
+                        <h4 style="text-align:center; margin-bottom:15px;">Simulator Elips</h4>
+                        <div class="slider-control">
+                            <span class="slider-label">Sumbu a:</span>
+                            <input type="range" class="slider-input" id="elipsA" min="1" max="5" step="0.5" value="4">
+                            <span class="slider-value" id="valElipsA">4</span>
+                        </div>
+                        <div class="slider-control">
+                            <span class="slider-label">Sumbu b:</span>
+                            <input type="range" class="slider-input" id="elipsB" min="1" max="5" step="0.5" value="2">
+                            <span class="slider-value" id="valElipsB">2</span>
+                        </div>
+                        <svg id="svgElips" class="graph-svg" viewBox="0 0 400 300">
+                            <defs><pattern id="grid4" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M 20 0 L 0 0 0 20" fill="none" class="grid-line"/></pattern></defs>
+                            <rect width="100%" height="100%" fill="url(#grid4)"/>
+                            <line x1="200" y1="0" x2="200" y2="300" class="axis"/>
+                            <line x1="0" y1="150" x2="400" y2="150" class="axis"/>
+                            <ellipse id="elipsShape" cx="200" cy="150" rx="80" ry="40" class="graph-shape"/>
+                            <!-- Foci points -->
+                            <circle id="foc1" cx="240" cy="150" r="3" fill="#e74c3c"/>
+                            <circle id="foc2" cx="160" cy="150" r="3" fill="#e74c3c"/>
+                        </svg>
+                    </div>
+                </section>
+
+                <!-- Section 5: Hiperbola -->
+                <section class="content-section sub-section" id="hiperbola">
+                    <div class="section-header"><h2 class="section-title">5. Hiperbola</h2></div>
+                    <div class="material-content">
+                        <h3>Persamaan (Pusat (0,0)):</h3>
+                        <div class="formula-box">
+                            <div class="formula"><span class="fraction"><span class="fraction-numerator">x²</span><span class="fraction-line"></span><span class="fraction-denominator">a²</span></span> - <span class="fraction"><span class="fraction-numerator">y²</span><span class="fraction-line"></span><span class="fraction-denominator">b²</span></span> = 1</div>
+                        </div>
+                        <h3>Asimtot:</h3>
+                        <p>y = ± <span class="fraction"><span class="fraction-numerator">b</span><span class="fraction-line"></span><span class="fraction-denominator">a</span></span> x</p>
+                    </div>
+
+                    <div class="graph-container">
+                        <h4 style="text-align:center; margin-bottom:15px;">Simulator Hiperbola</h4>
+                        <div class="slider-control">
+                            <span class="slider-label">Sumbu a:</span>
+                            <input type="range" class="slider-input" id="hipA" min="1" max="4" step="0.5" value="2">
+                            <span class="slider-value" id="valHipA">2</span>
+                        </div>
+                        <div class="slider-control">
+                            <span class="slider-label">Sumbu b:</span>
+                            <input type="range" class="slider-input" id="hipB" min="1" max="4" step="0.5" value="1">
+                            <span class="slider-value" id="valHipB">1</span>
+                        </div>
+                        <svg id="svgHip" class="graph-svg" viewBox="0 0 400 300">
+                            <defs><pattern id="grid5" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M 20 0 L 0 0 0 20" fill="none" class="grid-line"/></pattern></defs>
+                            <rect width="100%" height="100%" fill="url(#grid5)"/>
+                            <line x1="200" y1="0" x2="200" y2="300" class="axis"/>
+                            <line x1="0" y1="150" x2="400" y2="150" class="axis"/>
+                            <!-- Asymptotes -->
+                            <line id="asym1" x1="0" y1="0" x2="400" y2="300" class="asymptote"/>
+                            <line id="asym2" x1="0" y1="300" x2="400" y2="0" class="asymptote"/>
+                            <!-- Hyperbola Branches -->
+                            <path id="hipPath1" class="graph-line" d=""/>
+                            <path id="hipPath2" class="graph-line" d=""/>
+                        </svg>
+                    </div>
+                </section>
+
+                <!-- Quiz Section -->
+                <section class="content-section" id="kuis">
+                    <div class="section-header"><h2 class="section-title">Kuis Geometri Analitik</h2></div>
+                    <div id="quizContainer"></div>
+                </section>
+            </div>
+        </main>
+        <footer class="footer">...</footer>
+    </div>
+
+    <script src="../matematika-wajib/script.js"></script>
+    <script src="../matematika-wajib/quiz-engine.js"></script>
+    <script>
+        const quizQuestions = [
+            { question: "Gradien garis y = 3x - 5 adalah...", options: ["3", "-5", "5", "-3"], correct: 0, explanation: "Bentuk y = mx + c, m adalah gradien." },
+            { question: "Jari-jari lingkaran x² + y² = 16 adalah...", options: ["4", "16", "8", "2"], correct: 0, explanation: "r² = 16 → r = 4." },
+            { question: "Fokus parabola y² = 8x adalah...", options: ["(2, 0)", "(0, 2)", "(4, 0)", "(0, 4)"], correct: 0, explanation: "y² = 4px → 4p=8 → p=2. Fokus di (p,0)." },
+            { question: "Persamaan elips dengan sumbu mayor 10 dan minor 6 adalah...", options: ["x²/25 + y²/9 = 1", "x²/5 + y²/3 = 1", "x²/9 + y²/25 = 1", "x²/10 + y²/6 = 1"], correct: 0, explanation: "Mayor 2a=10 → a=5. Minor 2b=6 → b=3." }
+        ];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            new QuizEngine('quizContainer', quizQuestions).init();
+            
+            // --- Graph Logic ---
+            
+            // 1. Garis
+            const garisM = document.getElementById('garisM');
+            const garisC = document.getElementById('garisC');
+            const garisLine = document.getElementById('garisLine');
+            function updateGaris() {
+                const m = parseFloat(garisM.value);
+                const c = parseFloat(garisC.value);
+                document.getElementById('valM').textContent = m;
+                document.getElementById('valC').textContent = c;
+                
+                // x=0 -> y=c. x=400 -> y=m*(maxX) + c
+                // Scale: 20px = 1 unit. Center (200,150).
+                // x_svg=0 => x_real = -10. x_svg=400 => x_real = 10.
+                // y_real = mx + c.
+                // y_svg = 150 - (y_real * 20).
+                const x1 = -10, x2 = 10;
+                const y1 = m*x1 + c;
+                const y2 = m*x2 + c;
+                
+                const svgX1 = 200 + (x1 * 20);
+                const svgY1 = 150 - (y1 * 20);
+                const svgX2 = 200 + (x2 * 20);
+                const svgY2 = 150 - (y2 * 20);
+
+                garisLine.setAttribute('x1', svgX1); garisLine.setAttribute('y1', svgY1);
+                garisLine.setAttribute('x2', svgX2); garisLine.setAttribute('y2', svgY2);
+                
+                let eq = m == 0 ? `y = ${c}` : `y = ${m}x ${c>=0?'+':''} ${c}`;
+                document.getElementById('eqGaris').textContent = eq;
+            }
+            if(garisM) { garisM.oninput = updateGaris; garisC.oninput = updateGaris; updateGaris(); }
+
+            // 2. Lingkaran
+            const lingX = document.getElementById('lingX');
+            const lingR = document.getElementById('lingR');
+            const lingCircle = document.getElementById('lingCircle');
+            const lingCenter = document.getElementById('lingCenter');
+            function updateLing() {
+                const a = parseFloat(lingX.value);
+                const r = parseFloat(lingR.value);
+                document.getElementById('valLingX').textContent = a;
+                document.getElementById('valLingR').textContent = r;
+                
+                const cx = 200 + (a * 20);
+                const rx = r * 20;
+                
+                lingCircle.setAttribute('cx', cx); lingCircle.setAttribute('r', rx);
+                lingCenter.setAttribute('cx', cx);
+            }
+            if(lingX) { lingX.oninput = updateLing; lingR.oninput = updateLing; updateLing(); }
+
+            // 3. Parabola (x² = 4py)
+            const paraP = document.getElementById('paraP');
+            const paraPath = document.getElementById('paraPath');
+            const paraDir = document.getElementById('paraDir');
+            const paraFocus = document.getElementById('paraFocus');
+            function updatePara() {
+                const p = parseFloat(paraP.value);
+                document.getElementById('valParaP').textContent = p;
+                if(p === 0) return;
+                
+                // Focus (0, p), Directrix y = -p
+                const focusY = 150 - (p * 20);
+                const dirY = 150 + (p * 20);
+                paraFocus.setAttribute('cy', focusY);
+                paraDir.setAttribute('y1', dirY); paraDir.setAttribute('y2', dirY);
+                
+                document.getElementById('focusPara').textContent = p;
+                document.getElementById('dirPara').textContent = -p;
+
+                // Path: x² = 4py -> y = x²/4p
+                let d = "M ";
+                for(let x = -10; x <= 10; x += 0.2) {
+                    const y = (x*x) / (4*p);
+                    const sx = 200 + (x * 20);
+                    const sy = 150 - (y * 20);
+                    d += `${sx} ${sy} L `;
+                }
+                paraPath.setAttribute('d', d.substring(0, d.length - 2));
+            }
+            if(paraP) { paraP.oninput = updatePara; updatePara(); }
+
+            // 4. Elips
+            const elipsA = document.getElementById('elipsA');
+            const elipsB = document.getElementById('elipsB');
+            const elipsShape = document.getElementById('elipsShape');
+            const foc1 = document.getElementById('foc1');
+            const foc2 = document.getElementById('foc2');
+            function updateElips() {
+                const a = parseFloat(elipsA.value);
+                const b = parseFloat(elipsB.value);
+                document.getElementById('valElipsA').textContent = a;
+                document.getElementById('valElipsB').textContent = b;
+                
+                const rx = a * 20;
+                const ry = b * 20;
+                elipsShape.setAttribute('rx', rx);
+                elipsShape.setAttribute('ry', ry);
+                
+                // Foci distance c = sqrt(a² - b²)
+                const c = Math.sqrt(Math.abs(a*a - b*b));
+                const cxOff = c * 20;
+                foc1.setAttribute('cx', 200 + cxOff);
+                foc2.setAttribute('cx', 200 - cxOff);
+            }
+            if(elipsA) { elipsA.oninput = updateElips; elipsB.oninput = updateElips; updateElips(); }
+
+            // 5. Hiperbola
+            const hipA = document.getElementById('hipA');
+            const hipB = document.getElementById('hipB');
+            const hipPath1 = document.getElementById('hipPath1');
+            const hipPath2 = document.getElementById('hipPath2');
+            const asym1 = document.getElementById('asym1');
+            const asym2 = document.getElementById('asym2');
+            function updateHip() {
+                const a = parseFloat(hipA.value);
+                const b = parseFloat(hipB.value);
+                document.getElementById('valHipA').textContent = a;
+                document.getElementById('valHipB').textContent = b;
+                
+                // Asymptotes y = (b/a)x
+                // x=200 -> y=0. x=400 (x=10) -> y = 10*(b/a). svgY = 150 - y*20
+                // Slope m = b/a.
+                // Asymptote lines coordinates
+                // Line passing center (200,150). Endpoint x=400 (10 units).
+                const mAsym = b / a;
+                const yEnd = 10 * mAsym; 
+                const svgYEnd = 150 - (yEnd * 20);
+                
+                asym1.setAttribute('y2', svgYEnd);
+                asym2.setAttribute('y2', 300 - svgYEnd); // Mirror for negative slope
+
+                // Hyperbola branches x²/a² - y²/b² = 1 -> y = b/a * sqrt(x² - a²)
+                let d1 = "M ", d2 = "M ";
+                for(let x = 10; x >= a; x -= 0.2) {
+                    const term = x*x - a*a;
+                    if(term < 0) continue;
+                    const y = (b/a) * Math.sqrt(term);
+                    const sx = 200 + (x * 20);
+                    const sy1 = 150 - (y * 20);
+                    const sy2 = 150 + (y * 20);
+                    d1 += `${sx} ${sy1} L `;
+                    d2 += `${sx} ${sy2} L `;
+                }
+                // Left branch
+                for(let x = -10; x <= -a; x += 0.2) {
+                    const term = x*x - a*a;
+                    if(term < 0) continue;
+                    const y = (b/a) * Math.sqrt(term);
+                    const sx = 200 + (x * 20);
+                    const sy1 = 150 - (y * 20);
+                    const sy2 = 150 + (y * 20);
+                    d1 += `${sx} ${sy1} L `;
+                    d2 += `${sx} ${sy2} L `;
+                }
+
+                hipPath1.setAttribute('d', d1.substring(0, d1.length - 2));
+                hipPath2.setAttribute('d', d2.substring(0, d2.length - 2));
+            }
+            if(hipA) { hipA.oninput = updateHip; hipB.oninput = updateHip; updateHip(); }
+        });
+    </script>
+</body>
+</html>

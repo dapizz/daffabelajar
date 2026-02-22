@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Persamaan dan Pertidaksamaan Lanjut - Matematika Lanjut">
+    <title>Persamaan Lanjut - Media Belajar Daffa</title>
+    <link rel="stylesheet" href="../matematika-wajib/style.css">
+    <style>
+        /* Fraction Styles */
+        .fraction {
+            display: inline-flex; flex-direction: column;
+            align-items: center; vertical-align: middle;
+            margin: 0 4px; font-family: var(--font-display);
+        }
+        .fraction-numerator { padding: 2px 8px; font-size: 1rem; line-height: 1.3; }
+        .fraction-line { width: 100%; height: 2px; background: var(--text-primary); border-radius: 1px; }
+        .fraction-denominator { padding: 2px 8px; font-size: 1rem; line-height: 1.3; }
+        .formula-box .fraction { background: var(--bg-card); padding: 8px 12px; border-radius: var(--radius-sm); margin: 0 8px; }
+        .formula-box .fraction-line { background: var(--accent-primary); }
+
+        /* Absolute Value Visualizer */
+        .abs-graph-container {
+            background: var(--bg-secondary); border-radius: var(--radius-md);
+            padding: 20px; margin: 20px 0; position: relative;
+        }
+        .abs-svg { width: 100%; height: auto; min-height: 250px; }
+        .grid-line { stroke: var(--border-light); stroke-width: 0.5; }
+        .axis { stroke: var(--text-muted); stroke-width: 1.5; }
+        .func-line { fill: none; stroke: var(--accent-primary); stroke-width: 3; }
+        .highlight-area { fill: rgba(52, 152, 219, 0.2); }
+        .bound-line { stroke: var(--error); stroke-width: 2; stroke-dasharray: 5,5; }
+
+        /* Number Line Styles */
+        .numline-container {
+            background: var(--bg-card); padding: 20px; border-radius: var(--radius-md);
+            margin-top: 20px;
+        }
+        .numline-svg { width: 100%; height: 100px; }
+        .tick-text { font-size: 12px; fill: var(--text-secondary); }
+    </style>
+</head>
+<body>
+    <div class="page-wrapper">
+        <header class="header">
+            <div class="header-inner">
+                <div class="logo">
+                    <svg class="logo-icon" viewBox="0 0 40 40" fill="none">
+                        <rect x="4" y="8" width="32" height="24" rx="2" stroke="currentColor" stroke-width="2"/>
+                        <path d="M4 14h32" stroke="currentColor" stroke-width="2"/>
+                        <circle cx="10" cy="11" r="2" fill="currentColor"/>
+                        <circle cx="16" cy="11" r="2" fill="currentColor"/>
+                        <rect x="8" y="18" width="24" height="2" rx="1" fill="currentColor" opacity="0.5"/>
+                    </svg>
+                    <span class="logo-text">Media Belajar Daffa</span>
+                </div>
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle tema">
+                    <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+                    <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                </button>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="container">
+                <div class="page-header">
+                    <nav class="breadcrumb">
+                        <a href="../index.html">Beranda</a><span>/</span>
+                        <a href="index.html">Matematika Lanjut</a><span>/</span>
+                        <span class="current">Persamaan Lanjut</span>
+                    </nav>
+                    <div class="accent-line"></div>
+                    <h1 class="page-title">Persamaan & Pertidaksamaan Lanjut</h1>
+                    <p class="page-subtitle">Memahami penyelesaian persamaan dan pertidaksamaan nilai mutlak, pecahan, dan irasional.</p>
+                </div>
+
+                <div class="nav-btn-group">
+                    <a href="index.html" class="nav-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg> Kembali ke Daftar Materi</a>
+                    <a href="../index.html" class="nav-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Beranda</a>
+                </div>
+
+                <nav class="quick-nav" id="quickNav">
+                    <a href="#materi-inti" class="quick-nav-btn">Materi</a>
+                    <a href="#animasi-interaktif" class="quick-nav-btn">Animasi</a>
+                    <a href="#contoh-soal" class="quick-nav-btn">Contoh Soal</a>
+                    <a href="#latihan-soal" class="quick-nav-btn">Latihan</a>
+                    <a href="#kuis" class="quick-nav-btn">Kuis</a>
+                </nav>
+
+                <!-- Learning Objectives -->
+                <section class="content-section">
+                    <div class="section-header"><h2 class="section-title">Tujuan Pembelajaran</h2></div>
+                    <div class="objectives-list">
+                        <div class="objective-item"><span class="objective-number">1</span><span class="objective-text">Menyelesaikan persamaan dan pertidaksamaan nilai mutlak</span></div>
+                        <div class="objective-item"><span class="objective-number">2</span><span class="objective-text">Menyelesaikan persamaan dan pertidaksamaan pecahan (rasional)</span></div>
+                        <div class="objective-item"><span class="objective-number">3</span><span class="objective-text">Menyelesaikan persamaan dan pertidaksamaan irasional</span></div>
+                    </div>
+                </section>
+
+                <!-- Material Content -->
+                <section class="content-section" id="materi-inti">
+                    <div class="section-header"><h2 class="section-title">Materi Inti</h2></div>
+                    <div class="material-content">
+                        <h3>1. Nilai Mutlak (Absolut)</h3>
+                        <p>Nilai mutlak |x| menyatakan jarak bilangan x dari titik 0 pada garis bilangan. Hasilnya selalu non-negatif.</p>
+                        <div class="formula-box">
+                            <div class="formula">|x| = x, jika x ≥ 0</div>
+                            <div class="formula">|x| = -x, jika x < 0</div>
+                        </div>
+
+                        <h4>Sifat Pertidaksamaan Nilai Mutlak:</h4>
+                        <ul>
+                            <li><strong>|x| < a ⟺ -a < x < a</strong> (Syarat: a > 0)</li>
+                            <li><strong>|x| > a ⟺ x < -a atau x > a</strong> (Syarat: a > 0)</li>
+                        </ul>
+
+                        <h3>2. Persamaan & Pertidaksamaan Pecahan</h3>
+                        <p>Bentuk umum: <span class="fraction"><span class="fraction-numerator">P(x)</span><span class="fraction-line"></span><span class="fraction-denominator">Q(x)</span></span> = 0 atau > 0.</p>
+                        <h4>Langkah Penyelesaian:</h4>
+                        <ol>
+                            <li>Tentukan nilai yang membuat penyebut = 0 (Nilai Tak Terdefinisi).</li>
+                            <li>Samakan penyebut (untuk pertidaksamaan, pastikan tanda tidak berubah).</li>
+                            <li>Selesaikan persamaan/pertidaksamaan biasa.</li>
+                        </ol>
+
+                        <h3>3. Persamaan & Pertidaksamaan Irasional</h3>
+                        <p>Bentuk yang melibatkan akar, misal √P(x) = Q(x).</p>
+                        <h4>Syarat Penyelesaian:</h4>
+                        <ul>
+                            <li>Radicand (bilangan di dalam akar) harus ≥ 0.</li>
+                            <li>Jika kedua ruas dikuadratkan, periksa apakah hasilnya memenuhi persamaan awal (sering muncul akar semu).</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <!-- Interactive Animations -->
+                <section class="content-section" id="animasi-interaktif">
+                    <div class="section-header"><h2 class="section-title">Animasi Interaktif</h2></div>
+
+                    <!-- Animation 1: Absolute Value Graph -->
+                    <div class="animation-container">
+                        <div class="animation-header"><span class="animation-title">Visualisasi Pertidaksamaan |x| < a</span></div>
+                        <div class="slider-control">
+                            <span class="slider-label">Batas a:</span>
+                            <input type="range" class="slider-input" id="absA" min="1" max="5" step="0.5" value="3">
+                            <span class="slider-value" id="absAVal">3</span>
+                        </div>
+                        
+                        <div class="abs-graph-container">
+                            <svg id="absSvg" class="abs-svg" viewBox="0 0 400 250">
+                                <defs><pattern id="gridAbs" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M 20 0 L 0 0 0 20" fill="none" class="grid-line"/></pattern></defs>
+                                <rect width="100%" height="100%" fill="url(#gridAbs)"/>
+                                <line x1="200" y1="0" x2="200" y2="250" class="axis"/>
+                                <line x1="0" y1="125" x2="400" y2="125" class="axis"/>
+                                
+                                <!-- Highlight Area for Solution -->
+                                <rect id="solArea" class="highlight-area" x="140" y="65" width="120" height="60"></rect>
+                                
+                                <!-- Boundaries -->
+                                <line id="lineLeft" class="bound-line" x1="140" y1="0" x2="140" y2="250"/>
+                                <line id="lineRight" class="bound-line" x1="260" y1="0" x2="260" y2="250"/>
+                                
+                                <!-- Function |x| -->
+                                <path d="M 0 225 L 200 125 L 400 25" class="func-line" />
+                                
+                                <!-- Labels -->
+                                <text x="200" y="240" text-anchor="middle" fill="var(--text-secondary)">y = |x|</text>
+                            </svg>
+                        </div>
+                        <div class="info-box">
+                            Solusi: <strong id="absSol">-3 < x < 3</strong> (Daerah yang diarsir hijau).
+                        </div>
+                    </div>
+
+                    <!-- Animation 2: Rational Number Line -->
+                    <div class="animation-container">
+                        <div class="animation-header"><span class="animation-title">Simulasi Garis Bilangan (Pecahan)</span></div>
+                        <p style="text-align:center; color:var(--text-muted); margin-bottom:10px;">Contoh: <span class="fraction"><span class="fraction-numerator">x-2</span><span class="fraction-line"></span><span class="fraction-denominator">x+1</span></span> > 0</p>
+                        
+                        <div class="numline-container">
+                            <svg id="numSvg" class="numline-svg" viewBox="0 0 400 100">
+                                <!-- Number Line -->
+                                <line x1="20" y1="50" x2="380" y2="50" stroke="var(--text-primary)" stroke-width="2"/>
+                                
+                                <!-- Ticks & Labels -->
+                                <text x="80" y="40" text-anchor="middle" class="tick-text">-1</text>
+                                <circle cx="80" cy="50" r="4" fill="none" stroke="var(--text-primary)"/> <!-- Undefined point -->
+                                
+                                <text x="160" y="40" text-anchor="middle" class="tick-text">2</text>
+                                <circle cx="160" cy="50" r="4" fill="var(--text-primary)"/> <!-- Zero point -->
+                                
+                                <!-- Solution Indicator -->
+                                <rect id="solRect" x="0" y="55" width="60" height="10" fill="var(--success)" opacity="0.5"/>
+                            </svg>
+                        </div>
+                        <div class="animation-controls" style="justify-content: center;">
+                            <button class="control-btn active" onclick="updateNumLine(1)">x < -1</button>
+                            <button class="control-btn" onclick="updateNumLine(2)">-1 < x < 2</button>
+                            <button class="control-btn" onclick="updateNumLine(3)">x > 2</button>
+                        </div>
+                        <div class="info-box" id="numResult">
+                            Pilih interval untuk menguji nilai.
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Example Problems -->
+                <section class="content-section" id="contoh-soal">
+                    <div class="section-header"><h2 class="section-title">Contoh Soal</h2></div>
+
+                    <div class="example-card">
+                        <div class="example-header"><span class="example-number">1</span><span class="example-title">Nilai Mutlak</span></div>
+                        <div class="example-body">
+                            <p class="example-question">Selesaikan |2x - 4| = 6.</p>
+                            <div class="solution-steps">
+                                <div class="solution-step"><span class="step-marker">1</span><div class="step-content">
+                                    <span class="step-label">Definisi</span>
+                                    <p class="step-text">|P| = Q ⟺ P = Q atau P = -Q.</p>
+                                </div></div>
+                                <div class="solution-step"><span class="step-marker">2</span><div class="step-content">
+                                    <span class="step-label">Kemungkinan 1</span>
+                                    <span class="step-math">2x - 4 = 6 → 2x = 10 → x = 5</span>
+                                </div></div>
+                                <div class="solution-step"><span class="step-marker">3</span><div class="step-content">
+                                    <span class="step-label">Kemungkinan 2</span>
+                                    <span class="step-math">2x - 4 = -6 → 2x = -2 → x = -1</span>
+                                </div></div>
+                            </div>
+                            <div class="example-answer"><svg class="answer-icon">...</svg><span class="answer-text">HP = { -1, 5 }</span></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Practice Problems -->
+                <section class="content-section" id="latihan-soal">
+                    <div class="section-header"><h2 class="section-title">Latihan Soal</h2></div>
+                    <div class="practice-grid">
+                        <div class="practice-item"><span class="practice-number">1</span><div class="practice-content"><p class="practice-question">Selesaikan |x + 3| < 5.</p></div></div>
+                        <div class="practice-item"><span class="practice-number">2</span><div class="practice-content"><p class="practice-question">Selesaikan persamaan pecahan: <span class="fraction"><span class="fraction-numerator">x</span><span class="fraction-line"></span><span class="fraction-denominator">x-2</span></span> = 3.</p></div></div>
+                        <div class="practice-item"><span class="practice-number">3</span><div class="practice-content"><p class="practice-question">Tentukan penyelesaian √(2x - 1) = 3.</p></div></div>
+                    </div>
+                </section>
+
+                <!-- Quiz Section -->
+                <section class="content-section" id="kuis">
+                    <div class="section-header"><h2 class="section-title">Kuis</h2></div>
+                    <div id="quizContainer"></div>
+                </section>
+            </div>
+        </main>
+        <footer class="footer">...</footer>
+    </div>
+
+    <script src="../matematika-wajib/script.js"></script>
+    <script src="../matematika-wajib/quiz-engine.js"></script>
+    <script>
+        const quizQuestions = [
+            { question: "Penyelesaian dari |x| = 5 adalah...", options: ["x = 5 atau x = -5", "x = 5", "x = -5", "x = 0"], correct: 0, explanation: "Definisi nilai mutlak." },
+            { question: "Jika |x - 2| < 3, maka...", options: ["-1 < x < 5", "-3 < x < 3", "x < 5", "x > -1"], correct: 0, explanation: "-3 < x-2 < 3 → -1 < x < 5." },
+            { question: "Nilai x yang memenuhi √(x-1) = 4 adalah...", options: ["17", "15", "5", "16"], correct: 0, explanation: "Kuadratkan: x-1 = 16 → x = 17." },
+            { question: "Penyebut pada pecahan tidak boleh bernilai...", options: ["0", "1", "Negatif", "Positif"], correct: 0, explanation: "Pecahan tidak terdefinisi jika penyebut 0." }
+        ];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            new QuizEngine('quizContainer', quizQuestions).init();
+            
+            // Abs Graph Animation
+            const absA = document.getElementById('absA');
+            const absAVal = document.getElementById('absAVal');
+            const absSol = document.getElementById('absSol');
+            const lineLeft = document.getElementById('lineLeft');
+            const lineRight = document.getElementById('lineRight');
+            const solArea = document.getElementById('solArea');
+            
+            function updateAbsGraph() {
+                const a = parseFloat(absA.value);
+                absAVal.textContent = a;
+                
+                // Center is 200px. Scale is 20px per unit.
+                const leftX = 200 - (a * 20);
+                const rightX = 200 + (a * 20);
+                
+                lineLeft.setAttribute('x1', leftX); lineLeft.setAttribute('x2', leftX);
+                lineRight.setAttribute('x1', rightX); lineRight.setAttribute('x2', rightX);
+                
+                solArea.setAttribute('x', leftX);
+                solArea.setAttribute('width', rightX - leftX);
+                
+                absSol.textContent = `-${a} < x < ${a}`;
+            }
+            
+            if(absA) { absA.oninput = updateAbsGraph; updateAbsGraph(); }
+            
+            // Number Line Animation
+            window.updateNumLine = function(type) {
+                const rect = document.getElementById('solRect');
+                const result = document.getElementById('numResult');
+                document.querySelectorAll('.animation-controls .control-btn').forEach(b => b.classList.remove('active'));
+                event.target.classList.add('active');
+                
+                let testVal = 0;
+                let text = "";
+                
+                if(type === 1) { testVal = -2; text = "x < -1"; rect.setAttribute('x', "0"); rect.setAttribute('width', "60"); }
+                if(type === 2) { testVal = 0; text = "-1 < x < 2"; rect.setAttribute('x', "90"); rect.setAttribute('width', "60"); }
+                if(type === 3) { testVal = 3; text = "x > 2"; rect.setAttribute('x', "170"); rect.setAttribute('width', "220"); }
+                
+                // Calculate: (x-2)/(x+1)
+                const res = (testVal - 2) / (testVal + 1);
+                
+                let bool = res > 0;
+                result.innerHTML = `Uji x = ${testVal}: Hasil = ${res.toFixed(2)}. <br>Apakah > 0? <strong style="color:${bool ? 'var(--success)' : 'var(--error)'}">${bool ? 'BENAR (Solusi)' : 'SALAH (Bukan Solusi)'}</strong>`;
+                
+                if(bool) result.style.borderLeftColor = "var(--success)";
+                else result.style.borderLeftColor = "var(--error)";
+            }
+        });
+    </script>
+</body>
+</html>

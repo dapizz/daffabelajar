@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Fungsi Trigonometri - Matematika Tingkat Lanjut">
+    <title>Fungsi Trigonometri - Media Belajar Daffa</title>
+    <link rel="stylesheet" href="../matematika-wajib/style.css">
+    <style>
+        /* Fraction Styles */
+        .fraction {
+            display: inline-flex; flex-direction: column;
+            align-items: center; vertical-align: middle;
+            margin: 0 4px; font-family: var(--font-display);
+        }
+        .fraction-numerator { padding: 2px 8px; font-size: 1rem; line-height: 1.3; }
+        .fraction-line { width: 100%; height: 2px; background: var(--text-primary); border-radius: 1px; }
+        .fraction-denominator { padding: 2px 8px; font-size: 1rem; line-height: 1.3; }
+        .formula-box .fraction { background: var(--bg-card); padding: 8px 12px; border-radius: var(--radius-sm); margin: 0 8px; }
+        .formula-box .fraction-line { background: var(--accent-primary); }
+
+        /* Graph Container */
+        .graph-stage {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        .graph-svg {
+            width: 100%;
+            height: auto;
+            background: var(--bg-card);
+            border-radius: var(--radius-md);
+        }
+        .grid-line { stroke: var(--border-light); stroke-width: 0.5; }
+        .axis { stroke: var(--text-muted); stroke-width: 1.5; }
+        .sin-wave { fill: none; stroke: #e74c3c; stroke-width: 3; stroke-linecap: round; }
+        .cos-wave { fill: none; stroke: #3498db; stroke-width: 3; stroke-linecap: round; }
+        
+        .eq-display {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--accent-primary);
+            font-family: var(--font-display);
+        }
+        
+        .legend-item {
+            display: inline-flex; align-items: center; gap: 5px;
+            margin: 0 10px; font-size: 0.9rem;
+        }
+        .dot { width: 12px; height: 12px; border-radius: 50%; }
+        
+        .parameter-group {
+            background: var(--bg-card);
+            padding: 15px;
+            border-radius: var(--radius-md);
+            margin-bottom: 15px;
+        }
+        .param-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="page-wrapper">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-inner">
+                <div class="logo">
+                    <svg class="logo-icon" viewBox="0 0 40 40" fill="none">
+                        <rect x="4" y="8" width="32" height="24" rx="2" stroke="currentColor" stroke-width="2"/>
+                        <path d="M4 14h32" stroke="currentColor" stroke-width="2"/>
+                        <circle cx="10" cy="11" r="2" fill="currentColor"/>
+                        <circle cx="16" cy="11" r="2" fill="currentColor"/>
+                        <rect x="8" y="18" width="24" height="2" rx="1" fill="currentColor" opacity="0.5"/>
+                    </svg>
+                    <span class="logo-text">Media Belajar Daffa</span>
+                </div>
+                <!-- Perubahan Theme Toggle Sesuai Permintaan -->
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle tema">
+                    <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+                    <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                </button>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="container">
+                <div class="page-header">
+                    <nav class="breadcrumb">
+                        <a href="../index.html">Beranda</a><span>/</span>
+                        <a href="index.html">Matematika Lanjut</a><span>/</span>
+                        <span class="current">Fungsi Trigonometri</span>
+                    </nav>
+                    <div class="accent-line"></div>
+                    <h1 class="page-title">Fungsi Trigonometri</h1>
+                    <p class="page-subtitle">Menggambar grafik fungsi trigonometri dan memahami transformasinya (amplitudo, periode, dan pergeseran).</p>
+                </div>
+
+                <div class="nav-btn-group">
+                    <a href="index.html" class="nav-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg> Kembali ke Daftar Materi</a>
+                    <a href="../index.html" class="nav-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Beranda</a>
+                </div>
+
+                <nav class="quick-nav" id="quickNav">
+                    <a href="#materi-inti" class="quick-nav-btn">Materi</a>
+                    <a href="#animasi-interaktif" class="quick-nav-btn">Animasi</a>
+                    <a href="#contoh-soal" class="quick-nav-btn">Contoh Soal</a>
+                    <a href="#latihan-soal" class="quick-nav-btn">Latihan</a>
+                    <a href="#kuis" class="quick-nav-btn">Kuis</a>
+                </nav>
+
+                <!-- Learning Objectives -->
+                <section class="content-section">
+                    <div class="section-header"><h2 class="section-title">Tujuan Pembelajaran</h2></div>
+                    <div class="objectives-list">
+                        <div class="objective-item"><span class="objective-number">1</span><span class="objective-text">Memahami grafik fungsi sin x dan cos x dasar</span></div>
+                        <div class="objective-item"><span class="objective-number">2</span><span class="objective-text">Menentukan amplitudo dan periode fungsi trigonometri</span></div>
+                        <div class="objective-item"><span class="objective-number">3</span><span class="objective-text">Menggambar grafik fungsi trigonometri yang mengalami pergeseran dan peregangan</span></div>
+                    </div>
+                </section>
+
+                <!-- Material Content -->
+                <section class="content-section" id="materi-inti">
+                    <div class="section-header"><h2 class="section-title">Materi Inti</h2></div>
+                    <div class="material-content">
+                        <h3>1. Fungsi Trigonometri Dasar</h3>
+                        <p>Grafik fungsi trigonometri bersifat periodik (berulang).</p>
+                        
+                        <h4>a. Fungsi y = sin x</h4>
+                        <ul>
+                            <li>Nilai minimum: -1, Nilai maksimum: 1.</li>
+                            <li>Periode dasar: 360° (atau 2π radian).</li>
+                            <li>Grafik dimulai dari titik asal (0,0).</li>
+                        </ul>
+
+                        <h4>b. Fungsi y = cos x</h4>
+                        <ul>
+                            <li>Nilai minimum: -1, Nilai maksimum: 1.</li>
+                            <li>Periode dasar: 360°.</li>
+                            <li>Grafik dimulai dari puncak (0,1).</li>
+                        </ul>
+
+                        <h3>2. Transformasi Grafik</h3>
+                        <p>Bentuk umum: <strong>y = a sin b(x + c) + d</strong> atau <strong>y = a cos b(x + c) + d</strong>.</p>
+
+                        <h4>a. Amplitudo (|a|)</h4>
+                        <p>Nilai mutlak koefisien a. Menentukan "tinggi" gelombang (nilai maksimum - minimum dibagi 2).</p>
+                        <div class="formula-box">
+                            <div class="formula">Amplitudo = |a|</div>
+                            <div style="margin-top:5px; font-size:0.9rem;">Jika a negatif, grafik terbalik secara vertikal.</div>
+                        </div>
+
+                        <h4>b. Periode (T)</h4>
+                        <p>Jarak untuk satu gelombang penuh.</p>
+                        <div class="formula-box">
+                            <div class="formula">Periode = <span class="fraction"><span class="fraction-numerator">360°</span><span class="fraction-line"></span><span class="fraction-denominator">|b|</span></span></div>
+                        </div>
+
+                        <h4>c. Pergeseran Horizontal (c)</h4>
+                        <p>Grafik bergeser ke kiri jika c positif, dan ke kanan jika c negatif.</p>
+
+                        <h4>d. Pergeseran Vertikal (d)</h4>
+                        <p>Grafik bergeser ke atas jika d positif, dan ke bawah jika d negatif. Nilai rata-rata (sumbu simetri) menjadi y = d.</p>
+                    </div>
+                </section>
+
+                <!-- Interactive Animations -->
+                <section class="content-section" id="animasi-interaktif">
+                    <div class="section-header"><h2 class="section-title">Simulator Grafik Interaktif</h2></div>
+
+                    <div class="animation-container">
+                        <div class="animation-header"><span class="animation-title">Grafik y = a sin(bx) + d</span></div>
+                        
+                        <div class="graph-stage">
+                            <div class="parameter-group">
+                                <span class="param-title">Parameter:</span>
+                                <div class="slider-control">
+                                    <span class="slider-label">Amplitudo (a):</span>
+                                    <input type="range" class="slider-input" id="paramA" min="-3" max="3" step="0.5" value="1">
+                                    <span class="slider-value" id="valA">1</span>
+                                </div>
+                                <div class="slider-control">
+                                    <span class="slider-label">Periode (b):</span>
+                                    <input type="range" class="slider-input" id="paramB" min="0.5" max="4" step="0.5" value="1">
+                                    <span class="slider-value" id="valB">1</span>
+                                </div>
+                                <div class="slider-control">
+                                    <span class="slider-label">Geser Vertikal (d):</span>
+                                    <input type="range" class="slider-input" id="paramD" min="-2" max="2" step="0.5" value="0">
+                                    <span class="slider-value" id="valD">0</span>
+                                </div>
+                            </div>
+
+                            <svg id="graphSvg" class="graph-svg" viewBox="0 0 600 300">
+                                <defs><pattern id="gridGraph" width="30" height="30" patternUnits="userSpaceOnUse"><path d="M 30 0 L 0 0 0 30" fill="none" class="grid-line"/></pattern></defs>
+                                <rect width="100%" height="100%" fill="url(#gridGraph)"/>
+                                
+                                <!-- Axes -->
+                                <line x1="300" y1="0" x2="300" y2="300" class="axis"/>
+                                <line id="axisX" x1="0" y1="150" x2="600" y2="150" class="axis"/>
+                                
+                                <!-- Reference Amplitude Lines -->
+                                <line id="lineMax" x1="0" y1="120" x2="600" y2="120" stroke="#e74c3c" stroke-width="1" stroke-dasharray="3,3" opacity="0.5"/>
+                                <line id="lineMin" x1="0" y1="180" x2="600" y2="180" stroke="#e74c3c" stroke-width="1" stroke-dasharray="3,3" opacity="0.5"/>
+
+                                <!-- Graph Path -->
+                                <path id="sinPath" class="sin-wave" d=""/>
+                                
+                                <!-- Labels -->
+                                <text x="310" y="15" fill="var(--text-muted)">y</text>
+                                <text x="585" y="165" fill="var(--text-muted)">x</text>
+                                <text id="textMax" x="10" y="120" fill="#e74c3c" font-size="12">Max</text>
+                                <text id="textMin" x="10" y="180" fill="#e74c3c" font-size="12">Min</text>
+                            </svg>
+                        </div>
+
+                        <div class="eq-display" id="eqText">y = 1 sin(1x) + 0</div>
+                        
+                        <div class="info-box" style="margin-top:15px;">
+                            <strong>Keterangan:</strong> Periode saat ini = <span id="calcPeriod">360°</span>.
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Example Problems -->
+                <section class="content-section" id="contoh-soal">
+                    <div class="section-header"><h2 class="section-title">Contoh Soal</h2></div>
+
+                    <div class="example-card">
+                        <div class="example-header"><span class="example-number">1</span><span class="example-title">Menentukan Periode</span></div>
+                        <div class="example-body">
+                            <p class="example-question">Tentukan periode dan amplitudo dari y = 2 sin 3x.</p>
+                            <div class="solution-steps">
+                                <div class="solution-step"><span class="step-marker">1</span><div class="step-content">
+                                    <span class="step-label">Amplitudo</span>
+                                    <p class="step-text">Amplitudo = |a| = |2| = 2.</p>
+                                </div></div>
+                                <div class="solution-step"><span class="step-marker">2</span><div class="step-content">
+                                    <span class="step-label">Periode</span>
+                                    <p class="step-text">Gunakan rumus T = 360°/b.</p>
+                                    <span class="step-math">T = 360° / 3 = 120°</span>
+                                </div></div>
+                            </div>
+                            <div class="example-answer"><svg class="answer-icon">...</svg><span class="answer-text">Amplitudo = 2, Periode = 120°</span></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Practice Problems -->
+                <section class="content-section" id="latihan-soal">
+                    <div class="section-header"><h2 class="section-title">Latihan Soal</h2></div>
+                    <div class="practice-grid">
+                        <div class="practice-item"><span class="practice-number">1</span><div class="practice-content"><p class="practice-question">Gambarlah grafik y = 2 cos x untuk 0° ≤ x ≤ 360°.</p></div></div>
+                        <div class="practice-item"><span class="practice-number">2</span><div class="practice-content"><p class="practice-question">Tentukan periode dari y = sin 4x.</p></div></div>
+                        <div class="practice-item"><span class="practice-number">3</span><div class="practice-content"><p class="practice-question">Bagaimana grafik y = sin x + 2 dibandingkan y = sin x?</p></div></div>
+                    </div>
+                </section>
+
+                <!-- Quiz Section -->
+                <section class="content-section" id="kuis">
+                    <div class="section-header"><h2 class="section-title">Kuis</h2></div>
+                    <div id="quizContainer"></div>
+                </section>
+            </div>
+        </main>
+        <footer class="footer">
+            <div class="footer-inner">
+                <div class="footer-brand">
+                    <span class="footer-name">Media Belajar Daffa</span>
+                    <span class="footer-class">Muhammad Daffa Athallah - XII-M4-1</span>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script src="../matematika-wajib/script.js"></script>
+    <script src="../matematika-wajib/quiz-engine.js"></script>
+    <script>
+        const quizQuestions = [
+            { question: "Amplitudo dari y = 3 sin x adalah...", options: ["1", "3", "6", "360"], correct: 1, explanation: "Amplitudo = |a| = 3." },
+            { question: "Periode dari y = sin 2x adalah...", options: ["360°", "180°", "90°", "720°"], correct: 1, explanation: "Periode = 360/2 = 180°." },
+            { question: "Grafik y = sin x + 1 bergeser...", options: ["1 satuan ke kanan", "1 satuan ke kiri", "1 satuan ke atas", "1 satuan ke bawah"], correct: 2, explanation: "Nilai d=1 positif, sehingga grafik naik 1 satuan." },
+            { question: "Jika a negatif pada y = a sin x, maka grafik...", options: ["Tidak berubah", "Terbalik vertikal", "Melebar", "Menyempit"], correct: 1, explanation: "Nilai negatif membalik grafik terhadap sumbu X." }
+        ];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            new QuizEngine('quizContainer', quizQuestions).init();
+            
+            const quickNav = document.getElementById('quickNav');
+            window.addEventListener('scroll', () => quickNav.classList.toggle('scrolled', window.scrollY > 200));
+
+            // --- Graph Logic ---
+            const paramA = document.getElementById('paramA');
+            const paramB = document.getElementById('paramB');
+            const paramD = document.getElementById('paramD');
+            const sinPath = document.getElementById('sinPath');
+            const axisX = document.getElementById('axisX');
+            const lineMax = document.getElementById('lineMax');
+            const lineMin = document.getElementById('lineMin');
+            const textMax = document.getElementById('textMax');
+            const textMin = document.getElementById('textMin');
+            const eqText = document.getElementById('eqText');
+            const calcPeriod = document.getElementById('calcPeriod');
+
+            function updateGraph() {
+                const a = parseFloat(paramA.value);
+                const b = parseFloat(paramB.value);
+                const d = parseFloat(paramD.value);
+
+                document.getElementById('valA').textContent = a;
+                document.getElementById('valB').textContent = b;
+                document.getElementById('valD').textContent = d;
+
+                // Calculate Period
+                const period = 360 / b;
+                calcPeriod.textContent = period.toFixed(0) + "°";
+
+                // SVG Center: (300, 150). 
+                // Scale X: 1 unit (360 deg) = 240px. So 1 deg = 240/360 px.
+                // Scale Y: 1 unit = 30px.
+                const centerX = 300;
+                const centerY = 150;
+                const scaleX = 240 / 360; 
+                const scaleY = 30;
+
+                // Update Axis position based on d
+                const axisYPos = centerY - (d * scaleY);
+                axisX.setAttribute('y1', axisYPos);
+                axisX.setAttribute('y2', axisYPos);
+
+                // Update Amplitude Lines
+                const maxVal = d + Math.abs(a);
+                const minVal = d - Math.abs(a);
+                
+                lineMax.setAttribute('y1', centerY - (maxVal * scaleY));
+                lineMax.setAttribute('y2', centerY - (maxVal * scaleY));
+                lineMin.setAttribute('y1', centerY - (minVal * scaleY));
+                lineMin.setAttribute('y2', centerY - (minVal * scaleY));
+                
+                textMax.setAttribute('y', centerY - (maxVal * scaleY) + 15);
+                textMax.textContent = maxVal.toFixed(1);
+                textMin.setAttribute('y', centerY - (minVal * scaleY) + 15);
+                textMin.textContent = minVal.toFixed(1);
+
+                // Generate Path
+                // We want to draw from x = -360 to +360 relative to center for 2 full cycles
+                let dPath = "";
+                for (let deg = -360; deg <= 360; deg += 5) {
+                    const rad = deg * Math.PI / 180;
+                    const y = a * Math.sin(b * rad) + d;
+                    
+                    const svgX = centerX + (deg * scaleX);
+                    const svgY = centerY - (y * scaleY);
+
+                    dPath += (deg === -360 ? "M" : "L") + ` ${svgX} ${svgY}`;
+                }
+                sinPath.setAttribute('d', dPath);
+
+                // Update Equation Text
+                let bStr = b === 1 ? "" : b;
+                let aStr = a;
+                let dStr = d < 0 ? d : (d > 0 ? `+ ${d}` : "");
+                if (d === 0) dStr = "";
+                
+                eqText.textContent = `y = ${aStr} sin(${bStr}x) ${dStr}`;
+            }
+
+            if(paramA) { 
+                paramA.oninput = updateGraph; 
+                paramB.oninput = updateGraph; 
+                paramD.oninput = updateGraph; 
+                updateGraph(); 
+            }
+        });
+    </script>
+</body>
+</html>

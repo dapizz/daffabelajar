@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Media Belajar Daffa - Platform Pembelajaran Mandiri untuk Siswa SMA">
+    <title>Media Belajar Daffa</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Decorative Background Elements -->
+    <div class="bg-decoration">
+        <div class="floating-shape shape-1"></div>
+        <div class="floating-shape shape-2"></div>
+        <div class="floating-shape shape-3"></div>
+        <div class="grid-pattern"></div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 40 40" fill="none">
+                        <rect x="4" y="8" width="32" height="24" rx="2" stroke="currentColor" stroke-width="2"/>
+                        <path d="M4 14h32" stroke="currentColor" stroke-width="2"/>
+                        <circle cx="10" cy="11" r="2" fill="currentColor"/>
+                        <circle cx="16" cy="11" r="2" fill="currentColor"/>
+                        <rect x="8" y="18" width="24" height="2" rx="1" fill="currentColor" opacity="0.5"/>
+                        <rect x="8" y="24" width="16" height="2" rx="1" fill="currentColor" opacity="0.3"/>
+                    </svg>
+                </div>
+                <span class="logo-text">Media Belajar Daffa</span>
+            </div>
+            <button class="theme-toggle" id="themeToggle" aria-label="Toggle tema">
+                <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="5"/>
+                    <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+                </svg>
+                <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                </svg>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-badge">
+                <span class="badge-dot"></span>
+                Platform Pembelajaran Interaktif
+            </div>
+            <h1 class="hero-title">
+                Belajar Jadi Lebih
+                <span class="highlight">Menyenangkan</span>
+            </h1>
+            <p class="hero-subtitle">
+                Media pembelajaran mandiri untuk siswa SMA dengan materi lengkap, 
+                animasi interaktif, dan kuis untuk menguji pemahamanmu.
+            </p>
+            
+            <!-- Identity Card -->
+            <div class="identity-card">
+                <div class="identity-avatar">
+                    <svg viewBox="0 0 40 40" fill="none">
+                        <circle cx="20" cy="20" r="18" fill="currentColor" opacity="0.1"/>
+                        <circle cx="20" cy="15" r="7" fill="currentColor" opacity="0.3"/>
+                        <path d="M8 35c0-7 5-12 12-12s12 5 12 12" fill="currentColor" opacity="0.3"/>
+                    </svg>
+                </div>
+                <div class="identity-info">
+                    <span class="identity-label">Dibuat oleh</span>
+                    <span class="identity-name">Muhammad Daffa Athallah</span>
+                    <span class="identity-class">XII-M4-1</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Info Section -->
+        <section class="info-section">
+            <div class="info-grid">
+                <div class="info-card">
+                    <div class="info-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/>
+                            <path d="M12 6v6l4 2"/>
+                        </svg>
+                    </div>
+                    <h3>Tujuan Website</h3>
+                    <p>Menyediakan media pembelajaran mandiri yang interaktif dan mudah dipahami untuk siswa SMA, serta dapat digunakan oleh guru sebagai sarana pendukung pembelajaran.</p>
+                </div>
+                
+                <div class="info-card">
+                    <div class="info-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+                            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+                        </svg>
+                    </div>
+                    <h3>Materi Lengkap</h3>
+                    <p>Setiap bab dilengkapi dengan materi inti, animasi konsep, contoh soal dengan pembahasan, latihan soal, dan kuis interaktif minimal 10 soal.</p>
+                </div>
+                
+                <div class="info-card">
+                    <div class="info-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="3" width="18" height="18" rx="2"/>
+                            <path d="M9 9l3 3-3 3"/>
+                            <path d="M13 15h4"/>
+                        </svg>
+                    </div>
+                    <h3>Cara Menggunakan</h3>
+                    <p>Pilih mata pelajaran, masuk ke bab yang ingin dipelajari, baca materi dengan seksama, pelajari animasi konsep, dan kerjakan kuis untuk menguji pemahamanmu.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Subject Selection -->
+        <section class="subject-section">
+            <div class="section-header">
+                <h2>Pilih Mata Pelajaran</h2>
+                <p>Klik kartu untuk masuk ke halaman mata pelajaran</p>
+            </div>
+            
+            <div class="subject-grid">
+                <a href="matematika-wajib/index.html" class="subject-card" data-subject="mtk-wajib">
+                    <div class="subject-decoration">
+                        <div class="deco-circle"></div>
+                        <div class="deco-line"></div>
+                    </div>
+                    <div class="subject-icon">
+                        <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M8 40l8-24 12 8 12-16"/>
+                            <circle cx="16" cy="16" r="4"/>
+                            <circle cx="28" cy="24" r="4"/>
+                            <circle cx="40" cy="8" r="4"/>
+                            <circle cx="8" cy="40" r="4"/>
+                        </svg>
+                    </div>
+                    <div class="subject-content">
+                        <h3>Matematika Wajib</h3>
+                        <p>Materi matematika wajib untuk SMA</p>
+                        <div class="subject-meta">
+                            <span class="meta-item">
+                                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <path d="M2 2v12h12V2H2z"/>
+                                    <path d="M2 6h12M6 2v12"/>
+                                </svg>
+                                12 Bab
+                            </span>
+                            <span class="meta-item">
+                                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <circle cx="8" cy="8" r="6"/>
+                                    <path d="M8 5v3l2 2"/>
+                                </svg>
+                                20+ Soal
+                            </span>
+                        </div>
+                    </div>
+                    <div class="subject-arrow">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M5 12h14M12 5l7 7-7 7"/>
+                        </svg>
+                    </div>
+                </a>
+
+                <a href="matematika-lanjut/index.html" class="subject-card" data-subject="mtk-lanjut">
+                    <div class="subject-decoration">
+                        <div class="deco-circle"></div>
+                        <div class="deco-line"></div>
+                    </div>
+                    <div class="subject-icon">
+                        <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M24 4v40M4 24h40"/>
+                            <circle cx="24" cy="24" r="8"/>
+                            <circle cx="24" cy="24" r="16" stroke-dasharray="4 4"/>
+                        </svg>
+                    </div>
+                    <div class="subject-content">
+                        <h3>Matematika Tingkat Lanjut</h3>
+                        <p>Materi matematika lanjutan untuk SMA</p>
+                        <div class="subject-meta">
+                            <span class="meta-item">
+                                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <path d="M2 2v12h12V2H2z"/>
+                                    <path d="M2 6h12M6 2v12"/>
+                                </svg>
+                                11 Bab
+                            </span>
+                            <span class="meta-item">
+                                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <circle cx="8" cy="8" r="6"/>
+                                    <path d="M8 5v3l2 2"/>
+                                </svg>
+                                20+ soal
+                            </span>
+                        </div>
+                    </div>
+                    <div class="subject-arrow">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M5 12h14M12 5l7 7-7 7"/>
+                        </svg>
+                    </div>
+                </a>
+
+                <a href="fisika/index.html" class="subject-card" data-subject="fisika">
+                    <div class="subject-decoration">
+                        <div class="deco-circle"></div>
+                        <div class="deco-line"></div>
+                    </div>
+                    <div class="subject-icon">
+                        <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="24" cy="24" r="18"/>
+                            <circle cx="24" cy="24" r="8"/>
+                            <path d="M24 6v4M24 38v4M6 24h4M38 24h4"/>
+                            <path d="M11 11l3 3M34 34l3 3M11 37l3-3M34 14l3-3"/>
+                        </svg>
+                    </div>
+                    <div class="subject-content">
+                        <h3>Fisika</h3>
+                        <p>Materi fisika untuk SMA</p>
+                        <div class="subject-meta">
+                            <span class="meta-item">
+                                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <path d="M2 2v12h12V2H2z"/>
+                                    <path d="M2 6h12M6 2v12"/>
+                                </svg>
+                                7 Bab
+                            </span>
+                            <span class="meta-item">
+                                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <circle cx="8" cy="8" r="6"/>
+                                    <path d="M8 5v3l2 2"/>
+                                </svg>
+                                20+ soal
+                            </span>
+                        </div>
+                    </div>
+                    <div class="subject-arrow">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M5 12h14M12 5l7 7-7 7"/>
+                        </svg>
+                    </div>
+                </a>
+
+                <a href="pai/index.html" class="subject-card" data-subject="pai">
+                    <div class="subject-decoration">
+                        <div class="deco-circle"></div>
+                        <div class="deco-line"></div>
+                    </div>
+                    <div class="subject-icon">
+                        <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M24 4c-11 0-20 9-20 20s9 20 20 20 20-9 20-20S35 4 24 4z"/>
+                            <path d="M24 12v24"/>
+                            <path d="M16 20l8-8 8 8"/>
+                            <path d="M12 28h24"/>
+                        </svg>
+                    </div>
+                    <div class="subject-content">
+                        <h3>Pendidikan Agama Islam</h3>
+                        <p>Materi Pendidikan Agama Islam untuk SMA</p>
+                        <div class="subject-meta">
+                            <span class="meta-item">
+                                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <path d="M2 2v12h12V2H2z"/>
+                                    <path d="M2 6h12M6 2v12"/>
+                                </svg>
+                                7 Bab
+                            </span>
+                            <span class="meta-item">
+                                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <circle cx="8" cy="8" r="6"/>
+                                    <path d="M8 5v3l2 2"/>
+                                </svg>
+                                20+ soal
+                            </span>
+                        </div>
+                    </div>
+                    <div class="subject-arrow">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M5 12h14M12 5l7 7-7 7"/>
+                        </svg>
+                    </div>
+                </a>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="features-section">
+            <div class="section-header">
+                <h2>Fitur Unggulan</h2>
+                <p>Pengalaman belajar yang berbeda</p>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-item">
+                    <div class="feature-number">01</div>
+                    <h4>Animasi Konsep</h4>
+                    <p>Visualisasi interaktif untuk memahami konsep dengan lebih mudah</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-number">02</div>
+                    <h4>Pembahasan Lengkap</h4>
+                    <p>Contoh soal dengan penjelasan langkah demi langkah</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-number">03</div>
+                    <h4>Kuis Interaktif</h4>
+                    <p>Uji pemahaman dengan kuis dan dapatkan skor langsung</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-number">04</div>
+                    <h4>Mobile Friendly</h4>
+                    <p>Belajar kapan saja dan di mana saja dari perangkat apapun</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <span class="footer-logo">Media Belajar Daffa</span>
+                <p>Platform pembelajaran mandiri untuk siswa SMA</p>
+            </div>
+            <div class="footer-info">
+                <p>Dibuat dengan dedikasi oleh Muhammad Daffa Athallah</p>
+                <p class="footer-class">XII-M4-1</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

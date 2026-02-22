@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Polinom - Matematika Tingkat Lanjut">
+    <title>Polinom - Media Belajar Daffa</title>
+    <link rel="stylesheet" href="../matematika-wajib/style.css">
+    <style>
+        /* Fraction Styles */
+        .fraction {
+            display: inline-flex; flex-direction: column;
+            align-items: center; vertical-align: middle;
+            margin: 0 4px; font-family: var(--font-display);
+        }
+        .fraction-numerator { padding: 2px 8px; font-size: 1rem; line-height: 1.3; }
+        .fraction-line { width: 100%; height: 2px; background: var(--text-primary); border-radius: 1px; }
+        .fraction-denominator { padding: 2px 8px; font-size: 1rem; line-height: 1.3; }
+        .formula-box .fraction { background: var(--bg-card); padding: 8px 12px; border-radius: var(--radius-sm); margin: 0 8px; }
+        .formula-box .fraction-line { background: var(--accent-primary); }
+
+        /* Specific Polynomial Styles */
+        .polynomial-general-form {
+            background: var(--bg-secondary);
+            border-left: 5px solid var(--accent-primary);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 var(--radius-md) var(--radius-md) 0;
+            text-align: center;
+        }
+        .polynomial-general-form .formula {
+            font-family: var(--font-display);
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+            margin: 10px 0;
+        }
+        .polynomial-general-form .desc {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .term-list {
+            display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;
+            margin-top: 10px;
+        }
+        .term-badge {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 8px 15px;
+            border-radius: var(--radius-sm);
+            font-family: var(--font-display);
+            font-weight: 600;
+        }
+
+        /* Table Styles */
+        .info-table {
+            width: 100%; border-collapse: collapse; margin: 15px 0; font-size: 0.9rem;
+        }
+        .info-table th, .info-table td {
+            border: 1px solid var(--border-color); padding: 10px; text-align: left;
+        }
+        .info-table th { background: var(--bg-secondary); color: var(--accent-primary); width: 30%; }
+
+        /* Graph Styles */
+        .graph-canvas-svg { background: var(--bg-card); border-radius: var(--radius-md); width: 100%; height: auto; min-height: 300px; }
+        .grid-line { stroke: var(--border-light); stroke-width: 0.5; }
+        .axis-line { stroke: var(--text-muted); stroke-width: 1.5; }
+        .poly-path { fill: none; stroke: var(--accent-primary); stroke-width: 3; stroke-linecap: round; }
+    </style>
+</head>
+<body>
+    <div class="page-wrapper">
+        <header class="header">
+            <div class="header-inner">
+                <div class="logo">
+                    <svg class="logo-icon" viewBox="0 0 40 40" fill="none">
+                        <rect x="4" y="8" width="32" height="24" rx="2" stroke="currentColor" stroke-width="2"/>
+                        <path d="M4 14h32" stroke="currentColor" stroke-width="2"/>
+                        <circle cx="10" cy="11" r="2" fill="currentColor"/>
+                        <circle cx="16" cy="11" r="2" fill="currentColor"/>
+                        <rect x="8" y="18" width="24" height="2" rx="1" fill="currentColor" opacity="0.5"/>
+                    </svg>
+                    <span class="logo-text">Media Belajar Daffa</span>
+                </div>
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle tema">...</button>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="container">
+                <div class="page-header">
+                    <nav class="breadcrumb">
+                        <a href="../index.html">Beranda</a><span>/</span>
+                        <a href="index.html">Matematika Lanjut</a><span>/</span>
+                        <span class="current">Polinom</span>
+                    </nav>
+                    <div class="accent-line"></div>
+                    <h1 class="page-title">Polinom (Suku Banyak)</h1>
+                    <p class="page-subtitle">Memahami konsep, operasi, pembagian sintetis, teorema sisa/faktor, dan grafik fungsi suku banyak.</p>
+                </div>
+
+                <div class="nav-btn-group">
+                    <a href="index.html" class="nav-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg> Kembali ke Daftar Materi</a>
+                    <a href="../index.html" class="nav-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Beranda</a>
+                </div>
+
+                <nav class="quick-nav" id="quickNav">
+                    <a href="#materi-inti" class="quick-nav-btn">Materi</a>
+                    <a href="#animasi-interaktif" class="quick-nav-btn">Animasi</a>
+                    <a href="#contoh-soal" class="quick-nav-btn">Contoh Soal</a>
+                    <a href="#latihan-soal" class="quick-nav-btn">Latihan</a>
+                    <a href="#kuis" class="quick-nav-btn">Kuis</a>
+                </nav>
+
+                <!-- Learning Objectives -->
+                <section class="content-section">
+                    <div class="section-header"><h2 class="section-title">Tujuan Pembelajaran</h2></div>
+                    <div class="objectives-list">
+                        <div class="objective-item"><span class="objective-number">1</span><span class="objective-text">Memahami definisi, istilah, dan derajat polinom</span></div>
+                        <div class="objective-item"><span class="objective-number">2</span><span class="objective-text">Menentukan nilai dan operasi polinom</span></div>
+                        <div class="objective-item"><span class="objective-number">3</span><span class="objective-text">Menggunakan teorema sisa dan teorema faktor</span></div>
+                        <div class="objective-item"><span class="objective-number">4</span><span class="objective-text">Melakukan pembagian sintetis dan sketsa grafik</span></div>
+                    </div>
+                </section>
+
+                <!-- Material Content -->
+                <section class="content-section" id="materi-inti">
+                    <div class="section-header"><h2 class="section-title">Materi Inti</h2></div>
+                    <div class="material-content">
+                        <h3>1. Pengertian Polinom</h3>
+                        <p><strong>Polinom</strong> (atau suku banyak) adalah bentuk aljabar yang tersusun dari beberapa suku. Setiap suku berbentuk <strong>a x<sup>n</sup></strong>, di mana <em>a</em> adalah koefisien dan <em>n</em> adalah pangkat variabel x berupa bilangan bulat non-negatif (0, 1, 2, ...).</p>
+
+                        <h4>Bentuk Umum Polinom:</h4>
+                        <div class="polynomial-general-form">
+                            <div class="formula">
+                                P(x) = a<sub>n</sub> x<sup>n</sup> + a<sub>n-1</sub> x<sup>n-1</sup> + ... + a<sub>1</sub> x<sup>1</sup> + a<sub>0</sub> x<sup>0</sup>
+                            </div>
+                            <div class="desc">
+                                Di mana: a<sub>n</sub> ≠ 0, n adalah derajat polinom.
+                            </div>
+                        </div>
+
+                        <h4>Contoh Polinom:</h4>
+                        <div class="term-list">
+                            <div class="term-badge">3x² + 2x - 5</div>
+                            <div class="term-badge">x⁴ - 2x³ + x</div>
+                            <div class="term-badge">5 (Polinom konstanta)</div>
+                        </div>
+
+                        <h4>Bukan Polinom:</h4>
+                        <div class="term-list">
+                            <div class="term-badge" style="border-color:var(--error); color:var(--error);">3x<sup>-2</sup> (Pangkat negatif)</div>
+                            <div class="term-badge" style="border-color:var(--error); color:var(--error);">√x (Pangkat pecahan)</div>
+                            <div class="term-badge" style="border-color:var(--error); color:var(--error);">2/x (Variabel di penyebut)</div>
+                        </div>
+
+                        <h3>2. Istilah-Istilah dalam Polinom</h3>
+                        <p>Pada polinom P(x) = 5x³ - 2x² + 7:</p>
+                        <table class="info-table">
+                            <tr>
+                <th>Koefisien</th>
+                <td>Konstanta yang mengalikan variabel. <br>Contoh: <strong>5</strong> (koef. x³), <strong>-2</strong> (koef. x²).</td>
+            </tr>
+                            <tr>
+                <th>Konstanta</th>
+                <td>Suku tanpa variabel (x<sup>0</sup>). <br>Contoh: <strong>7</strong>.</td>
+            </tr>
+                            <tr>
+                <th>Variabel</th>
+                <td>Simbol yang nilainya dapat berubah. <br>Contoh: <strong>x</strong>.</td>
+            </tr>
+                            <tr>
+                <th>Derajat</th>
+                <td>Pangkat tertinggi dari variabel. <br>Contoh: Derajat dari P(x) di atas adalah <strong>3</strong>.</td>
+            </tr>
+                        </table>
+
+                        <h3>3. Sifat-Sifat Polinom</h3>
+                        <ul>
+                            <li><strong>Penjumlahan/Pengurangan:</strong> Derajat hasil ≤ derajat tertinggi polinom yang dioperasikan.</li>
+                            <li><strong>Perkalian:</strong> Derajat hasil = jumlah derajat polinom yang dikalikan. <br><em>Contoh: (ax²)(bx³) → Derajat 2 + 3 = 5</em>.</li>
+                            <li><strong>Derajat Nol:</strong> Polinom konstanta (seperti 5) memiliki derajat 0.</li>
+                        </ul>
+
+                        <h3>4. Teorema Sisa</h3>
+                        <p>Jika suku banyak P(x) dibagi dengan (x - k), maka sisanya adalah <strong>P(k)</strong>.</p>
+                        <div class="formula-box">
+                            <div class="formula">P(x) = (x - k) . H(x) + S</div>
+                            <div style="margin-top:10px;">S = P(k)</div>
+                        </div>
+
+                        <h3>5. Teorema Faktor</h3>
+                        <p>(x - k) adalah faktor dari P(x) jika dan hanya jika <strong>P(k) = 0</strong>.</p>
+
+                        <h3>6. Pembagian Sintetis</h3>
+                        <p>Metode singkat untuk membagi polinom P(x) oleh pembagi berbentuk (x - k).</p>
+                    </div>
+                </section>
+
+                <!-- Interactive Animations -->
+                <section class="content-section" id="animasi-interaktif">
+                    <div class="section-header"><h2 class="section-title">Animasi Interaktif</h2></div>
+
+                    <!-- Animation 1: Synthetic Division -->
+                    <div class="animation-container">
+                        <div class="animation-header"><span class="animation-title">Simulasi Pembagian Sintetis</span></div>
+                        <p style="font-size:0.9rem; color:var(--text-muted); text-align:center; margin-bottom:10px;">
+                            Masukkan koefisien P(x) dan pembagi (x - k).<br>
+                            Contoh: P(x) = x² - 5x + 6 (koef: 1, -5, 6) dibagi (x - 2) (k=2).
+                        </p>
+                        
+                        <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:10px; margin-bottom:15px;">
+                            <input type="text" id="synthCoeffs" class="input-field" style="width:150px;" placeholder="Koef. (1,-5,6)" value="1,-5,6">
+                            <input type="number" id="synthK" class="input-field" style="width:80px;" placeholder="k" value="2">
+                            <button class="control-btn active" onclick="runSynthetic()">Hitung</button>
+                        </div>
+
+                        <div class="synth-container" id="synthCanvas">
+                            <p style="text-align:center; color:var(--text-muted);">Klik "Hitung" untuk memulai animasi.</p>
+                        </div>
+                        <div class="info-box" id="synthResult" style="display:none;">
+                            Hasil perhitungan akan muncul di sini.
+                        </div>
+                    </div>
+
+                    <!-- Animation 2: Polynomial Graph -->
+                    <div class="animation-container">
+                        <div class="animation-header"><span class="animation-title">Grafik Fungsi Kubik</span></div>
+                        <p style="font-size:0.9rem; color:var(--text-muted); text-align:center;">f(x) = ax³ + bx² + cx + d</p>
+                        <div class="slider-control">
+                            <span class="slider-label">a:</span>
+                            <input type="range" class="slider-input" id="polyA" min="-2" max="2" step="0.1" value="1">
+                            <span class="slider-value" id="polyAVal">1</span>
+                        </div>
+                        <div class="slider-control">
+                            <span class="slider-label">b:</span>
+                            <input type="range" class="slider-input" id="polyB" min="-5" max="5" step="0.5" value="0">
+                            <span class="slider-value" id="polyBVal">0</span>
+                        </div>
+                        <div class="slider-control">
+                            <span class="slider-label">c:</span>
+                            <input type="range" class="slider-input" id="polyC" min="-10" max="10" step="1" value="-3">
+                            <span class="slider-value" id="polyCVal">-3</span>
+                        </div>
+                        
+                        <svg class="graph-canvas-svg" viewBox="0 0 400 300" id="polySvg">
+                            <defs><pattern id="gridPoly" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M 20 0 L 0 0 0 20" fill="none" class="grid-line"/></pattern></defs>
+                            <rect width="100%" height="100%" fill="url(#gridPoly)"/>
+                            <line x1="200" y1="0" x2="200" y2="300" class="axis-line"/>
+                            <line x1="0" y1="150" x2="400" y2="150" class="axis-line"/>
+                            <path id="polyPath" class="poly-path" d=""/>
+                        </svg>
+                        <div class="info-box" id="polyInfo">f(x) = x³ - 3x</div>
+                    </div>
+                </section>
+
+                <!-- Example Problems -->
+                <section class="content-section" id="contoh-soal">
+                    <div class="section-header"><h2 class="section-title">Contoh Soal</h2></div>
+
+                    <div class="example-card">
+                        <div class="example-header"><span class="example-number">1</span><span class="example-title">Teorema Sisa</span></div>
+                        <div class="example-body">
+                            <p class="example-question">Tentukan sisa pembagian P(x) = 2x³ - 4x² + 5x - 1 dibagi (x - 2).</p>
+                            <div class="solution-steps">
+                                <div class="solution-step"><span class="step-marker">1</span><div class="step-content">
+                                    <span class="step-label">Identifikasi</span>
+                                    <p class="step-text">Pembagi (x - 2), maka k = 2.</p>
+                                </div></div>
+                                <div class="solution-step"><span class="step-marker">2</span><div class="step-content">
+                                    <span class="step-label">Substitusi</span>
+                                    <p class="step-text">Gunakan Teorema Sisa: S = P(2)</p>
+                                    <span class="step-math">P(2) = 2(2)³ - 4(2)² + 5(2) - 1</span>
+                                </div></div>
+                                <div class="solution-step"><span class="step-marker">3</span><div class="step-content">
+                                    <span class="step-label">Hitung</span>
+                                    <p class="step-text"></p>
+                                    <span class="step-math">= 2(8) - 4(4) + 10 - 1</span>
+                                    <span class="step-math">= 16 - 16 + 9 = 9</span>
+                                </div></div>
+                            </div>
+                            <div class="example-answer"><svg class="answer-icon">...</svg><span class="answer-text">Sisa bagi = 9</span></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Practice & Quiz sections... -->
+                <section class="content-section" id="latihan-soal">
+                    <div class="section-header"><h2 class="section-title">Latihan Soal</h2></div>
+                    <div class="practice-grid">
+                        <div class="practice-item"><span class="practice-number">1</span><div class="practice-content"><p class="practice-question">Tentukan derajat dari P(x) = 4x⁵ - 2x³ + 7.</p></div></div>
+                        <div class="practice-item"><span class="practice-number">2</span><div class="practice-content"><p class="practice-question">Tentukan sisa pembagian x⁴ - 2x³ + x - 3 dibagi (x - 1).</p></div></div>
+                    </div>
+                </section>
+
+                <section class="content-section" id="kuis">
+                    <div class="section-header"><h2 class="section-title">Kuis</h2></div>
+                    <div id="quizContainer"></div>
+                </section>
+            </div>
+        </main>
+        <footer class="footer">...</footer>
+    </div>
+
+    <script src="../matematika-wajib/script.js"></script>
+    <script src="../matematika-wajib/quiz-engine.js"></script>
+    <script>
+        const quizQuestions = [
+            { question: "Derajat dari P(x) = 3x⁴ - 5x² + 1 adalah...", options: ["4", "2", "3", "1"], correct: 0, explanation: "Pangkat tertinggi adalah 4." },
+            { question: "Sisa pembagian P(x) = x³ - 2x + 1 dibagi (x - 1) adalah...", options: ["0", "1", "-1", "2"], correct: 0, explanation: "P(1) = 1 - 2 + 1 = 0." },
+            { question: "Jika (x - 2) adalah faktor P(x), maka...", options: ["P(2) = 0", "P(0) = 2", "P(-2) = 0", "P(2) tidak tentu"], correct: 0, explanation: "Teorema Faktor." }
+        ];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            new QuizEngine('quizContainer', quizQuestions).init();
+            
+            // Graph Logic
+            const funcA = document.getElementById('polyA');
+            const funcB = document.getElementById('polyB');
+            const funcC = document.getElementById('polyC');
+            const graphPath = document.getElementById('polyPath');
+            const polyInfo = document.getElementById('polyInfo');
+
+            function updateGraph() {
+                const a = parseFloat(funcA.value);
+                const b = parseFloat(funcB.value);
+                const c = parseFloat(funcC.value);
+                document.getElementById('polyAVal').textContent = a;
+                document.getElementById('polyBVal').textContent = b;
+                document.getElementById('polyCVal').textContent = c;
+
+                let d = '';
+                for (let px = 0; px <= 400; px += 2) {
+                    const x = (px - 200) / 25;
+                    const y = a * Math.pow(x, 3) + b * Math.pow(x, 2) + c * x;
+                    const svgY = 150 - y * 15;
+                    d += (px === 0 ? 'M' : 'L') + ` ${px} ${svgY}`;
+                }
+                graphPath.setAttribute('d', d);
+                
+                let label = `f(x) = ${a}x³ ${b>=0?'+':''} ${b}x² ${c>=0?'+':''} ${c}x`;
+                polyInfo.textContent = label;
+            }
+
+            if(funcA) { 
+                funcA.oninput = updateGraph; 
+                funcB.oninput = updateGraph; 
+                funcC.oninput = updateGraph; 
+                updateGraph(); 
+            }
+            
+            // Synthetic Division Logic
+            window.runSynthetic = function() {
+                const coeffStr = document.getElementById('synthCoeffs').value;
+                const kVal = parseFloat(document.getElementById('synthK').value);
+                const coeffs = coeffStr.split(',').map(c => parseFloat(c.trim()));
+                
+                if(coeffs.some(isNaN) || isNaN(kVal)) { alert("Input tidak valid!"); return; }
+
+                const canvas = document.getElementById('synthCanvas');
+                const resultBox = document.getElementById('synthResult');
+                
+                let html = `<div class="synth-table" style="grid-template-columns: 50px repeat(${coeffs.length}, 50px);">`;
+                html += `<div class="synth-cell root">${kVal}</div>`;
+                coeffs.forEach(c => html += `<div class="synth-cell coeff">${c}</div>`);
+                html += `<div class="synth-cell"></div>`;
+                for(let i=0; i<coeffs.length; i++) html += `<div class="synth-cell" id="m${i}"></div>`;
+                html += `<div class="synth-cell"></div>`;
+                for(let i=0; i<coeffs.length; i++) html += `<div class="synth-cell" id="b${i}"></div>`;
+                html += `</div>`;
+                
+                canvas.innerHTML = html;
+                resultBox.style.display = 'block';
+                resultBox.innerHTML = "Menghitung...";
+
+                const steps = [];
+                steps.push({ type: 'down', index: 0, val: coeffs[0] });
+                
+                let currentVal = coeffs[0];
+                for(let i=1; i<coeffs.length; i++) {
+                    steps.push({ type: 'mult', index: i, val: currentVal * kVal });
+                    const add = (currentVal * kVal) + coeffs[i];
+                    steps.push({ type: 'add', index: i, val: add });
+                    currentVal = add;
+                }
+
+                let stepIdx = 0;
+                const interval = setInterval(() => {
+                    if(stepIdx >= steps.length) {
+                        clearInterval(interval);
+                        const remainder = currentVal;
+                        let res = `Sisa = <strong>${remainder}</strong>.`;
+                        if(Math.abs(remainder) < 0.0001) res += ` <span style="color:var(--success)">(x - ${kVal}) adalah faktor.</span>`;
+                        resultBox.innerHTML = res;
+                        return;
+                    }
+
+                    const step = steps[stepIdx];
+                    const cell = document.getElementById((step.type === 'down' || step.type === 'add') ? `b${step.index}` : `m${step.index}`);
+                    if(cell) {
+                        cell.textContent = step.val.toFixed(2);
+                        cell.classList.add('active');
+                        if(step.type === 'add' || step.type === 'down') cell.classList.add('result');
+                        setTimeout(() => cell.classList.remove('active'), 400);
+                    }
+                    stepIdx++;
+                }, 600);
+            };
+        });
+    </script>
+</body>
+</html>
